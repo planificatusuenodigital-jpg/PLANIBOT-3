@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Section } from '../types';
-import { CONTACT_INFO } from '../constants';
+import { LOGO_URL } from '../constants';
 
 interface HeaderProps {
   activeSection: Section;
@@ -45,11 +44,10 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
     <header className="fixed top-0 left-0 right-0 z-50">
       <nav className="m-4 bg-black/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             <div className="flex items-center">
-              <button onClick={() => setActiveSection(Section.Inicio)} className="flex-shrink-0 text-white flex items-center gap-2">
-                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-pink-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12.71,2.29a1,1,0,0,0-1.42,0l-9,9a1,1,0,0,0,0,1.42A1,1,0,0,0,3,13H4.08L2.2,16.7a1,1,0,0,0,1.21,1.21l3.59-1.88a1,1,0,0,0,.6-.16l.37-.21a1,1,0,0,0,.42,0l.33.19.09.05.37.21a1,1,0,0,0,.6.16l3.59,1.88a1,1,0,0,0,1.21-1.21L14.92,13H16a1,1,0,0,0,.71-1.71A1,1,0,0,0,17,11l2-2,2.71-2.71a1,1,0,0,0,0-1.42,1,1,0,0,0-1.42,0L18,7.17V4a1,1,0,0,0-2,0v2.17l-2-2L12.71,2.29ZM11,12.59,9.41,14,8.5,13.52,7.41,14,6,12.59,7.41,11.17,6,9.76,7.41,8.34,8.5,8.83l1.09-.58L11,6.84,12.59,8.34,14,9.76,12.59,11.17,14,12.59,11,12.59Z"/></svg>
-                <span className="font-logo text-3xl">Planifica Tu Sueño</span>
+              <button onClick={() => setActiveSection(Section.Inicio)} className="flex-shrink-0">
+                <img src={LOGO_URL} alt="Planifica Tu Sueño Logo" className="h-20 w-auto" />
               </button>
             </div>
             <div className="hidden md:block">

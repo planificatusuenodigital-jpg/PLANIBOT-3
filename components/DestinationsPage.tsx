@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { DESTINATIONS } from '../constants';
 import GlassCard from './GlassCard';
+import WatermarkedImage from './WatermarkedImage';
 
 const DestinationsPage: React.FC = () => {
   return (
@@ -15,10 +15,11 @@ const DestinationsPage: React.FC = () => {
         {DESTINATIONS.map((destination, index) => (
           <GlassCard key={destination.id} className="overflow-hidden md:flex items-center gap-8 group">
              <div className={`md:w-1/2 overflow-hidden ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
-                <img 
+                <WatermarkedImage
                     src={destination.image} 
                     alt={destination.name} 
-                    className="w-full h-64 md:h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    containerClassName="h-64 md:h-full"
+                    imageClassName="group-hover:scale-110 transition-transform duration-500"
                 />
             </div>
             <div className={`p-8 md:w-1/2 ${index % 2 === 0 ? 'md:order-2' : 'md:order-1'}`}>

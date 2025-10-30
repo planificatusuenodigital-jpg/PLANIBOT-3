@@ -1,7 +1,7 @@
-
 import React, { useState, useMemo } from 'react';
 import { TRAVEL_PLANS } from '../constants';
 import GlassCard from './GlassCard';
+import WatermarkedImage from './WatermarkedImage';
 
 const PlansPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,7 +48,11 @@ const PlansPage: React.FC = () => {
         {filteredPlans.length > 0 ? (
           filteredPlans.map(plan => (
             <GlassCard key={plan.id} className="flex flex-col hover:scale-105 transition-transform duration-300">
-              <img src={plan.image} alt={plan.title} className="w-full h-48 object-cover rounded-t-xl" />
+              <WatermarkedImage 
+                src={plan.image} 
+                alt={plan.title} 
+                containerClassName="h-48 rounded-t-xl" 
+              />
               <div className="p-6 flex flex-col flex-grow">
                 <span className="text-sm font-semibold text-pink-300">{plan.category}</span>
                 <h3 className="text-2xl font-bold text-white mt-1">{plan.title}</h3>

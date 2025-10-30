@@ -1,7 +1,6 @@
-
 import React from 'react';
 import GlassCard from './GlassCard';
-import { CONTACT_INFO } from '../constants';
+import { CONTACT_INFO, ABOUT_US_CONTENT } from '../constants';
 
 const AboutPage: React.FC = () => {
   return (
@@ -16,37 +15,39 @@ const AboutPage: React.FC = () => {
       <GlassCard className="p-8">
         <h2 className="text-3xl font-bold text-white mb-4">Misión</h2>
         <p className="text-white/80 leading-relaxed">
-          Facilitar el acceso a experiencias de viaje únicas y personalizadas que enriquezcan la vida de nuestros clientes, garantizando un servicio de alta calidad, seguridad y confianza en cada etapa del proceso. Nos comprometemos a superar las expectativas a través de una planificación detallada y una atención al cliente excepcional.
+          {ABOUT_US_CONTENT.mission}
         </p>
       </GlassCard>
 
       <GlassCard className="p-8">
         <h2 className="text-3xl font-bold text-white mb-4">Visión</h2>
         <p className="text-white/80 leading-relaxed">
-          Ser la agencia de viajes líder y de mayor confianza en Colombia, reconocida por nuestra innovación, nuestro compromiso con el turismo sostenible y nuestra capacidad para crear itinerarios que no solo muestren la belleza del mundo, sino que también fomenten la conexión humana y el respeto por las diversas culturas.
+         {ABOUT_US_CONTENT.vision}
         </p>
       </GlassCard>
 
       <GlassCard className="p-8">
-        <h2 className="text-3xl font-bold text-white mb-4">Nuestros Valores</h2>
-        <ul className="grid sm:grid-cols-2 gap-6 text-white/90">
-          <li className="flex items-start gap-3">
-            <span className="text-pink-300 mt-1">✔</span>
-            <div><strong>Pasión:</strong> Amamos lo que hacemos y transmitimos ese entusiasmo en cada viaje que planificamos.</div>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="text-pink-300 mt-1">✔</span>
-            <div><strong>Integridad:</strong> Actuamos con honestidad y transparencia en todas nuestras interacciones.</div>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="text-pink-300 mt-1">✔</span>
-             <div><strong>Excelencia:</strong> Buscamos la perfección en cada detalle para ofrecer un servicio impecable.</div>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="text-pink-300 mt-1">✔</span>
-            <div><strong>Compromiso:</strong> La satisfacción de nuestros clientes es nuestra máxima prioridad.</div>
-          </li>
+        <h2 className="text-3xl font-bold text-white mb-4">Nuestros Fundamentos</h2>
+        <ul className="space-y-3 text-white/90">
+            {ABOUT_US_CONTENT.foundations.map((item, index) => (
+                 <li key={index} className="flex items-start gap-3">
+                    <span className="text-pink-300 mt-1">✦</span>
+                    <div>{item}</div>
+                </li>
+            ))}
         </ul>
+      </GlassCard>
+
+      <GlassCard className="p-8">
+        <h2 className="text-3xl font-bold text-white mb-4">Nuestros Valores</h2>
+        <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-6 text-white/90">
+          {ABOUT_US_CONTENT.values.map(value => (
+            <div key={value.title}>
+              <dt className="font-bold text-pink-200">{value.title}</dt>
+              <dd className="text-sm">{value.text}</dd>
+            </div>
+          ))}
+        </dl>
       </GlassCard>
 
        <GlassCard className="p-6 text-center">

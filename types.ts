@@ -1,11 +1,11 @@
-
 export enum Section {
   Inicio,
   Planes,
   Destinos,
   Acerca,
   Contacto,
-  Legal
+  Legal,
+  FAQ,
 }
 
 export interface Plan {
@@ -34,4 +34,24 @@ export interface Testimonial {
 export interface ChatMessage {
     role: 'user' | 'model';
     text: string;
+}
+
+export interface AboutUsContent {
+  mission: string;
+  vision: string;
+  foundations: string[];
+  principles: { title: string; text: string }[];
+  values: { title: string; text: string }[];
+}
+
+export interface LegalContent {
+    generalPolicy: string;
+    privacyPolicy: string;
+}
+
+export interface FAQItem {
+  id: number;
+  question: string;
+  answer: string;
+  category: string;
 }

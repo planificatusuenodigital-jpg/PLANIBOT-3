@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Section, Plan, Testimonial } from '../types';
 import { TRAVEL_PLANS, TESTIMONIALS } from '../constants';
 import GlassCard from './GlassCard';
+import WatermarkedImage from './WatermarkedImage';
 
 const HomePage: React.FC<{ setActiveSection: (section: Section) => void }> = ({ setActiveSection }) => {
     
@@ -32,7 +32,11 @@ const HomePage: React.FC<{ setActiveSection: (section: Section) => void }> = ({ 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featuredPlans.map((plan: Plan) => (
             <GlassCard key={plan.id} className="flex flex-col">
-              <img src={plan.image} alt={plan.title} className="w-full h-48 object-cover rounded-t-xl" />
+              <WatermarkedImage 
+                src={plan.image} 
+                alt={plan.title}
+                containerClassName="h-48 rounded-t-xl"
+              />
               <div className="p-6 flex flex-col flex-grow">
                 <h3 className="text-2xl font-bold text-white">{plan.title}</h3>
                 <p className="text-pink-300 font-semibold">{plan.price}</p>
@@ -52,19 +56,21 @@ const HomePage: React.FC<{ setActiveSection: (section: Section) => void }> = ({ 
       {/* Testimonials Section */}
       <section>
         <h2 className="text-4xl font-bold text-center text-white mb-8 drop-shadow-md">Lo que dicen nuestros viajeros</h2>
-        <div className="max-w-4xl mx-auto space-y-6">
-          <GlassCard className="flex items-center justify-center p-6 gap-4">
-              <span className="text-5xl font-bold text-yellow-400">4.9</span>
-              <div className="flex flex-col">
-                  <div className="flex text-yellow-400">
-                    {'★★★★★'.split('').map((star, i) => <span key={i} className={i < 4 ? 'text-yellow-400' : 'text-yellow-400/50'}>★</span>)}
-                  </div>
-                  <p className="text-white/80">Calificación en Google</p>
-              </div>
-          </GlassCard>
+        
+        <GlassCard className="max-w-md mx-auto mb-8 flex items-center justify-center p-6 gap-4">
+            <span className="text-5xl font-bold text-yellow-400">4.9</span>
+            <div className="flex flex-col">
+                <div className="flex text-yellow-400">
+                  {'★★★★★'.split('').map((star, i) => <span key={i} className={i < 4 ? 'text-yellow-400' : 'text-yellow-400/50'}>★</span>)}
+                </div>
+                <p className="text-white/80">Calificación en Google</p>
+            </div>
+        </GlassCard>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {TESTIMONIALS.map((testimonial: Testimonial) => (
-            <GlassCard key={testimonial.id} className="p-6">
-              <p className="text-white/80 italic">"{testimonial.text}"</p>
+            <GlassCard key={testimonial.id} className="p-6 flex flex-col h-full">
+              <p className="text-white/80 italic flex-grow">"{testimonial.text}"</p>
               <p className="mt-4 text-right font-bold text-pink-200">- {testimonial.author}</p>
             </GlassCard>
           ))}

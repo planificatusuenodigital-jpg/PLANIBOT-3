@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Section } from './types';
 import { CONTACT_INFO } from './constants';
@@ -10,11 +9,19 @@ import DestinationsPage from './components/DestinationsPage';
 import AboutPage from './components/AboutPage';
 import ContactPage from './components/ContactPage';
 import LegalPage from './components/LegalPage';
+import FAQPage from './components/FAQPage';
 import PlaniBot from './components/PlaniBot';
-import WhatsAppButton from './components/WhatsAppButton';
+import WelcomeSplash from './components/WelcomeSplash';
+import SocialProof from './components/SocialProof';
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<Section>(Section.Inicio);
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const renderSection = () => {
     switch (activeSection) {
@@ -30,10 +37,16 @@ const App: React.FC = () => {
         return <ContactPage />;
       case Section.Legal:
         return <LegalPage />;
+      case Section.FAQ:
+        return <FAQPage />;
       default:
         return <HomePage setActiveSection={setActiveSection} />;
     }
   };
+
+  if (showSplash) {
+    return <WelcomeSplash />;
+  }
 
   return (
     <div className="min-h-screen bg-[#e0e0e0] text-gray-800 selection:bg-pink-500/30">
@@ -55,7 +68,7 @@ const App: React.FC = () => {
         <Footer setActiveSection={setActiveSection} />
       </div>
       
-      <WhatsAppButton phone={CONTACT_INFO.whatsappLink} />
+      <SocialProof />
       <PlaniBot />
     </div>
   );
