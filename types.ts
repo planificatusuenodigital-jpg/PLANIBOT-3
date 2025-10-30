@@ -13,9 +13,14 @@ export interface Plan {
   title: string;
   category: string;
   price: string;
+  priceValue: number;
+  durationDays: number;
   description: string;
-  image: string;
+  images: string[];
   includes: string[];
+  isVisible: boolean;
+  departureDate: string; // e.g., "2024-10-15"
+  returnDate: string; // e.g., "2024-10-20"
 }
 
 export interface Destination {

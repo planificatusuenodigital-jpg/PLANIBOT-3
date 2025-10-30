@@ -1,9 +1,16 @@
+
 import React from 'react';
-import { DESTINATIONS } from '../constants';
 import GlassCard from './GlassCard';
 import WatermarkedImage from './WatermarkedImage';
+import { Destination } from '../types';
 
-const DestinationsPage: React.FC = () => {
+// FIX: Added props to receive dynamic destination data and logo URL.
+interface DestinationsPageProps {
+  destinations: Destination[];
+  logoUrl: string;
+}
+
+const DestinationsPage: React.FC<DestinationsPageProps> = ({ destinations, logoUrl }) => {
   return (
     <div className="max-w-5xl mx-auto animate-fade-in">
       <h1 className="text-5xl font-black text-center text-white mb-4 drop-shadow-lg">Destinos que Inspiran</h1>
@@ -12,7 +19,7 @@ const DestinationsPage: React.FC = () => {
       </p>
 
       <div className="space-y-12">
-        {DESTINATIONS.map((destination, index) => (
+        {destinations.map((destination, index) => (
           <GlassCard key={destination.id} className="overflow-hidden md:flex items-center gap-8 group">
              <div className={`md:w-1/2 overflow-hidden ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
                 <WatermarkedImage
@@ -20,6 +27,7 @@ const DestinationsPage: React.FC = () => {
                     alt={destination.name} 
                     containerClassName="h-64 md:h-full"
                     imageClassName="group-hover:scale-110 transition-transform duration-500"
+                    logoUrl={logoUrl}
                 />
             </div>
             <div className={`p-8 md:w-1/2 ${index % 2 === 0 ? 'md:order-2' : 'md:order-1'}`}>

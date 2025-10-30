@@ -1,9 +1,11 @@
 import { Plan, Destination, Testimonial, AboutUsContent, LegalContent, FAQItem } from './types';
 
-export const LOGO_URL = 'https://lh3.googleusercontent.com/pw/AP1GczMVaa2t54xizfCT4x_LuthxbgVvbVait9QQs24AIFmmP11LvYGDQCc64rLNBOLySyjTMcywDRVWC5dm5Qlh5NNm9pOTJYkVQXX9XOHUlLIpOHbE4-5gZOdIICB1sueb_fejAJa5mRmHv-1PNAbqA-U=w991-h991-s-no-gm?authuser=0';
-export const PLANIBOT_AVATAR_URL = 'https://lh3.googleusercontent.com/pw/AP1GczN-20Rl_25uHFSXkszlbrLCBXowweXMKM6gxTaAT5SxEiJzHe6w1RzNl3uS9CDqypFK2VJwzZ0FJTKL2B9BsZwJg4yYjms8Xs6DGU6GvzMZ842bWpb6K9sot2XwqJdManGzs9soffeOFZjMlRm6COE=w991-h991-s-no-gm?authuser=0';
+export const DEFAULT_LOGO_URL = 'https://lh3.googleusercontent.com/pw/AP1GczMVaa2t54xizfCT4x_LuthxbgVvbVait9QQs24AIFmmP11LvYGDQCc64rLNBOLySyjTMcywDRVWC5dm5Qlh5NNm9pOTJYkVQXX9XOHUlLIpOHbE4-5gZOdIICB1sueb_fejAJa5mRmHv-1PNAbqA-U=w991-h991-s-no-gm?authuser=0';
+export const DEFAULT_PLANIBOT_AVATAR_URL = 'https://lh3.googleusercontent.com/pw/AP1GczN-20Rl_25uHFSXkszlbrLCBXowweXMKM6gxTaAT5SxEiJzHe6w1RzNl3uS9CDqypFK2VJwzZ0FJTKL2B9BsZwJg4yYjms8Xs6DGU6GvzMZ842bWpb6K9sot2XwqJdManGzs9soffeOFZjMlRm6COE=w991-h991-s-no-gm?authuser=0';
+export const DEFAULT_SEO_IMAGE_URL = 'https://lh3.googleusercontent.com/pw/AP1GczNUIa2Fy-Hhas1rZIB4R6Mj0mFRmPDohbP1jYOdZnKtBVNxvp55GGLoti6L45527kFqs5qmxVBLk19-42n2WG70HqrA97KhoOwO-WMxBKEfGXtvdjc5Qo4n9yno1pj5BwZAOb7ZkPpqc0hPRs3vEC0=w991-h991-s-no-gm?authuser=0';
 
-export const CONTACT_INFO = {
+
+export const DEFAULT_CONTACT_INFO = {
   phone: "+57 3113653379",
   whatsappLink: "https://wa.me/573113653379",
   email: "planificatusueno12@gmail.com",
@@ -12,52 +14,88 @@ export const CONTACT_INFO = {
   rnt: "181495",
 };
 
-export const SOCIAL_LINKS = {
+export const DEFAULT_SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/planifica.tusueno/",
   instagram: "https://www.instagram.com/planificatusueno/",
   tiktok: "https://www.tiktok.com/@planificatusueno",
 };
 
-export const TRAVEL_PLANS: Plan[] = [
+export const DEFAULT_TRAVEL_PLANS: Plan[] = [
   {
     id: 1,
     title: "San Andrés Mágico",
     category: "Caribeño",
     price: "$1,200,000 COP",
+    priceValue: 1200000,
+    durationDays: 5,
     description: "Disfruta del mar de los siete colores en la paradisíaca isla de San Andrés.",
-    image: "https://picsum.photos/seed/sanandres/400/300",
+    images: [
+      "https://picsum.photos/seed/sanandres1/800/600",
+      "https://picsum.photos/seed/sanandres2/800/600",
+      "https://picsum.photos/seed/sanandres3/800/600"
+    ],
     includes: ["Tiquetes aéreos", "Alojamiento 4 noches", "Alimentación completa", "Tour por la isla"],
+    isVisible: true,
+    departureDate: "2024-10-15",
+    returnDate: "2024-10-20",
   },
   {
     id: 2,
     title: "Aventura en la Costa Caribeña",
     category: "Sol y Playa",
     price: "$950,000 COP",
+    priceValue: 950000,
+    durationDays: 6,
     description: "Explora las playas de Santa Marta, Cartagena y Barranquilla en un solo viaje.",
-    image: "https://picsum.photos/seed/caribe/400/300",
+    images: [
+      "https://picsum.photos/seed/caribe1/800/600",
+      "https://picsum.photos/seed/caribe2/800/600",
+      "https://picsum.photos/seed/caribe3/800/600"
+    ],
     includes: ["Transporte terrestre", "Alojamiento 5 noches", "Desayunos", "Visita al Parque Tayrona"],
+    isVisible: true,
+    departureDate: "2024-11-05",
+    returnDate: "2024-11-11",
   },
   {
     id: 3,
     title: "Eje Cafetero Encantador",
     category: "Cultural",
     price: "$800,000 COP",
+    priceValue: 800000,
+    durationDays: 4,
     description: "Sumérgete en la cultura del café, visitando fincas y pueblos pintorescos.",
-    image: "https://picsum.photos/seed/eje/400/300",
+    images: [
+      "https://picsum.photos/seed/eje1/800/600",
+      "https://picsum.photos/seed/eje2/800/600",
+      "https://picsum.photos/seed/eje3/800/600"
+    ],
     includes: ["Transporte", "Alojamiento 3 noches", "Tour del café", "Entrada a parques temáticos"],
+    isVisible: true,
+    departureDate: "2024-09-20",
+    returnDate: "2024-09-24",
   },
   {
     id: 4,
     title: "Escapada a Cancún",
     category: "Internacional",
     price: "$2,500,000 COP",
+    priceValue: 2500000,
+    durationDays: 7,
     description: "Vive la experiencia del Caribe Mexicano con sus playas de arena blanca y aguas turquesas.",
-    image: "https://picsum.photos/seed/cancun/400/300",
+    images: [
+      "https://picsum.photos/seed/cancun1/800/600",
+      "https://picsum.photos/seed/cancun2/800/600",
+      "https://picsum.photos/seed/cancun3/800/600"
+    ],
     includes: ["Tiquetes aéreos", "Hotel todo incluido", "Tours a Chichén Itzá", "Vida nocturna"],
+    isVisible: true,
+    departureDate: "2024-12-01",
+    returnDate: "2024-12-08",
   },
 ];
 
-export const DESTINATIONS: Destination[] = [
+export const DEFAULT_DESTINATIONS: Destination[] = [
   {
     id: 1,
     name: "San Andrés Isla",
@@ -78,13 +116,13 @@ export const DESTINATIONS: Destination[] = [
   },
 ];
 
-export const TESTIMONIALS: Testimonial[] = [
+export const DEFAULT_TESTIMONIALS: Testimonial[] = [
     { id: 1, author: "Ana Pérez", text: "¡El viaje a San Andrés fue increíble! Todo estuvo perfectamente organizado. Gracias a Planifica Tu Sueño por hacer nuestras vacaciones inolvidables." },
     { id: 2, author: "Carlos Gómez", text: "Excelente servicio y atención al detalle. Nos ayudaron a personalizar nuestro tour por el Eje Cafetero y superó todas nuestras expectativas." },
     { id: 3, author: "Lucía Fernández", text: "La mejor agencia de viajes. Son profesionales, amables y siempre están dispuestos a ayudar. ¡Recomendadísimos!" },
 ];
 
-export const ABOUT_US_CONTENT: AboutUsContent = {
+export const DEFAULT_ABOUT_US_CONTENT: AboutUsContent = {
     mission: "Ser el portal profesional de salida (gateway) que facilita la materialización de los sueños de escape vacacional y ocio de la población en el Occidente de Caldas, ofreciendo una gestión de viajes organizada, vibrante y confiable.",
     vision: "Consolidar el liderazgo de reputación en nuestro mercado regional, manteniendo el alto nivel de satisfacción del cliente demostrado por nuestra calificación promedio de 4.9 estrellas sobre 5.0, y proyectar una imagen de marca dinámica, accesible y profesional.",
     foundations: [
@@ -112,12 +150,12 @@ export const ABOUT_US_CONTENT: AboutUsContent = {
     ]
 };
 
-export const LEGAL_CONTENT: LegalContent = {
+export const DEFAULT_LEGAL_CONTENT: LegalContent = {
     generalPolicy: `Planifica tu sueño está sujeta al régimen de responsabilidad que establece la ley 300/96, D.R. 1075/97, Decreto 2438 de 2010 y las normas que los modifiquen, adicionen o reformen. La responsabilidad del organizador del plan o paquete turístico se limita a los términos y condiciones del programa en relación con la prestación y calidad de los servicios. La agencia no asume ninguna responsabilidad frente al usuario por el servicio de transporte aéreo, salvo que se trate de vuelo fletado y de acuerdo con las condiciones del contrato de transporte. Las políticas de reembolso de los servicios no prestados en razón a situaciones de fuerza mayor o caso fortuito, acción u omisión de terceros o del pasajero, no atribuibles a la agencia de viajes, antes o durante el viaje, que puedan ser objeto de devolución, serán definidas por cada operador y las mismas serán confirmadas al usuario una vez se reserven y expidan los documentos de viaje, así como los porcentajes de penalidades o deducciones a que hubiere lugar. En caso de fuerza mayor o caso fortuito antes o durante el viaje (accidentes, huelgas, asonadas, terremotos, factores climáticos, condiciones de seguridad, etc.), o para garantizar el éxito del plan, el operador y/o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos, hoteles, servicios opcionales, lo cual es desde ahora aceptado por el pasajero al momento de adquirir los servicios. El pasajero será el exclusivo responsable de la custodia de su equipaje y documentos de viaje.`,
     privacyPolicy: `Conscientes de la importancia que tiene la protección y el buen manejo de la información personal suministrada, LA AGENCIA DE VIAJES PLANIFICA TU SUEÑO ha diseñado la presente política para hacer un uso adecuado de sus datos personales, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013. Su objetivo es garantizar la reserva de la información y la seguridad sobre el tratamiento que se le dará a la misma a todos los clientes, proveedores, empleados y terceros. El tratamiento de datos personales debe realizarse respetando las normas generales y especiales sobre la materia. Usted tiene derecho a conocer, actualizar, rectificar, consultar sus datos personales, solicitar prueba de la autorización otorgada, ser informado sobre el uso de sus datos, presentar quejas ante la Superintendencia de Industria y Comercio, revocar la autorización y/o solicitar la supresión de algún dato, y acceder en forma gratuita a sus datos personales.`
 };
 
-export const FAQS: FAQItem[] = [
+export const DEFAULT_FAQS: FAQItem[] = [
     { id: 1, category: "Legal y Operacional", question: "¿Cuál es la ubicación física y el teléfono de contacto?", answer: "Nuestra oficina está en el Centro Comercial La Colmena, Carrera 4 #13-32, Anserma, Caldas. Nuestro teléfono es 311 3653379." },
     { id: 2, category: "Legal y Operacional", question: "¿Cuál es el número del Registro Nacional de Turismo (RNT)?", answer: "Nuestro RNT es el 181495. Estamos clasificados como una Agencia de Viajes y Turismo (PST)." },
     { id: 3, category: "Políticas de Viaje", question: "¿Qué sucede si mi viaje se cancela por fuerza mayor?", answer: "En casos de fuerza mayor (clima, huelgas, etc.), para garantizar el éxito del plan, el operador o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos y hoteles. Estas condiciones son aceptadas al adquirir los servicios." },

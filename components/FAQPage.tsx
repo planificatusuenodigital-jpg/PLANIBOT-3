@@ -1,6 +1,6 @@
+
 import React, { useState, useMemo } from 'react';
 import GlassCard from './GlassCard';
-import { FAQS } from '../constants';
 import { FAQItem } from '../types';
 
 
@@ -25,15 +25,19 @@ const FAQAccordionItem: React.FC<{ item: FAQItem }> = ({ item }) => {
     );
 };
 
+// FIX: Added props to display dynamic FAQ data.
+interface FAQPageProps {
+  faqs: FAQItem[];
+}
 
-const FAQPage: React.FC = () => {
+const FAQPage: React.FC<FAQPageProps> = ({ faqs }) => {
     const categories = useMemo(() => {
-        const cats = FAQS.reduce((acc, item) => {
+        const cats = faqs.reduce((acc, item) => {
             (acc[item.category] = acc[item.category] || []).push(item);
             return acc;
         }, {} as Record<string, FAQItem[]>);
         return Object.entries(cats);
-    }, []);
+    }, [faqs]);
 
     return (
         <div className="max-w-4xl mx-auto animate-fade-in space-y-12">

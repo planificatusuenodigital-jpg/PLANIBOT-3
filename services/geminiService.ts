@@ -1,5 +1,7 @@
+
 import { GoogleGenAI, Chat, FunctionDeclaration, Type, GenerateContentResponse } from "@google/genai";
-import { CONTACT_INFO, SOCIAL_LINKS, TRAVEL_PLANS, FAQS } from "../constants";
+// FIX: Corrected import names to match the exported constants.
+import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, DEFAULT_TRAVEL_PLANS, DEFAULT_FAQS } from "../constants";
 
 let ai: GoogleGenAI | null = null;
 let chat: Chat | null = null;
@@ -14,7 +16,7 @@ const getAi = () => {
     return ai;
 };
 
-const faqFormatted = FAQS.map(faq => `P: ${faq.question}\nR: ${faq.answer}`).join('\n\n');
+const faqFormatted = DEFAULT_FAQS.map(faq => `P: ${faq.question}\nR: ${faq.answer}`).join('\n\n');
 
 const displayContactFormFunctionDeclaration: FunctionDeclaration = {
     name: 'displayContactForm',
@@ -34,15 +36,15 @@ Tu misión es ayudar a los usuarios con sus consultas de viaje, proporcionar inf
 **Información Clave de la Agencia:**
 - **Nombre:** Planifica Tu Sueño
 - **Descripción:** No somos solo una agencia; somos el vehículo para cumplir tu sueño de viajar. Nos dedicamos a crear experiencias únicas y personalizadas.
-- **Teléfono y WhatsApp:** ${CONTACT_INFO.phone} (Link directo: ${CONTACT_INFO.whatsappLink})
-- **Correo Electrónico:** ${CONTACT_INFO.email}
-- **Dirección Física:** ${CONTACT_INFO.address}
-- **Horario de Atención:** ${CONTACT_INFO.schedule}
-- **RNT (Registro Nacional de Turismo):** ${CONTACT_INFO.rnt}
-- **Redes Sociales:** Facebook (${SOCIAL_LINKS.facebook}), Instagram (${SOCIAL_LINKS.instagram}), TikTok (${SOCIAL_LINKS.tiktok}).
+- **Teléfono y WhatsApp:** ${DEFAULT_CONTACT_INFO.phone} (Link directo: ${DEFAULT_CONTACT_INFO.whatsappLink})
+- **Correo Electrónico:** ${DEFAULT_CONTACT_INFO.email}
+- **Dirección Física:** ${DEFAULT_CONTACT_INFO.address}
+- **Horario de Atención:** ${DEFAULT_CONTACT_INFO.schedule}
+- **RNT (Registro Nacional de Turismo):** ${DEFAULT_CONTACT_INFO.rnt}
+- **Redes Sociales:** Facebook (${DEFAULT_SOCIAL_LINKS.facebook}), Instagram (${DEFAULT_SOCIAL_LINKS.instagram}), TikTok (${DEFAULT_SOCIAL_LINKS.tiktok}).
 
 **Planes de Viaje Disponibles (Ejemplos):**
-${TRAVEL_PLANS.map(p => `- **${p.title}**: ${p.description} desde ${p.price}. Incluye: ${p.includes.join(', ')}.`).join('\n')}
+${DEFAULT_TRAVEL_PLANS.map(p => `- **${p.title}**: ${p.description} desde ${p.price}. Incluye: ${p.includes.join(', ')}.`).join('\n')}
 *Nota: Estos son ejemplos, siempre puedes preguntar al usuario sobre su destino soñado, fechas y presupuesto para dar una recomendación más personalizada y sugerir que pida una cotización formal.*
 
 **Capacidades Especiales:**

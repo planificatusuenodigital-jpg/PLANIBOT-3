@@ -1,8 +1,14 @@
+
 import React from 'react';
 import GlassCard from './GlassCard';
-import { LEGAL_CONTENT } from '../constants';
+import { LegalContent } from '../types';
 
-const LegalPage: React.FC = () => {
+// FIX: Added props to display dynamic legal content.
+interface LegalPageProps {
+  legalContent: LegalContent;
+}
+
+const LegalPage: React.FC<LegalPageProps> = ({ legalContent }) => {
   return (
     <div className="max-w-4xl mx-auto animate-fade-in space-y-8 text-white/90">
         <div className="text-center">
@@ -15,14 +21,14 @@ const LegalPage: React.FC = () => {
       <GlassCard className="p-8 space-y-4">
         <h2 className="text-2xl font-bold text-white">Política General</h2>
         <p className="text-sm leading-relaxed whitespace-pre-line">
-            {LEGAL_CONTENT.generalPolicy}
+            {legalContent.generalPolicy}
         </p>
       </GlassCard>
 
       <GlassCard className="p-8 space-y-4">
         <h2 className="text-2xl font-bold text-white">Política de Privacidad y Tratamiento de Datos Personales</h2>
         <p className="text-sm leading-relaxed whitespace-pre-line">
-            {LEGAL_CONTENT.privacyPolicy}
+            {legalContent.privacyPolicy}
         </p>
       </GlassCard>
     </div>

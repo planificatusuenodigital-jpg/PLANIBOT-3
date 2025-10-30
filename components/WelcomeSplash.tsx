@@ -1,7 +1,12 @@
-import React from 'react';
-import { LOGO_URL } from '../constants';
 
-const WelcomeSplash: React.FC = () => {
+import React from 'react';
+
+// FIX: Added logoUrl prop for dynamic logo display.
+interface WelcomeSplashProps {
+  logoUrl: string;
+}
+
+const WelcomeSplash: React.FC<WelcomeSplashProps> = ({ logoUrl }) => {
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 animate-fade-out">
         <style>{`
@@ -29,7 +34,7 @@ const WelcomeSplash: React.FC = () => {
         `}</style>
         <div className="text-white text-center">
             <img 
-                src={LOGO_URL} 
+                src={logoUrl} 
                 alt="Planifica Tu Sueño Logo"
                 className="w-64 h-auto animate-logo-fade-in"
             />
