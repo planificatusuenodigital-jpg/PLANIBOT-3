@@ -14,7 +14,7 @@ interface PlansPageProps {
 }
 
 const ALL_AMENITIES = {
-    'Comodidades Principales': ['Piscina', 'Acceso a la Playa', 'Cerca de la Playa', 'Wifi Gratis', 'Aire Acondicionado', 'Estacionamiento', 'Restaurante', 'Bar / Lounge'],
+    'Comodidades Principales': ['Piscina', 'Acceso a la Playa', 'A pocos metros de la playa', 'Ubicación privilegiada en Bocagrande', 'Wifi Gratis', 'Aire Acondicionado', 'Estacionamiento', 'Restaurante', 'Bar / Lounge'],
     'Bienestar y Relax': ['Jacuzzi', 'Spa', 'Sauna', 'Turco / Baño de vapor', 'Gimnasio'],
     'Para Familias': ['Piscina para niños', 'Club de niños', 'Toboganes / Parque Acuático'],
     'Actividades': ['Shows Nocturnos / Animación', 'Discoteca / Club Nocturno', 'Casino', 'Campo de Golf'],

@@ -114,7 +114,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Con Desayuno Incluido",
     travelerTypes: ["Parejas", "Negocios"],
-    amenities: ["Cerca de la Playa", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Centro de Negocios", "Mesa de Tours"],
+    amenities: ["Ubicación privilegiada en Bocagrande", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Centro de Negocios", "Mesa de Tours"],
   },
   {
     id: 6,
@@ -171,7 +171,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Negocios"],
-    amenities: ["Cerca de la Playa", "Wifi Gratis", "Aire Acondicionado"],
+    amenities: ["Ubicación privilegiada en Bocagrande", "Wifi Gratis", "Aire Acondicionado"],
   },
   {
     id: 9,
@@ -209,7 +209,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Grupos", "Familias"],
-    amenities: ["Cerca de la Playa", "Aire Acondicionado", "Wifi Gratis", "Restaurante"],
+    amenities: ["A pocos metros de la playa", "Aire Acondicionado", "Wifi Gratis", "Restaurante"],
   },
   {
     id: 11,
@@ -266,7 +266,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Punta Cana",
     regime: "Todo Incluido",
     travelerTypes: ["Familias", "Parejas"],
-    amenities: ["Piscina", "Cerca de la Playa", "Gimnasio", "Club de niños", "Shows Nocturnos / Animación", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza", "Minibar / Refrigerador"],
+    amenities: ["Piscina", "A pocos metros de la playa", "Gimnasio", "Club de niños", "Shows Nocturnos / Animación", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza", "Minibar / Refrigerador"],
   },
   {
     id: 14,
@@ -323,7 +323,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Familias", "Negocios"],
-    amenities: ["Piscina", "Cerca de la Playa", "Wifi Gratis", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Se admiten mascotas", "Vista al Mar", "Minibar / Refrigerador"],
+    amenities: ["Piscina", "A pocos metros de la playa", "Wifi Gratis", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Se admiten mascotas", "Vista al Mar", "Minibar / Refrigerador"],
   },
   {
     id: 17,
@@ -342,7 +342,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Descanso / Relax"],
-    amenities: ["Piscina", "Cerca de la Playa", "Restaurante", "Vista al Mar", "Aire Acondicionado", "Minibar / Refrigerador"],
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Vista al Mar", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 18,
@@ -361,7 +361,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Cultural"],
-    amenities: ["Cerca de la Playa", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Balcón / Terraza", "Minibar / Refrigerador"],
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Balcón / Terraza", "Minibar / Refrigerador"],
   },
   {
     id: 19,
@@ -399,7 +399,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Familias"],
-    amenities: ["Piscina", "Cerca de la Playa", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza"],
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza"],
   },
   {
     id: 21,
@@ -418,7 +418,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Todo Incluido",
     travelerTypes: ["Grupos", "Familias", "Parejas"],
-    amenities: ["Piscina", "Cerca de la Playa", "Shows Nocturnos / Animación", "Deportes Acuáticos", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Hotel accesible"],
+    amenities: ["Piscina", "Ubicación privilegiada en Bocagrande", "Shows Nocturnos / Animación", "Deportes Acuáticos", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Hotel accesible"],
   },
   {
     id: 22,
@@ -456,7 +456,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "Piscina para niños", "Cerca de la Playa", "Estacionamiento", "Restaurante", "Aire Acondicionado", "Minibar / Refrigerador", "Agua Caliente", "Salón de Eventos / Conferencias"],
+    amenities: ["Piscina", "Piscina para niños", "A pocos metros de la playa", "Estacionamiento", "Restaurante", "Aire Acondicionado", "Minibar / Refrigerador", "Agua Caliente", "Salón de Eventos / Conferencias"],
   },
   {
     id: 24,
@@ -475,7 +475,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Con Desayuno Incluido",
     travelerTypes: ["Familias", "Parejas"],
-    amenities: ["Cerca de la Playa", "Wifi Gratis", "Mesa de Tours"],
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Mesa de Tours"],
   },
   {
     id: 25,
@@ -513,7 +513,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Negocios", "Descanso / Relax"],
-    amenities: ["Piscina", "Cerca de la Playa", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Minibar / Refrigerador"],
+    amenities: ["Piscina", "Ubicación privilegiada en Bocagrande", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Minibar / Refrigerador"],
   },
   {
     id: 27,
@@ -532,7 +532,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Negocios", "Grupos"],
-    amenities: ["Cerca de la Playa", "Centro de Negocios", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Minibar / Refrigerador", "Agua Caliente", "Mesa de Tours"],
+    amenities: ["A pocos metros de la playa", "Centro de Negocios", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Minibar / Refrigerador", "Agua Caliente", "Mesa de Tours"],
   },
   {
     id: 28,
@@ -570,7 +570,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Grupos", "Negocios"],
-    amenities: ["Cerca de la Playa", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador", "Centro de Negocios"],
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador", "Centro de Negocios"],
   },
   {
     id: 30,
@@ -589,7 +589,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "Cerca de la Playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Minibar / Refrigerador", "Mesa de Tours"],
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Minibar / Refrigerador", "Mesa de Tours"],
   },
   {
     id: 31,
@@ -627,7 +627,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "Cerca de la Playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Minibar / Refrigerador"],
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 33,
@@ -646,7 +646,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Descanso / Relax"],
-    amenities: ["Piscina", "Jacuzzi", "Cerca de la Playa", "Vista al Mar", "Bar / Lounge", "Restaurante", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador"],
+    amenities: ["Piscina", "Jacuzzi", "Ubicación privilegiada en Bocagrande", "Vista al Mar", "Bar / Lounge", "Restaurante", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 34,
@@ -684,7 +684,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Grupos"],
-    amenities: ["Cerca de la Playa", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza"],
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza"],
   },
   {
     id: 36,
@@ -722,7 +722,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Grupos"],
-    amenities: ["Cerca de la Playa", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador"],
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 38,
@@ -760,7 +760,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Paquete Promocional",
     travelerTypes: ["Familias", "Cultural", "Parejas"],
-    amenities: ["Cerca de la Playa", "Cultural"],
+    amenities: ["A pocos metros de la playa", "Cultural"],
   },
   {
     id: 40,
@@ -779,7 +779,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Paquete Promocional",
     travelerTypes: ["Familias", "Descanso / Relax"],
-    amenities: ["Cerca de la Playa", "Montaña"],
+    amenities: ["A pocos metros de la playa", "Montaña"],
   },
 ];
 
