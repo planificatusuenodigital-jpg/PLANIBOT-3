@@ -1,9 +1,9 @@
+
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient, Session } from '@supabase/supabase-js';
-import { Section, Plan, Destination, Testimonial, AboutUsContent, LegalContent, FAQItem } from './types';
+import { Section, Plan, Destination, Testimonial, AboutUsContent, LegalContent, FAQItem, Tag } from './types';
 import { 
-    DEFAULT_TRAVEL_PLANS, 
-    DEFAULT_DESTINATIONS, 
     DEFAULT_TESTIMONIALS, 
     DEFAULT_ABOUT_US_CONTENT, 
     DEFAULT_LEGAL_CONTENT, 
@@ -33,12 +33,13 @@ import AdminPanel from './components/AdminPanel';
 // Supabase client initialization
 const supabaseUrl = 'https://vwckkdlyxsrohqnlsevg.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Y2trZGx5eHNyb2hxbmxzZXZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDM0MTksImV4cCI6MjA3NzQ3OTQxOX0.mv_WdRDJyjoO2p0fPRAGZ4Q-dG78whJ7kGDZRQuVOn8';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Define the shape of our entire app's data
 interface AppData {
   plans: Plan[];
   destinations: Destination[];
+  tags: Tag[];
   testimonials: Testimonial[];
   aboutUs: AboutUsContent;
   legal: LegalContent;
@@ -137,9 +138,9 @@ const PlanDetailModal: React.FC<{ plan: Plan; onClose: () => void; logoUrl: stri
                     )}
                 </div>
                 <div className="p-6 flex-grow overflow-y-auto text-white">
-                    <span className="text-sm font-semibold text-pink-300">{plan.category}</span>
+                    <span className="text-sm font-semibold text-pink-300">{plan.destination.name}, {plan.destination.country}</span>
                     <h2 className="text-3xl font-bold text-white mt-1">{plan.title}</h2>
-                    <p className="text-pink-200 font-semibold text-xl mt-1">{plan.price}</p>
+                    <p className="text-pink-200 font-semibold text-xl mt-1">{plan.price_text}</p>
                     <p className="mt-4 text-white/80 text-base">{plan.description}</p>
                     <div className="mt-4 border-t border-white/20 pt-4">
                         <h4 className="font-semibold text-white text-lg">Incluye:</h4>
@@ -239,6 +240,7 @@ const SupabaseAdminLogin: React.FC = () => {
         if (error) {
             setError('Credenciales inválidas. Por favor, intente de nuevo.');
         }
+        // On success, the onAuthStateChange listener in App.tsx will handle the navigation.
         setLoading(false);
     };
 
@@ -290,21 +292,57 @@ const App: React.FC = () => {
   const [detailModalPlan, setDetailModalPlan] = useState<Plan | null>(null);
   const [quoteRequestPlan, setQuoteRequestPlan] = useState<Plan | null>(null);
   const [appData, setAppData] = useState<AppData | null>(null);
+  const [loadingAppData, setLoadingAppData] = useState(true);
 
   const [session, setSession] = useState<Session | null>(null);
-  const [isAdminRoute, setIsAdminRoute] = useState(false);
   const [loadingSession, setLoadingSession] = useState(true);
   
-  // Data persistence logic
-  useEffect(() => {
+  const fetchAppData = useCallback(async () => {
+    setLoadingAppData(true);
     try {
-      const storedData = localStorage.getItem('appData');
-      if (storedData) {
-        setAppData(JSON.parse(storedData));
-      } else {
-        const defaultData: AppData = {
-          plans: DEFAULT_TRAVEL_PLANS,
-          destinations: DEFAULT_DESTINATIONS,
+        const { data: plansData, error: plansError } = await supabase.from('plans').select('*');
+        const { data: destinationsData, error: destinationsError } = await supabase.from('destinations').select('*');
+        const { data: tagsData, error: tagsError } = await supabase.from('tags').select('*');
+        const { data: planTagsData, error: planTagsError } = await supabase.from('plan_tags').select('*');
+
+        if (plansError || destinationsError || tagsError || planTagsError) {
+            throw new Error(plansError?.message || destinationsError?.message || tagsError?.message || planTagsError?.message);
+        }
+
+        const destinationsMap = new Map(destinationsData.map(d => [d.id, d]));
+        const tagsMap = new Map(tagsData.map(t => [t.id, t]));
+
+        const reconstructedPlans: Plan[] = plansData
+            .map(plan => {
+                const destination = destinationsMap.get(plan.destination_id);
+                // If a plan has no destination, or the destination is invalid, we can't display it.
+                if (!destination) {
+                    console.warn(`Plan with id ${plan.id} has an invalid destination_id. Skipping.`);
+                    return null;
+                }
+
+                const planTags = planTagsData
+                    .filter(pt => pt.plan_id === plan.id)
+                    .map(pt => tagsMap.get(pt.tag_id))
+                    .filter((t): t is Tag => t !== undefined);
+
+                return {
+                    ...plan,
+                    // Ensure arrays are not null to prevent crashes like plan.images[0]
+                    images: plan.images || [],
+                    includes: plan.includes || [],
+                    // We've already validated the destination exists
+                    destination: destination,
+                    tags: planTags,
+                };
+            })
+            // Filter out any null plans that had invalid destinations
+            .filter((p): p is Plan => p !== null);
+
+        const data: AppData = {
+          plans: reconstructedPlans,
+          destinations: destinationsData,
+          tags: tagsData,
           testimonials: DEFAULT_TESTIMONIALS,
           aboutUs: DEFAULT_ABOUT_US_CONTENT,
           legal: DEFAULT_LEGAL_CONTENT,
@@ -315,26 +353,22 @@ const App: React.FC = () => {
           planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
           seoImageUrl: DEFAULT_SEO_IMAGE_URL,
         };
-        setAppData(defaultData);
-        localStorage.setItem('appData', JSON.stringify(defaultData));
-      }
+        setAppData(data);
+
     } catch (error) {
-      console.error("Failed to load or parse app data from localStorage", error);
+      console.error("Failed to fetch app data from Supabase", error);
+    } finally {
+        setLoadingAppData(false);
     }
   }, []);
 
-  const handleSetAppData = useCallback((data: AppData) => {
-    setAppData(data);
-    localStorage.setItem('appData', JSON.stringify(data));
-  }, []);
+  // Initial Data Fetch
+  useEffect(() => {
+    fetchAppData();
+  }, [fetchAppData]);
   
   // Admin auth and routing logic
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === 'true') {
-        setIsAdminRoute(true);
-    }
-
     supabase.auth.getSession().then(({ data: { session } }) => {
         setSession(session);
         setLoadingSession(false);
@@ -374,8 +408,6 @@ const App: React.FC = () => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error('Error logging out:', error.message);
-    // The onAuthStateChange listener will handle setting session to null.
-    // Navigate home after logout.
     window.location.href = window.location.origin + window.location.pathname;
   };
 
@@ -384,13 +416,14 @@ const App: React.FC = () => {
   }
   
   if (showSplash) return <WelcomeSplash logoUrl={appData?.logoUrl || DEFAULT_LOGO_URL} />;
-  if (!appData) return <div className="fixed inset-0 flex items-center justify-center bg-gray-900 text-white"><p>Cargando datos de la aplicación...</p></div>;
+  if (loadingAppData || !appData) return <div className="fixed inset-0 flex items-center justify-center bg-gray-900 text-white"><p>Cargando datos de la aplicación...</p></div>;
 
   if (session) {
-    return <AdminPanel appData={appData} setAppData={handleSetAppData} onLogout={handleLogout} />;
+    return <AdminPanel appData={appData} onDataChange={fetchAppData} onLogout={handleLogout} />;
   }
   
-  if (isAdminRoute) {
+  const isAdminPage = new URLSearchParams(window.location.search).get('admin') === 'true';
+  if (isAdminPage) {
     return <SupabaseAdminLogin />;
   }
 
@@ -399,7 +432,7 @@ const App: React.FC = () => {
       case Section.Inicio:
         return <HomePage setActiveSection={setActiveSection} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} testimonials={appData.testimonials} logoUrl={appData.logoUrl} />;
       case Section.Planes:
-        return <PlansPage globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} logoUrl={appData.logoUrl} />;
+        return <PlansPage globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} destinations={appData.destinations} tags={appData.tags} logoUrl={appData.logoUrl} />;
       case Section.Destinos:
         return <DestinationsPage destinations={appData.destinations} logoUrl={appData.logoUrl}/>;
       case Section.Acerca:
@@ -471,6 +504,9 @@ const App: React.FC = () => {
       <PlaniBot 
         planibotAvatarUrl={appData.planibotAvatarUrl}
         contactInfo={appData.contact}
+        socialLinks={appData.social}
+        plans={appData.plans}
+        faqs={appData.faqs}
       />
 
       {qrModalPlan && <QRCodeModal plan={qrModalPlan} onClose={() => setQrModalPlan(null)} />}

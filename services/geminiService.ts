@@ -1,7 +1,10 @@
 
+
 import { GoogleGenAI, Chat, FunctionDeclaration, Type, GenerateContentResponse } from "@google/genai";
-// FIX: Corrected import names to match the exported constants.
-import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, DEFAULT_TRAVEL_PLANS, DEFAULT_FAQS } from "../constants";
+import { Plan, FAQItem } from "../types";
+import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from '../constants';
+import { supabase } from '../App';
+
 
 let ai: GoogleGenAI | null = null;
 let chat: Chat | null = null;
@@ -25,8 +28,6 @@ const getAi = (): GoogleGenAI | null => {
     return ai;
 };
 
-const faqFormatted = DEFAULT_FAQS.map(faq => `P: ${faq.question}\nR: ${faq.answer}`).join('\n\n');
-
 const displayContactFormFunctionDeclaration: FunctionDeclaration = {
     name: 'displayContactForm',
     description: 'Muestra un formulario para que el usuario ingrese su nombre, el plan o tema de interés y la hora preferida para ser contactado por un asesor.',
@@ -36,7 +37,20 @@ const displayContactFormFunctionDeclaration: FunctionDeclaration = {
     },
 };
 
-const systemInstruction = `
+// NEW: Define the structure of the data needed for the system prompt
+interface SystemPromptData {
+    contact: typeof DEFAULT_CONTACT_INFO;
+    social: typeof DEFAULT_SOCIAL_LINKS;
+    plans: Plan[];
+    faqs: FAQItem[];
+}
+
+// Function to build the system instruction dynamically
+const buildSystemInstruction = (data: SystemPromptData): string => {
+    const faqFormatted = data.faqs.map(faq => `P: ${faq.question}\nR: ${faq.answer}`).join('\n\n');
+    const plansFormatted = data.plans.map(p => `- **${p.title}**: ${p.description.substring(0, 100)}... desde ${p.price_text}. Incluye: ${p.includes.join(', ')}.`).join('\n');
+
+    return `
 Eres "PlaniBot" 🤖, el asistente virtual experto y amigable de la agencia de viajes "Planifica Tu Sueño".
 Tu misión es ayudar a los usuarios con sus consultas de viaje, proporcionar información precisa sobre la agencia y, lo más importante, facilitarles el contacto con un asesor.
 
@@ -45,15 +59,15 @@ Tu misión es ayudar a los usuarios con sus consultas de viaje, proporcionar inf
 **Información Clave de la Agencia:**
 - **Nombre:** Planifica Tu Sueño
 - **Descripción:** No somos solo una agencia; somos el vehículo para cumplir tu sueño de viajar. Nos dedicamos a crear experiencias únicas y personalizadas.
-- **Teléfono y WhatsApp:** ${DEFAULT_CONTACT_INFO.phone} (Link directo: ${DEFAULT_CONTACT_INFO.whatsappLink})
-- **Correo Electrónico:** ${DEFAULT_CONTACT_INFO.email}
-- **Dirección Física:** ${DEFAULT_CONTACT_INFO.address}
-- **Horario de Atención:** ${DEFAULT_CONTACT_INFO.schedule}
-- **RNT (Registro Nacional de Turismo):** ${DEFAULT_CONTACT_INFO.rnt}
-- **Redes Sociales:** Facebook (${DEFAULT_SOCIAL_LINKS.facebook}), Instagram (${DEFAULT_SOCIAL_LINKS.instagram}), TikTok (${DEFAULT_SOCIAL_LINKS.tiktok}).
+- **Teléfono y WhatsApp:** ${data.contact.phone} (Link directo: ${data.contact.whatsappLink})
+- **Correo Electrónico:** ${data.contact.email}
+- **Dirección Física:** ${data.contact.address}
+- **Horario de Atención:** ${data.contact.schedule}
+- **RNT (Registro Nacional de Turismo):** ${data.contact.rnt}
+- **Redes Sociales:** Facebook (${data.social.facebook}), Instagram (${data.social.instagram}), TikTok (${data.social.tiktok}).
 
-**Planes de Viaje Disponibles (Ejemplos):**
-${DEFAULT_TRAVEL_PLANS.map(p => `- **${p.title}**: ${p.description} desde ${p.price}. Incluye: ${p.includes.join(', ')}.`).join('\n')}
+**Planes de Viaje Disponibles:**
+${plansFormatted}
 *Nota: Estos son ejemplos, siempre puedes preguntar al usuario sobre su destino soñado, fechas y presupuesto para dar una recomendación más personalizada y sugerir que pida una cotización formal.*
 
 **Capacidades Especiales:**
@@ -61,7 +75,7 @@ ${DEFAULT_TRAVEL_PLANS.map(p => `- **${p.title}**: ${p.description} desde ${p.pr
 
 **Reglas de Interacción y Comportamiento:**
 1.  **Preséntate Siempre:** Comienza la conversación presentándote como "PlaniBot de Planifica Tu Sueño".
-2.  **Usa la Información Proporcionada:** Basa TODAS tus respuestas en la información de este prompt. Si te preguntan algo que no está aquí, debes decir "Esa es una excelente pregunta. Para darte la información más precisa, te recomiendo contactar a uno de nuestros asesores expertos." y luego ofrecer las opciones de contacto.
+2.  **Usa la Información Proporcionada:** Basa TODAS tus respuestas en la información de este prompt. A veces, se te proporcionará un bloque de '--- CONTEXTO ADICIONAL ---' al inicio del mensaje del usuario. **Esa información tiene la máxima prioridad y debes usarla como la fuente de verdad principal para responder.** Si no encuentras la respuesta ni en el contexto ni en tu información base, debes decir "Esa es una excelente pregunta. Para darte la información más precisa, te recomiendo contactar a uno de nuestros asesores expertos." y luego ofrecer las opciones de contacto.
 3.  **Objetivo Principal (Call to Action):** Tu meta es que el usuario contacte a la agencia. Si el usuario muestra interés en un plan, pregunta si quiere más detalles o si prefiere "hablar con un asesor" o "recibir una cotización".
 4.  **Usa tus herramientas:** Cuando el usuario quiera cotizar, ser llamado, o contactar a un asesor, **debes** usar la herramienta \`displayContactForm\` para mostrar el formulario. Frases como "quiero cotizar", "llámenme", "quiero hablar con alguien" deben activar esta herramienta.
 5.  **Responde a Preguntas Frecuentes:** Usa la siguiente base de datos de FAQs para responder preguntas comunes.
@@ -69,22 +83,20 @@ ${DEFAULT_TRAVEL_PLANS.map(p => `- **${p.title}**: ${p.description} desde ${p.pr
 7.  **Manejo de Consultas Post-Venta (Check-in, Programación):** Si un usuario pregunta sobre su check-in, la programación de su viaje, su itinerario, o cualquier consulta relacionada con un viaje ya comprado (ej: "mi reserva", "detalles de mi vuelo"), debes responder EXACTAMENTE con el siguiente texto:
     "Hola, claro que sí. Te estamos redirigiendo a nuestra área operativa. Si tu viaje está programado para las siguientes 24 horas, serás atendido por nuestro asesor. Si aún faltan días para tu viaje, nos estaremos comunicando contigo en el menor tiempo posible. Recuerda que si no tienes ningún cambio o solicitud, 24 horas antes te enviaremos toda la documentación, programación e indicaciones de tu viaje. ¡Feliz día!"
     **Si el usuario insiste o pregunta de nuevo sobre el mismo tema**, debes responder con:
-    "Entiendo tu inquietud. Para una atención más directa, por favor comunícate con nuestra área operativa a través de este enlace de WhatsApp: ${DEFAULT_CONTACT_INFO.whatsappLink}"
+    "Entiendo tu inquietud. Para una atención más directa, por favor comunícate con nuestra área operativa a través de este enlace de WhatsApp: ${data.contact.whatsappLink}"
 
 ---
 **Base de Conocimiento de Preguntas Frecuentes (FAQ):**
 ${faqFormatted}
 ---
-
-**Ejemplo de Interacción con Herramienta:**
-*Usuario:* "Hola, quiero cotizar un viaje a Cancún"
-*PlaniBot:* "¡Excelente elección! Cancún es un paraíso 🌴. Para darte la mejor cotización, necesito algunos datos. Te mostraré un pequeño formulario para que completes."
-(En este punto, el bot llama a la función \`displayContactForm\`).
 `;
+}
 
-export const startChat = () => {
+
+export const startChat = (data: SystemPromptData) => {
     const geminiAI = getAi();
     if (geminiAI) {
+        const systemInstruction = buildSystemInstruction(data);
         chat = geminiAI.chats.create({
             model: 'gemini-2.5-flash',
             config: {
@@ -101,8 +113,6 @@ export const isChatInitialized = (): boolean => {
     return chat !== null;
 };
 
-// This is a minimal mock to satisfy the component's expectations without having the full type.
-// It's safe because we control what properties the component reads from the response.
 const createMockErrorResponse = (text: string): GenerateContentResponse => ({
     text,
     functionCalls: undefined,
@@ -112,12 +122,38 @@ const createMockErrorResponse = (text: string): GenerateContentResponse => ({
 
 export const sendMessageToGemini = async (message: string): Promise<GenerateContentResponse> => {
     if (!chat) {
-        startChat();
+        console.warn("Chat not initialized. sendMessageToGemini was called before startChat.");
+        return createMockErrorResponse('Lo siento, el chat no se ha iniciado correctamente. Por favor, cierra y vuelve a abrir la ventana del chat.');
     }
     
     if (chat) {
         try {
-            const result = await chat.sendMessage({ message });
+            // 1. Search the knowledge base in Supabase
+            const keywords = message.toLowerCase().split(/\s+/).filter(word => word.length > 3);
+            let knowledgeContext = '';
+
+            if (keywords.length > 0) {
+                const { data: knowledge, error } = await supabase
+                    .from('knowledge_base')
+                    .select('answer, topic')
+                    .or(`keywords.cs.{${keywords.join(',')}},topic.ilike.%${keywords.join(' ')}%`);
+
+                if (error) {
+                    console.warn("Error fetching from knowledge base:", error.message);
+                }
+
+                if (knowledge && knowledge.length > 0) {
+                    knowledgeContext = '--- CONTEXTO ADICIONAL (USA ESTA INFORMACIÓN COMO FUENTE PRINCIPAL) ---\n' +
+                                     knowledge.map(k => `Tema: ${k.topic}\nInformación: ${k.answer}`).join('\n\n') +
+                                     '\n--- FIN DEL CONTEXTO ---\n\n';
+                }
+            }
+
+            // 2. Prepend context to the user's message
+            const finalMessage = knowledgeContext + message;
+
+            // 3. Send the combined message to Gemini
+            const result = await chat.sendMessage({ message: finalMessage });
             return result;
         } catch(error) {
             console.error("Error sending message to Gemini:", error);
