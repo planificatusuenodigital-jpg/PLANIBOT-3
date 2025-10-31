@@ -1,8 +1,7 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import GlassCard from './GlassCard';
 import WatermarkedImage from './WatermarkedImage';
-import { Plan, Tag, Destination } from '../types';
+import { Plan, Regime, TravelerType } from '../types';
 
 interface PlansPageProps {
     globalSearch: string;
@@ -11,12 +10,16 @@ interface PlansPageProps {
     setDetailModalPlan: (plan: Plan) => void;
     setQuoteRequestPlan: (plan: Plan) => void;
     plans: Plan[];
-    destinations: Destination[];
-    tags: Tag[];
     logoUrl: string;
 }
 
-const ALL_AMENITIES_CATEGORIES = ['Comodidades Principales', 'Bienestar y Relax', 'Para Familias', 'Actividades', 'Por Habitación'];
+const ALL_AMENITIES = {
+    'Comodidades Principales': ['Piscina', 'Acceso a la Playa', 'A pocos metros de la playa', 'Ubicación privilegiada en Bocagrande', 'Wifi Gratis', 'Aire Acondicionado', 'Estacionamiento', 'Restaurante', 'Bar / Lounge'],
+    'Bienestar y Relax': ['Jacuzzi', 'Spa', 'Sauna', 'Turco / Baño de vapor', 'Gimnasio'],
+    'Para Familias': ['Piscina para niños', 'Club de niños', 'Toboganes / Parque Acuático'],
+    'Actividades': ['Shows Nocturnos / Animación', 'Discoteca / Club Nocturno', 'Casino', 'Campo de Golf'],
+    'Por Habitación': ['Balcón / Terraza', 'Vista al Mar', 'Agua Caliente'],
+};
 
 const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }> = ({ plan, setQrModalPlan }) => {
     const handleShare = async () => {
@@ -54,14 +57,13 @@ const initialFilters = {
     searchTerm: '',
     country: 'Todos',
     city: 'Todos',
-    planType: 'Todos',
-    travelerTypes: [] as string[],
+    regime: 'Todos',
+    travelerTypes: [] as TravelerType[],
     amenities: [] as string[],
     priceRange: { min: '', max: '' },
-    duration: 'any',
 };
 
-const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, destinations, tags, logoUrl }) => {
+const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, logoUrl }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filters, setFilters] = useState(initialFilters);
   const [sortBy, setSortBy] = useState('default');
@@ -70,7 +72,7 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
   useEffect(() => {
     if (globalSearch) {
       setFilters(prev => ({...prev, searchTerm: globalSearch}));
-      setGlobalSearch(''); 
+      setGlobalSearch(''); // Reset global search after applying it
     }
   }, [globalSearch, setGlobalSearch]);
 
@@ -86,15 +88,13 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
       handleFilterChange(filterKey, newValues);
   }
 
-  const allCountries = useMemo(() => ['Todos', ...Array.from(new Set(destinations.map(d => d.country)))], [destinations]);
+  const allCountries = useMemo(() => ['Todos', ...Array.from(new Set(plans.map(p => p.country)))], [plans]);
   const allCities = useMemo(() => {
-    const relevantDestinations = filters.country === 'Todos' ? destinations : destinations.filter(d => d.country === filters.country);
-    return ['Todos', ...Array.from(new Set(relevantDestinations.map(d => d.name)))];
-  }, [destinations, filters.country]);
-  const allPlanTypes = useMemo(() => ['Todos', ...Array.from(new Set(plans.map(p => p.plan_type)))], [plans]);
-  const allTravelerTypes = useMemo(() => tags.filter(t => t.category === 'TravelerType').map(t => t.name), [tags]);
-  const allAmenities = useMemo(() => tags.filter(t => ALL_AMENITIES_CATEGORIES.includes(t.category)), [tags]);
-
+    const relevantPlans = filters.country === 'Todos' ? plans : plans.filter(p => p.country === filters.country);
+    return ['Todos', ...Array.from(new Set(relevantPlans.map(p => p.city)))];
+  }, [plans, filters.country]);
+  const allRegimes = useMemo(() => ['Todos', ...Array.from(new Set(plans.map(p => p.regime)))], [plans]);
+  const allTravelerTypes = useMemo(() => Array.from(new Set(plans.flatMap(p => p.travelerTypes))), [plans]);
 
   useEffect(() => {
     if (!allCities.includes(filters.city)) {
@@ -105,37 +105,28 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
 
   const filteredAndSortedPlans = useMemo(() => {
     let filteredPlans = plans.filter(plan => {
-      if (!plan.is_visible || !plan.destination) return false;
+      if (!plan.isVisible) return false;
         
-      const { searchTerm, country, city, planType, travelerTypes, amenities, priceRange, duration } = filters;
+      const { searchTerm, country, city, regime, travelerTypes, amenities, priceRange } = filters;
 
       const matchesSearch = searchTerm === '' || plan.title.toLowerCase().includes(searchTerm.toLowerCase()) || plan.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCountry = country === 'Todos' || plan.destination.country === country;
-      const matchesCity = city === 'Todos' || plan.destination.name === city;
-      const matchesPlanType = planType === 'Todos' || plan.plan_type === planType;
+      const matchesCountry = country === 'Todos' || plan.country === country;
+      const matchesCity = city === 'Todos' || plan.city === city;
+      const matchesRegime = regime === 'Todos' || plan.regime === regime;
 
       const minPrice = priceRange.min === '' ? 0 : parseFloat(priceRange.min) * 1000000;
       const maxPrice = priceRange.max === '' ? Infinity : parseFloat(priceRange.max) * 1000000;
-      const matchesPrice = plan.price_value >= minPrice && plan.price_value <= maxPrice;
-      
-      const matchesDuration = (() => {
-        if (duration === 'any') return true;
-        if (duration === 'short') return plan.duration_days >= 2 && plan.duration_days <= 3;
-        if (duration === 'medium') return plan.duration_days >= 4 && plan.duration_days <= 5;
-        if (duration === 'long') return plan.duration_days >= 6;
-        return true;
-      })();
+      const matchesPrice = plan.priceValue >= minPrice && plan.priceValue <= maxPrice;
 
-      const planTagNames = plan.tags.map(t => t.name);
-      const matchesTravelerTypes = travelerTypes.length === 0 || travelerTypes.every(type => planTagNames.includes(type));
-      const matchesAmenities = amenities.length === 0 || amenities.every(amenity => planTagNames.includes(amenity));
+      const matchesTravelerTypes = travelerTypes.length === 0 || travelerTypes.every(type => plan.travelerTypes.includes(type as TravelerType));
+      const matchesAmenities = amenities.length === 0 || amenities.every(amenity => plan.amenities.includes(amenity));
 
-      return matchesSearch && matchesCountry && matchesCity && matchesPlanType && matchesPrice && matchesDuration && matchesTravelerTypes && matchesAmenities;
+      return matchesSearch && matchesCountry && matchesCity && matchesRegime && matchesPrice && matchesTravelerTypes && matchesAmenities;
     });
 
     switch (sortBy) {
-        case 'price_asc': filteredPlans.sort((a, b) => a.price_value - b.price_value); break;
-        case 'price_desc': filteredPlans.sort((a, b) => b.price_value - a.price_value); break;
+        case 'price_asc': filteredPlans.sort((a, b) => a.priceValue - b.priceValue); break;
+        case 'price_desc': filteredPlans.sort((a, b) => b.priceValue - a.priceValue); break;
         case 'name_az': filteredPlans.sort((a, b) => a.title.localeCompare(b.title)); break;
         default: break;
     }
@@ -153,13 +144,6 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
   const Checkbox: React.FC<{label: string, value: string, checked: boolean, onChange: (value: string) => void}> = ({ label, value, checked, onChange }) => (
     <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer hover:text-white transition-colors">
       <input type="checkbox" checked={checked} onChange={() => onChange(value)} className="w-4 h-4 rounded bg-white/20 border-white/30 text-pink-500 focus:ring-pink-400" />
-      {label}
-    </label>
-  );
-
-  const Radio: React.FC<{label: string, value: string, name: string, checked: boolean, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void}> = ({ label, value, name, checked, onChange }) => (
-    <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer hover:text-white transition-colors">
-      <input type="radio" name={name} value={value} checked={checked} onChange={onChange} className="w-4 h-4 bg-white/20 border-white/30 text-pink-500 focus:ring-pink-400 focus:ring-offset-0" />
       {label}
     </label>
   );
@@ -191,29 +175,22 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                     <input type="number" placeholder="Max (Millones)" value={filters.priceRange.max} onChange={e => handleFilterChange('priceRange', {...filters.priceRange, max: e.target.value})} className={`${selectStyle} text-sm`} />
                 </div>
             </FilterGroup>
-             <FilterGroup title="Duración del Viaje">
-                <Radio label="Todos" value="any" name="duration" checked={filters.duration === 'any'} onChange={e => handleFilterChange('duration', e.target.value)} />
-                <Radio label="2-3 días (Corto)" value="short" name="duration" checked={filters.duration === 'short'} onChange={e => handleFilterChange('duration', e.target.value)} />
-                <Radio label="4-5 días (Medio)" value="medium" name="duration" checked={filters.duration === 'medium'} onChange={e => handleFilterChange('duration', e.target.value)} />
-                <Radio label="6+ días (Largo)" value="long" name="duration" checked={filters.duration === 'long'} onChange={e => handleFilterChange('duration', e.target.value)} />
-            </FilterGroup>
-             <FilterGroup title="Tipo de Plan">
-                 <select value={filters.planType} onChange={e => handleFilterChange('planType', e.target.value)} className={selectStyle}>
-                     {allPlanTypes.map(r => <option key={r} value={r} className="bg-purple-800">{r}</option>)}
+             <FilterGroup title="Tipo de Plan (Régimen)">
+                 <select value={filters.regime} onChange={e => handleFilterChange('regime', e.target.value)} className={selectStyle}>
+                     {allRegimes.map(r => <option key={r} value={r} className="bg-purple-800">{r}</option>)}
                  </select>
              </FilterGroup>
             <FilterGroup title="Ideal para...">
-                {allTravelerTypes.map(type => <Checkbox key={type} label={type} value={type} checked={filters.travelerTypes.includes(type)} onChange={(v) => handleCheckboxChange('travelerTypes', v)}/> )}
+                {allTravelerTypes.map(type => {
+                    const label = type === 'Parejas' ? 'Parejas (Lunamieleros)' : type;
+                    return <Checkbox key={type} label={label} value={type} checked={filters.travelerTypes.includes(type)} onChange={(v) => handleCheckboxChange('travelerTypes', v)}/>
+                })}
             </FilterGroup>
-            {ALL_AMENITIES_CATEGORIES.map(category => {
-                const amenitiesInCategory = allAmenities.filter(a => a.category === category);
-                if (amenitiesInCategory.length === 0) return null;
-                return (
-                    <FilterGroup key={category} title={category}>
-                        {amenitiesInCategory.map(amenity => <Checkbox key={amenity.id} label={amenity.name} value={amenity.name} checked={filters.amenities.includes(amenity.name)} onChange={(v) => handleCheckboxChange('amenities', v)} />)}
-                    </FilterGroup>
-                );
-            })}
+            {Object.entries(ALL_AMENITIES).map(([group, amenities]) => (
+                <FilterGroup key={group} title={group}>
+                    {amenities.map(amenity => <Checkbox key={amenity} label={amenity} value={amenity} checked={filters.amenities.includes(amenity)} onChange={(v) => handleCheckboxChange('amenities', v)} />)}
+                </FilterGroup>
+            ))}
         </div>
     </GlassCard>
   );
@@ -277,15 +254,15 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                                 {plan.images && plan.images.length > 0 ? (
                                     <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-64 rounded-t-xl" logoUrl={logoUrl} />
                                 ) : (
-                                    <div className="h-64 rounded-t-xl bg-gray-700/50 flex items-center justify-center text-white/50">
+                                    <div className="h-64 rounded-t-xl bg-black/10 flex items-center justify-center text-white/50">
                                         Imagen no disponible
                                     </div>
                                 )}
                             </div>
                             <div className="p-4 flex flex-col flex-grow">
-                                <span className="text-xs font-semibold text-pink-300">{plan.destination.name}, {plan.destination.country}</span>
+                                <span className="text-xs font-semibold text-pink-300">{plan.city}, {plan.country}</span>
                                 <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
-                                <p className="text-pink-200 font-semibold mt-1">{plan.price_text}</p>
+                                <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
                                 <div className="mt-4 flex flex-col sm:flex-row gap-2">
                                     <button onClick={() => setDetailModalPlan(plan)} className="w-full bg-white/20 text-white py-2 rounded-lg hover:bg-white/30 transition-colors">Ver Detalles</button>
                                     <button onClick={() => setQuoteRequestPlan(plan)} className="w-full bg-pink-500 text-white font-bold py-2 rounded-lg hover:bg-pink-600 transition-colors">Cotizar</button>
@@ -303,15 +280,15 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                                 {plan.images && plan.images.length > 0 ? (
                                     <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none" logoUrl={logoUrl} />
                                 ) : (
-                                    <div className="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none bg-gray-700/50 flex items-center justify-center text-white/50">
+                                    <div className="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none bg-black/10 flex items-center justify-center text-white/50">
                                         Imagen no disponible
                                     </div>
                                 )}
                             </div>
                             <div className="p-4 md:p-6 md:w-2/3">
-                                <span className="text-xs font-semibold text-pink-300">{plan.destination.name}, {plan.destination.country}</span>
+                                <span className="text-xs font-semibold text-pink-300">{plan.city}, {plan.country}</span>
                                 <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
-                                <p className="text-pink-200 font-semibold mt-1">{plan.price_text}</p>
+                                <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
                                 <p className="mt-2 text-white/80 text-sm line-clamp-2">{plan.description}</p>
                                 <div className="mt-4 sm:ml-auto flex gap-2">
                                     <button onClick={() => setDetailModalPlan(plan)} className="bg-white/20 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors">Ver Detalles</button>

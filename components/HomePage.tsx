@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Section, Plan, Testimonial } from '../types';
 import GlassCard from './GlassCard';
@@ -49,7 +48,7 @@ const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }
 
 const HomePage: React.FC<HomePageProps> = ({ setActiveSection, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, testimonials, logoUrl }) => {
     
-  const featuredPlans = plans.filter(p => p.is_visible).slice(0, 3);
+  const featuredPlans = plans.filter(p => p.isVisible).slice(0, 3);
   
   return (
     <div className="space-y-16 animate-fade-in">
@@ -78,21 +77,21 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveSection, setQrModalPlan, s
               <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
               <div className="cursor-pointer" onClick={() => setDetailModalPlan(plan)}>
                 {plan.images && plan.images.length > 0 ? (
-                    <WatermarkedImage 
-                        src={plan.images[0]} 
-                        alt={plan.title}
-                        containerClassName="h-64 rounded-t-xl"
-                        logoUrl={logoUrl}
-                    />
+                  <WatermarkedImage 
+                    src={plan.images[0]} 
+                    alt={plan.title}
+                    containerClassName="h-64 rounded-t-xl"
+                    logoUrl={logoUrl}
+                  />
                 ) : (
-                    <div className="h-64 rounded-t-xl bg-gray-700/50 flex items-center justify-center text-white/50">
-                        Imagen no disponible
-                    </div>
+                  <div className="h-64 rounded-t-xl bg-black/10 flex items-center justify-center text-white/50">
+                    Imagen no disponible
+                  </div>
                 )}
               </div>
               <div className="p-6 flex flex-col flex-grow">
                 <h3 className="text-2xl font-bold text-white">{plan.title}</h3>
-                <p className="text-pink-300 font-semibold">{plan.price_text}</p>
+                <p className="text-pink-300 font-semibold">{plan.price}</p>
                 <p className="mt-2 text-white/80 flex-grow text-sm">{plan.description}</p>
                 <div className="mt-4 flex flex-col sm:flex-row gap-2">
                     <button 

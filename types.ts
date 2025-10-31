@@ -9,42 +9,37 @@ export enum Section {
   FAQ,
 }
 
+// FIX: Added 'Aventura' to the TravelerType to allow its use in travel plans.
 export type TravelerType = 'Familias' | 'Parejas' | 'Grupos' | 'Negocios' | 'Descanso / Relax' | 'Cultural' | 'Aventura';
 export type Regime = 'Todo Incluido' | 'Pensión Completa' | 'Con Desayuno Incluido' | 'Solo Alojamiento' | 'Paquete Promocional';
 
-// New type for tags from the database
-export interface Tag {
-  id: number;
-  name: string;
-  category: string; // e.g., 'TravelerType', 'Amenity', 'General'
-}
-
-// Updated Destination type to match the database and frontend needs
-export interface Destination {
-  id: number;
-  name: string;
-  country: string;
-  description: string;
-  image: string;
-}
-
-// Updated Plan type to reflect the new database structure
 export interface Plan {
   id: number;
   title: string;
+  category: string;
+  price: string;
+  priceValue: number;
+  durationDays: number;
   description: string;
-  price_text: string;
-  price_value: number;
-  duration_days: number;
   images: string[];
   includes: string[];
-  is_visible: boolean;
-  destination_id: number;
-  plan_type: 'Paquete Promocional' | 'Hotel' | 'Tour';
-  user_id: string | null;
-  // Reconstructed properties for frontend use
-  destination: Destination;
-  tags: Tag[];
+  isVisible: boolean;
+  departureDate: string; // e.g., "2024-10-15"
+  returnDate: string; // e.g., "2024-10-20"
+  
+  // New properties for advanced filtering
+  country: string;
+  city: string;
+  regime: Regime;
+  travelerTypes: TravelerType[];
+  amenities: string[];
+}
+
+export interface Destination {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
 }
 
 export interface Testimonial {
