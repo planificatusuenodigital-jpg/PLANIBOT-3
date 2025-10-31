@@ -190,7 +190,9 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                 {filteredAndSortedPlans.map(plan => (
                     <GlassCard key={plan.id} className="flex flex-col hover:scale-105 transition-transform duration-300 relative">
                         <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
-                        <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-48 rounded-t-xl" logoUrl={logoUrl} />
+                        <div onClick={() => setDetailModalPlan(plan)} className="cursor-pointer">
+                            <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-64 rounded-t-xl" logoUrl={logoUrl} />
+                        </div>
                         <div className="p-4 flex flex-col flex-grow">
                             <span className="text-xs font-semibold text-pink-300">{plan.category}</span>
                             <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
@@ -209,8 +211,8 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                  {filteredAndSortedPlans.map(plan => (
                     <GlassCard key={plan.id} className="relative overflow-hidden transition-all duration-300 md:flex items-center">
                         <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
-                        <div className="md:w-1/3">
-                            <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-48 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none" logoUrl={logoUrl} />
+                        <div className="md:w-1/3 cursor-pointer" onClick={() => setDetailModalPlan(plan)}>
+                            <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none" logoUrl={logoUrl} />
                         </div>
                         <div className="p-4 md:p-6 md:w-2/3">
                              <span className="text-xs font-semibold text-pink-300">{plan.category}</span>

@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatMessage } from '../types';
-import { sendMessageToGemini, startChat } from '../services/geminiService';
+import { sendMessageToGemini, startChat, isChatInitialized } from '../services/geminiService';
 import { DEFAULT_CONTACT_INFO } from '../constants';
 
 const PlaniBotAvatar: React.FC<{ className?: string, planibotAvatarUrl: string }> = ({ className, planibotAvatarUrl }) => (
@@ -65,6 +65,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) =
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [isChatAvailable, setIsChatAvailable] = useState(true);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<number | null>(null);
 
@@ -80,13 +81,24 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) =
   };
 
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
+    if (isOpen) {
         startChat();
-        setMessages([
-            { role: 'model', text: '¡Hola! 👋 Soy PlaniBot, tu asistente de viajes de Planifica Tu Sueño. ¿En qué destino estás pensando para tu próxima aventura? ✈️' }
-        ]);
+        const chatReady = isChatInitialized();
+        setIsChatAvailable(chatReady);
+        if (chatReady) {
+            setMessages([
+                { role: 'model', text: '¡Hola! 👋 Soy PlaniBot, tu asistente de viajes de Planifica Tu Sueño. ¿En qué destino estás pensando para tu próxima aventura? ✈️' }
+            ]);
+        } else {
+             setMessages([
+                { role: 'model', text: 'Lo siento, el servicio de chat no está disponible en este momento. 😥 Por favor, contacta a un asesor directamente por WhatsApp.' }
+            ]);
+        }
+    } else {
+        // Reset state when closing to ensure a fresh conversation next time
+        setMessages([]);
     }
-  }, [isOpen, messages]);
+  }, [isOpen]);
 
   useEffect(() => {
     scrollToBottom();
@@ -98,7 +110,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) =
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || !isChatAvailable) return;
     
     stopTypingEffect();
 
@@ -219,11 +231,11 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) =
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Escribe un mensaje..."
+                    placeholder={!isChatAvailable ? "Chat no disponible" : "Escribe un mensaje..."}
                     className="flex-1 bg-white/20 border-none text-white placeholder-white/60 rounded-full focus:ring-2 focus:ring-pink-400 focus:outline-none py-2 px-4"
-                    disabled={isLoading || showContactForm}
+                    disabled={isLoading || showContactForm || !isChatAvailable}
                 />
-                <button type="submit" className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-pink-500 text-white/90 hover:bg-pink-600 disabled:opacity-50 disabled:bg-pink-500/50 transition-colors" disabled={isLoading || !input.trim() || showContactForm}>
+                <button type="submit" className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-pink-500 text-white/90 hover:bg-pink-600 disabled:opacity-50 disabled:bg-pink-500/50 transition-colors" disabled={isLoading || !input.trim() || showContactForm || !isChatAvailable}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
                 </button>
                 </div>

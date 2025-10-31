@@ -93,6 +93,78 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     departureDate: "2024-12-01",
     returnDate: "2024-12-08",
   },
+  {
+    id: 5,
+    title: "Finca Hotel San Isidro",
+    category: "Rural",
+    price: "Desde $350,000 COP",
+    priceValue: 350000,
+    durationDays: 2,
+    description: "Escápate a la Finca Hotel San Isidro, un paraíso rural para el descanso. Disfruta de habitaciones confortables, piscina, jacuzzi, turco, senderos ecológicos y cascadas naturales. Una experiencia de desconexión total con todas las comodidades.",
+    images: [
+      "https://picsum.photos/seed/finca-isidro1/800/600",
+      "https://picsum.photos/seed/finca-isidro2/800/600",
+      "https://picsum.photos/seed/finca-isidro3/800/600"
+    ],
+    includes: [
+        "Alojamiento 1 noche", 
+        "Alimentación completa (cena, desayuno, almuerzo)",
+        "Seguro de accidentes",
+        "Acceso a piscina, jacuzzi y turco",
+        "Disfrute de senderos ecológicos y cascadas"
+    ],
+    isVisible: true,
+    departureDate: "2024-11-10",
+    returnDate: "2024-11-12",
+  },
+  {
+    id: 6,
+    title: "Hotel Sansiraka - Santa Marta",
+    category: "Sol y Playa",
+    price: "Desde $450,000 COP",
+    priceValue: 450000,
+    durationDays: 3,
+    description: "Vive una experiencia colonial en Santa Marta en el Hotel Sansiraka. Rodeado de amplios jardines y con un encantador estilo caribeño, este hotel es tu oasis perfecto cerca de El Rodadero. Disfruta de su piscina al aire libre, jacuzzi, baño de vapor y noches de karaoke en el bar.",
+    images: [
+      "https://picsum.photos/seed/sansiraka1/800/600",
+      "https://picsum.photos/seed/sansiraka2/800/600",
+      "https://picsum.photos/seed/sansiraka3/800/600"
+    ],
+    includes: [
+        "Alojamiento en habitación con aire acondicionado",
+        "Acceso a piscina, jacuzzi y baño de vapor",
+        "Disfrute de zonas de hamacas",
+        "Bar con karaoke y espectáculos nocturnos",
+        "Internet inalámbrico"
+    ],
+    isVisible: true,
+    departureDate: "2024-12-10",
+    returnDate: "2024-12-13",
+  },
+  {
+    id: 7,
+    title: "Hotel GHL Costa Azul - Santa Marta",
+    category: "Sol y Playa",
+    price: "Desde $550,000 COP",
+    priceValue: 550000,
+    durationDays: 3,
+    description: "Relájate en el paraíso en el Hotel GHL Costa Azul, ubicado en la exclusiva zona de Pozos Colorados en Santa Marta. Este resort familiar te ofrece una escapada perfecta con piscina, jacuzzi, sauna y acceso directo a la playa. Disfruta de la gastronomía local y de habitaciones con balcón y vistas al mar.",
+    images: [
+      "https://picsum.photos/seed/ghl-costa-azul1/800/600",
+      "https://picsum.photos/seed/ghl-costa-azul2/800/600",
+      "https://picsum.photos/seed/ghl-costa-azul3/800/600"
+    ],
+    includes: [
+        "Alojamiento en habitación con balcón",
+        "Acceso a piscina, piscina para niños, jacuzzi y sauna",
+        "Restaurante con platos típicos locales",
+        "Internet inalámbrico gratuito",
+        "Proximidad al aeropuerto y El Rodadero"
+    ],
+    isVisible: true,
+    departureDate: "2025-01-15",
+    returnDate: "2025-01-18",
+  },
 ];
 
 export const DEFAULT_DESTINATIONS: Destination[] = [

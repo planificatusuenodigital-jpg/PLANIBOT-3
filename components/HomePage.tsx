@@ -75,12 +75,14 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveSection, setQrModalPlan, s
           {featuredPlans.map((plan: Plan) => (
             <GlassCard key={plan.id} className="flex flex-col relative">
               <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
-              <WatermarkedImage 
-                src={plan.images[0]} 
-                alt={plan.title}
-                containerClassName="h-48 rounded-t-xl"
-                logoUrl={logoUrl}
-              />
+              <div className="cursor-pointer" onClick={() => setDetailModalPlan(plan)}>
+                <WatermarkedImage 
+                  src={plan.images[0]} 
+                  alt={plan.title}
+                  containerClassName="h-64 rounded-t-xl"
+                  logoUrl={logoUrl}
+                />
+              </div>
               <div className="p-6 flex flex-col flex-grow">
                 <h3 className="text-2xl font-bold text-white">{plan.title}</h3>
                 <p className="text-pink-300 font-semibold">{plan.price}</p>
