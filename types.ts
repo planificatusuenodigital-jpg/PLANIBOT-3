@@ -1,3 +1,4 @@
+
 export enum Section {
   Inicio,
   Planes,
@@ -7,6 +8,10 @@ export enum Section {
   Legal,
   FAQ,
 }
+
+// FIX: Added 'Aventura' to the TravelerType to allow its use in travel plans.
+export type TravelerType = 'Familias' | 'Parejas' | 'Grupos' | 'Negocios' | 'Descanso / Relax' | 'Cultural' | 'Aventura';
+export type Regime = 'Todo Incluido' | 'Pensión Completa' | 'Con Desayuno Incluido' | 'Solo Alojamiento' | 'Paquete Promocional';
 
 export interface Plan {
   id: number;
@@ -21,6 +26,13 @@ export interface Plan {
   isVisible: boolean;
   departureDate: string; // e.g., "2024-10-15"
   returnDate: string; // e.g., "2024-10-20"
+  
+  // New properties for advanced filtering
+  country: string;
+  city: string;
+  regime: Regime;
+  travelerTypes: TravelerType[];
+  amenities: string[];
 }
 
 export interface Destination {

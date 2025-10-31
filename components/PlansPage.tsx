@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import GlassCard from './GlassCard';
 import WatermarkedImage from './WatermarkedImage';
-import { Plan } from '../types';
+import { Plan, Regime, TravelerType } from '../types';
 
 interface PlansPageProps {
     globalSearch: string;
@@ -12,6 +12,14 @@ interface PlansPageProps {
     plans: Plan[];
     logoUrl: string;
 }
+
+const ALL_AMENITIES = {
+    'Comodidades Principales': ['Piscina', 'Acceso a la Playa', 'Cerca de la Playa', 'Wifi Gratis', 'Aire Acondicionado', 'Estacionamiento', 'Restaurante', 'Bar / Lounge'],
+    'Bienestar y Relax': ['Jacuzzi', 'Spa', 'Sauna', 'Turco / Baño de vapor', 'Gimnasio'],
+    'Para Familias': ['Piscina para niños', 'Club de niños', 'Toboganes / Parque Acuático'],
+    'Actividades': ['Shows Nocturnos / Animación', 'Discoteca / Club Nocturno', 'Casino', 'Campo de Golf'],
+    'Por Habitación': ['Balcón / Terraza', 'Vista al Mar', 'Agua Caliente'],
+};
 
 const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }> = ({ plan, setQrModalPlan }) => {
     const handleShare = async () => {
@@ -45,207 +53,247 @@ const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }
     );
 };
 
+const initialFilters = {
+    searchTerm: '',
+    country: 'Todos',
+    city: 'Todos',
+    regime: 'Todos',
+    travelerTypes: [] as TravelerType[],
+    amenities: [] as string[],
+    priceRange: { min: '', max: '' },
+};
+
 const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, logoUrl }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-      category: 'Todos',
-      price: 'any',
-      duration: 'any',
-      departureDate: '',
-      returnDate: '',
-  });
-  const [sortBy, setSortBy] =useState('default');
-  
+  const [filters, setFilters] = useState(initialFilters);
+  const [sortBy, setSortBy] = useState('default');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   useEffect(() => {
     if (globalSearch) {
-      setSearchTerm(globalSearch);
+      setFilters(prev => ({...prev, searchTerm: globalSearch}));
       setGlobalSearch(''); // Reset global search after applying it
     }
   }, [globalSearch, setGlobalSearch]);
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { name, value } = e.target;
-      if (name === 'searchTerm') {
-          setSearchTerm(value);
-      } else {
-          setFilters(prev => ({ ...prev, [name]: value }));
-      }
+  const handleFilterChange = (name: string, value: any) => {
+    setFilters(prev => ({ ...prev, [name]: value }));
   };
+  
+  const handleCheckboxChange = (filterKey: 'travelerTypes' | 'amenities', value: string) => {
+      const currentValues = filters[filterKey] as string[];
+      const newValues = currentValues.includes(value) 
+          ? currentValues.filter(v => v !== value) 
+          : [...currentValues, value];
+      handleFilterChange(filterKey, newValues);
+  }
 
-  const categories = useMemo(() => ['Todos', ...new Set(plans.map(p => p.category))], [plans]);
+  const allCountries = useMemo(() => ['Todos', ...Array.from(new Set(plans.map(p => p.country)))], [plans]);
+  const allCities = useMemo(() => {
+    const relevantPlans = filters.country === 'Todos' ? plans : plans.filter(p => p.country === filters.country);
+    return ['Todos', ...Array.from(new Set(relevantPlans.map(p => p.city)))];
+  }, [plans, filters.country]);
+  const allRegimes = useMemo(() => ['Todos', ...Array.from(new Set(plans.map(p => p.regime)))], [plans]);
+  const allTravelerTypes = useMemo(() => Array.from(new Set(plans.flatMap(p => p.travelerTypes))), [plans]);
+
+  useEffect(() => {
+    if (!allCities.includes(filters.city)) {
+        handleFilterChange('city', 'Todos');
+    }
+  }, [allCities, filters.city]);
+
 
   const filteredAndSortedPlans = useMemo(() => {
     let filteredPlans = plans.filter(plan => {
       if (!plan.isVisible) return false;
         
-      const { category, price, duration } = filters;
+      const { searchTerm, country, city, regime, travelerTypes, amenities, priceRange } = filters;
 
-      const matchesCategory = category === 'Todos' || plan.category === category;
-      
-      const matchesPrice = price === 'any' ||
-        (price === 'lt1m' && plan.priceValue < 1000000) ||
-        (price === '1m-2m' && plan.priceValue >= 1000000 && plan.priceValue <= 2000000) ||
-        (price === 'gt2m' && plan.priceValue > 2000000);
+      const matchesSearch = searchTerm === '' || plan.title.toLowerCase().includes(searchTerm.toLowerCase()) || plan.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCountry = country === 'Todos' || plan.country === country;
+      const matchesCity = city === 'Todos' || plan.city === city;
+      const matchesRegime = regime === 'Todos' || plan.regime === regime;
 
-      const matchesDuration = duration === 'any' ||
-        (duration === '1-3' && plan.durationDays >= 1 && plan.durationDays <= 3) ||
-        (duration === '4-6' && plan.durationDays >= 4 && plan.durationDays <= 6) ||
-        (duration === '7+' && plan.durationDays >= 7);
-      
-      // Note: Date filtering is for UI demonstration; logic would need to be more complex for real-world use cases.
-      const matchesDeparture = !filters.departureDate || new Date(plan.departureDate) >= new Date(filters.departureDate);
-      const matchesReturn = !filters.returnDate || new Date(plan.returnDate) <= new Date(filters.returnDate);
+      const minPrice = priceRange.min === '' ? 0 : parseFloat(priceRange.min) * 1000000;
+      const maxPrice = priceRange.max === '' ? Infinity : parseFloat(priceRange.max) * 1000000;
+      const matchesPrice = plan.priceValue >= minPrice && plan.priceValue <= maxPrice;
 
-      const matchesSearch = plan.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            plan.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesTravelerTypes = travelerTypes.length === 0 || travelerTypes.every(type => plan.travelerTypes.includes(type as TravelerType));
+      const matchesAmenities = amenities.length === 0 || amenities.every(amenity => plan.amenities.includes(amenity));
 
-      return matchesCategory && matchesSearch && matchesPrice && matchesDuration && matchesDeparture && matchesReturn;
+      return matchesSearch && matchesCountry && matchesCity && matchesRegime && matchesPrice && matchesTravelerTypes && matchesAmenities;
     });
 
     switch (sortBy) {
-        case 'price_asc':
-            filteredPlans.sort((a, b) => a.priceValue - b.priceValue);
-            break;
-        case 'price_desc':
-            filteredPlans.sort((a, b) => b.priceValue - a.priceValue);
-            break;
-        case 'name_az':
-            filteredPlans.sort((a, b) => a.title.localeCompare(b.title));
-            break;
-        default:
-            break;
+        case 'price_asc': filteredPlans.sort((a, b) => a.priceValue - b.priceValue); break;
+        case 'price_desc': filteredPlans.sort((a, b) => b.priceValue - a.priceValue); break;
+        case 'name_az': filteredPlans.sort((a, b) => a.title.localeCompare(b.title)); break;
+        default: break;
     }
 
     return filteredPlans;
-  }, [searchTerm, filters, sortBy, plans]);
+  }, [filters, sortBy, plans]);
 
-  const inputStyle = "w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none";
+  const FilterGroup: React.FC<{title: string, children: React.ReactNode}> = ({ title, children }) => (
+    <div className="py-3 border-b border-white/20">
+      <h3 className="font-bold text-white mb-3 text-lg">{title}</h3>
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+
+  const Checkbox: React.FC<{label: string, value: string, checked: boolean, onChange: (value: string) => void}> = ({ label, value, checked, onChange }) => (
+    <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer hover:text-white transition-colors">
+      <input type="checkbox" checked={checked} onChange={() => onChange(value)} className="w-4 h-4 rounded bg-white/20 border-white/30 text-pink-500 focus:ring-pink-400" />
+      {label}
+    </label>
+  );
+
+  const selectStyle = "w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none appearance-none";
+
+  const renderFilters = () => (
+    <GlassCard className="p-4 h-full flex flex-col">
+        <div className='flex justify-between items-center mb-2'>
+            <h2 className="text-2xl font-bold text-white">Filtros</h2>
+            <button onClick={() => setFilters(initialFilters)} className="text-xs text-pink-200 hover:text-white">Limpiar</button>
+        </div>
+        <div className="flex-grow overflow-y-auto pr-2">
+            <FilterGroup title="Buscar">
+                <input type="text" placeholder="Busca tu aventura..." value={filters.searchTerm} onChange={e => handleFilterChange('searchTerm', e.target.value)} className={selectStyle}/>
+            </FilterGroup>
+            <FilterGroup title="Ubicación">
+                <select value={filters.country} onChange={e => handleFilterChange('country', e.target.value)} className={selectStyle}>
+                    {allCountries.map(c => <option key={c} value={c} className="bg-purple-800">{c}</option>)}
+                </select>
+                <select value={filters.city} onChange={e => handleFilterChange('city', e.target.value)} className={selectStyle} disabled={filters.country === 'Todos'}>
+                    {allCities.map(c => <option key={c} value={c} className="bg-purple-800">{c}</option>)}
+                </select>
+            </FilterGroup>
+            <FilterGroup title="Rango de Precios (COP)">
+                <div className='flex items-center gap-2'>
+                    <input type="number" placeholder="Min (Millones)" value={filters.priceRange.min} onChange={e => handleFilterChange('priceRange', {...filters.priceRange, min: e.target.value})} className={`${selectStyle} text-sm`} />
+                    <span className='text-white/50'>-</span>
+                    <input type="number" placeholder="Max (Millones)" value={filters.priceRange.max} onChange={e => handleFilterChange('priceRange', {...filters.priceRange, max: e.target.value})} className={`${selectStyle} text-sm`} />
+                </div>
+            </FilterGroup>
+             <FilterGroup title="Tipo de Plan (Régimen)">
+                 <select value={filters.regime} onChange={e => handleFilterChange('regime', e.target.value)} className={selectStyle}>
+                     {allRegimes.map(r => <option key={r} value={r} className="bg-purple-800">{r}</option>)}
+                 </select>
+             </FilterGroup>
+            <FilterGroup title="Ideal para...">
+                {allTravelerTypes.map(type => <Checkbox key={type} label={type} value={type} checked={filters.travelerTypes.includes(type)} onChange={(v) => handleCheckboxChange('travelerTypes', v)}/>)}
+            </FilterGroup>
+            {Object.entries(ALL_AMENITIES).map(([group, amenities]) => (
+                <FilterGroup key={group} title={group}>
+                    {amenities.map(amenity => <Checkbox key={amenity} label={amenity} value={amenity} checked={filters.amenities.includes(amenity)} onChange={(v) => handleCheckboxChange('amenities', v)} />)}
+                </FilterGroup>
+            ))}
+        </div>
+    </GlassCard>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto animate-fade-in">
-      <h1 className="text-5xl font-black text-center text-white mb-4 drop-shadow-lg">Nuestros Planes y Servicios</h1>
-      <p className="text-center text-white/80 mb-8 max-w-3xl mx-auto">
-        Descubre la variedad de experiencias que hemos diseñado para ti. Filtra por categoría o busca tu destino soñado.
-      </p>
+    <div className="animate-fade-in">
+      <div className="text-center">
+        <h1 className="text-5xl font-black text-white mb-4 drop-shadow-lg">Nuestros Planes y Servicios</h1>
+        <p className="text-center text-white/80 mb-8 max-w-3xl mx-auto">
+          Descubre la variedad de experiencias que hemos diseñado para ti. Filtra por categoría o busca tu destino soñado.
+        </p>
+      </div>
 
-      {/* Filters */}
-      <GlassCard className="p-4 mb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
-            <input
-                type="text"
-                name="searchTerm"
-                placeholder="Buscar por nombre..."
-                value={searchTerm}
-                onChange={handleFilterChange}
-                className={`${inputStyle} lg:col-span-3`}
-            />
-            <select name="category" value={filters.category} onChange={handleFilterChange} className={`${inputStyle} appearance-none`}>
-                {categories.map(cat => <option key={cat} value={cat} className="bg-purple-800">{cat}</option>)}
-            </select>
-            <select name="price" value={filters.price} onChange={handleFilterChange} className={`${inputStyle} appearance-none`}>
-                <option value="any" className="bg-purple-800">Cualquier Precio</option>
-                <option value="lt1m" className="bg-purple-800">&lt; $1,000,000</option>
-                <option value="1m-2m" className="bg-purple-800">$1,000,000 - $2,000,000</option>
-                <option value="gt2m" className="bg-purple-800">&gt; $2,000,000</option>
-            </select>
-             <select name="duration" value={filters.duration} onChange={handleFilterChange} className={`${inputStyle} appearance-none`}>
-                <option value="any" className="bg-purple-800">Cualquier Duración</option>
-                <option value="1-3" className="bg-purple-800">1-3 Días</option>
-                <option value="4-6" className="bg-purple-800">4-6 Días</option>
-                <option value="7+" className="bg-purple-800">7+ Días</option>
-            </select>
-            <div className='relative'>
-                 <label className="absolute top-[-10px] left-3 text-xs text-white/70 bg-black/10 px-1 rounded-full">Salida desde:</label>
-                <input type="date" name="departureDate" value={filters.departureDate} onChange={handleFilterChange} className={`${inputStyle} pt-5`} />
-            </div>
-            <div className='relative'>
-                 <label className="absolute top-[-10px] left-3 text-xs text-white/70 bg-black/10 px-1 rounded-full">Regreso hasta:</label>
-                <input type="date" name="returnDate" value={filters.returnDate} onChange={handleFilterChange} className={`${inputStyle} pt-5`} />
-            </div>
-
+      <div className="flex gap-8">
+        {/* Mobile Filter Button */}
+        <div className="md:hidden fixed bottom-5 left-5 z-40">
+            <button onClick={() => setIsFilterOpen(true)} className="bg-pink-500 text-white rounded-full p-4 shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" /></svg>
+                Filtros
+            </button>
         </div>
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 pt-4 border-t border-white/20">
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${inputStyle} sm:w-auto mb-2 sm:mb-0 appearance-none`}>
-                <option value="default" className="bg-purple-800">Ordenar por defecto</option>
-                <option value="price_asc" className="bg-purple-800">Precio: Menor a Mayor</option>
-                <option value="price_desc" className="bg-purple-800">Precio: Mayor a Menor</option>
-                <option value="name_az" className="bg-purple-800">Nombre: A-Z</option>
-            </select>
-            <div className="flex items-center gap-2">
-                <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-                </button>
-                <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
-                </button>
-            </div>
+        
+        {/* Filter Sidebar - Mobile (Drawer) */}
+        <div className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${isFilterOpen ? 'bg-black/60' : 'bg-transparent pointer-events-none'}`} onClick={() => setIsFilterOpen(false)}>
+            <aside className={`absolute top-0 left-0 h-full w-4/5 max-w-sm p-4 bg-purple-900/80 backdrop-blur-lg transition-transform duration-300 transform ${isFilterOpen ? 'translate-x-0' : '-translate-x-full'}`} onClick={e => e.stopPropagation()}>
+                {renderFilters()}
+            </aside>
         </div>
-      </GlassCard>
 
-      {/* Plans Grid/List */}
-      {filteredAndSortedPlans.length > 0 ? (
-        viewMode === 'grid' ? (
-             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredAndSortedPlans.map(plan => (
-                    <GlassCard key={plan.id} className="flex flex-col hover:scale-105 transition-transform duration-300 relative">
-                        <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
-                        <div onClick={() => setDetailModalPlan(plan)} className="cursor-pointer">
-                            <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-64 rounded-t-xl" logoUrl={logoUrl} />
+        {/* Filter Sidebar - Desktop */}
+        <aside className="hidden md:block w-1/4 lg:w-1/5">
+            {renderFilters()}
+        </aside>
+
+        <main className="flex-1">
+            <GlassCard className="p-4 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-center">
+                    <p className="text-white/80 text-sm mb-2 sm:mb-0">{filteredAndSortedPlans.length} planes encontrados</p>
+                    <div className="flex items-center gap-4">
+                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${selectStyle} sm:w-auto appearance-none text-sm`}>
+                            <option value="default" className="bg-purple-800">Ordenar por</option>
+                            <option value="price_asc" className="bg-purple-800">Precio: Menor a Mayor</option>
+                            <option value="price_desc" className="bg-purple-800">Precio: Mayor a Menor</option>
+                            <option value="name_az" className="bg-purple-800">Nombre: A-Z</option>
+                        </select>
+                        <div className="hidden sm:flex items-center gap-2">
+                             <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg></button>
+                            <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg></button>
                         </div>
-                        <div className="p-4 flex flex-col flex-grow">
-                            <span className="text-xs font-semibold text-pink-300">{plan.category}</span>
-                            <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
-                            <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
-                            <p className="mt-2 text-white/80 text-sm flex-grow">{plan.description}</p>
-                            <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                                <button onClick={() => setDetailModalPlan(plan)} className="w-full bg-white/20 text-white py-2 rounded-lg hover:bg-white/30 transition-colors">Ver Detalles</button>
-                                <button onClick={() => setQuoteRequestPlan(plan)} className="w-full bg-pink-500 text-white font-bold py-2 rounded-lg hover:bg-pink-600 transition-colors">Cotizar</button>
+                    </div>
+                </div>
+            </GlassCard>
+
+            {filteredAndSortedPlans.length > 0 ? (
+              viewMode === 'grid' ? (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredAndSortedPlans.map(plan => (
+                        <GlassCard key={plan.id} className="flex flex-col hover:scale-105 transition-transform duration-300 relative">
+                            <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
+                            <div onClick={() => setDetailModalPlan(plan)} className="cursor-pointer">
+                                <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-64 rounded-t-xl" logoUrl={logoUrl} />
                             </div>
-                        </div>
-                    </GlassCard>
-                ))}
-            </div>
-        ) : (
-            <div className="flex flex-col gap-6">
-                 {filteredAndSortedPlans.map(plan => (
-                    <GlassCard key={plan.id} className="relative overflow-hidden transition-all duration-300 md:flex items-center">
-                        <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
-                        <div className="md:w-1/3 cursor-pointer" onClick={() => setDetailModalPlan(plan)}>
-                            <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none" logoUrl={logoUrl} />
-                        </div>
-                        <div className="p-4 md:p-6 md:w-2/3">
-                             <span className="text-xs font-semibold text-pink-300">{plan.category}</span>
-                            <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
-                            <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
-                            <p className="mt-2 text-white/80 text-sm">{plan.description}</p>
-                            <div className="mt-3 border-t border-white/20 pt-3 flex flex-col sm:flex-row sm:items-center sm:gap-6">
-                                <div>
-                                    <h4 className="font-semibold text-white text-sm">Incluye:</h4>
-                                    <ul className="text-xs text-white/70 list-disc list-inside mt-1 space-y-1">
-                                        {plan.includes.slice(0, 2).map(item => <li key={item}>{item}</li>)}
-                                        {plan.includes.length > 2 && <li>y más...</li>}
-                                    </ul>
+                            <div className="p-4 flex flex-col flex-grow">
+                                <span className="text-xs font-semibold text-pink-300">{plan.city}, {plan.country}</span>
+                                <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
+                                <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
+                                <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                                    <button onClick={() => setDetailModalPlan(plan)} className="w-full bg-white/20 text-white py-2 rounded-lg hover:bg-white/30 transition-colors">Ver Detalles</button>
+                                    <button onClick={() => setQuoteRequestPlan(plan)} className="w-full bg-pink-500 text-white font-bold py-2 rounded-lg hover:bg-pink-600 transition-colors">Cotizar</button>
                                 </div>
-                                 <div className="mt-4 sm:mt-0 sm:ml-auto flex gap-2">
+                            </div>
+                        </GlassCard>
+                    ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-6">
+                    {filteredAndSortedPlans.map(plan => (
+                        <GlassCard key={plan.id} className="relative overflow-hidden transition-all duration-300 md:flex items-center">
+                            <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
+                            <div className="md:w-1/3 cursor-pointer" onClick={() => setDetailModalPlan(plan)}>
+                                <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none" logoUrl={logoUrl} />
+                            </div>
+                            <div className="p-4 md:p-6 md:w-2/3">
+                                <span className="text-xs font-semibold text-pink-300">{plan.city}, {plan.country}</span>
+                                <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
+                                <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
+                                <p className="mt-2 text-white/80 text-sm line-clamp-2">{plan.description}</p>
+                                <div className="mt-4 sm:ml-auto flex gap-2">
                                     <button onClick={() => setDetailModalPlan(plan)} className="bg-white/20 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors">Ver Detalles</button>
                                     <button onClick={() => setQuoteRequestPlan(plan)} className="bg-pink-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors">Cotizar</button>
                                 </div>
                             </div>
-                        </div>
-                    </GlassCard>
-                ))}
-            </div>
-        )
-      ) : (
-          <div className="text-center py-16">
-            <GlassCard className="p-8 inline-block">
-              <h3 className="text-2xl text-white font-bold">No se encontraron planes</h3>
-              <p className="text-white/80 mt-2">Intenta ajustar tu búsqueda o filtros.</p>
-            </GlassCard>
-          </div>
-        )
-      }
+                        </GlassCard>
+                    ))}
+                </div>
+              )
+            ) : (
+              <div className="text-center py-16">
+                <GlassCard className="p-8 inline-block">
+                  <h3 className="text-2xl text-white font-bold">No se encontraron planes</h3>
+                  <p className="text-white/80 mt-2">Intenta ajustar tu búsqueda o filtros.</p>
+                </GlassCard>
+              </div>
+            )}
+        </main>
+      </div>
     </div>
   );
 };

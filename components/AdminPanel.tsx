@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem } from '../types';
+// FIX: Added Regime and TravelerType to imports for use in the PlanFormModal.
+import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from '../types';
 import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from '../constants';
 
 type AppData = {
@@ -73,7 +74,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ appData, setAppData, onLogout }
     }
   };
 
-  const newLogoUrl = "https://lh3.googleusercontent.com/pw/AP1GczOrs6-mkW2MVNJc6ZYLOnXBo_5I5wqzIdxAK73M2iO9-i_veQAxrgl-l-ijl3tz6dmijK5KG0wuI7z_2WJ4YJLzd6r0MKjhmR6lNGFSFBBC5bAyEBV60o5cH-UGkC1idHPiqRfXxDUE6JFpjHmYEVs=w991-h991-s-no-gm?authuser=0";
+  const newLogoUrl = "https://lh3.googleusercontent.com/pw/AP1GczOrs6-mkW2-MVNJc6ZYLOnXBo_5I5wqzIdxAK73M2iO9-i_veQAxrgl-l-ijl3tz6dmijK5KG0wuI7z_2WJ4YJLzd6r0MKjhmR6lNGFSFBBC5bAyEBV60o5cH-UGkC1idHPiqRfXxDUE6JFpjHmYEVs=w991-h991-s-no-gm?authuser=0";
 
   const renderSection = () => {
     switch (activeSection) {
@@ -271,23 +272,42 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
     );
 };
 
+// FIX: Corrected the initial state for the form to include all properties of the Plan type.
+// Also added form fields for the new properties to prevent data loss on edit.
 const PlanFormModal: React.FC<{ plan: Plan | null, onSave: (plan: Plan) => void, onClose: () => void }> = ({ plan, onSave, onClose }) => {
     const [formData, setFormData] = useState<Plan>({
         id: plan?.id || 0,
-        title: plan?.title || '', category: plan?.category || '', price: plan?.price || '', priceValue: plan?.priceValue || 0,
-        durationDays: plan?.durationDays || 0, description: plan?.description || '', images: plan?.images || [],
-        includes: plan?.includes || [], isVisible: plan?.isVisible ?? true, departureDate: plan?.departureDate || '', returnDate: plan?.returnDate || ''
+        title: plan?.title || '',
+        category: plan?.category || '',
+        price: plan?.price || '',
+        priceValue: plan?.priceValue || 0,
+        durationDays: plan?.durationDays || 0,
+        description: plan?.description || '',
+        images: plan?.images || [],
+        includes: plan?.includes || [],
+        isVisible: plan?.isVisible ?? true,
+        departureDate: plan?.departureDate || '',
+        returnDate: plan?.returnDate || '',
+        country: plan?.country || '',
+        city: plan?.city || '',
+        regime: plan?.regime || 'Solo Alojamiento',
+        travelerTypes: plan?.travelerTypes || [],
+        amenities: plan?.amenities || [],
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
     const handleIncludesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({...p, includes: e.target.value.split('\n')}));
     const handleImagesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({ ...p, images: e.target.value.split('\n').filter(url => url.trim() !== '') }));
+    const handleTravelerTypesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({...p, travelerTypes: e.target.value.split('\n').filter(t => t.trim() !== '') as TravelerType[]}));
+    const handleAmenitiesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({ ...p, amenities: e.target.value.split('\n').filter(a => a.trim() !== '') }));
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(formData);
         onClose();
     };
+    
+    const allRegimes: Regime[] = ['Todo Incluido', 'Pensión Completa', 'Con Desayuno Incluido', 'Solo Alojamiento', 'Paquete Promocional'];
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4" onClick={onClose}>
@@ -310,6 +330,13 @@ const PlanFormModal: React.FC<{ plan: Plan | null, onSave: (plan: Plan) => void,
                         </div>
                     </div>
                     <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Descripción" className="neu-textarea w-full p-3 rounded-lg" />
+                    <input name="country" value={formData.country} onChange={handleChange} placeholder="País" className="neu-input w-full p-3 rounded-lg" />
+                    <input name="city" value={formData.city} onChange={handleChange} placeholder="Ciudad" className="neu-input w-full p-3 rounded-lg" />
+                    <select name="regime" value={formData.regime} onChange={handleChange} className="neu-select w-full p-3 rounded-lg">
+                        {allRegimes.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                    <textarea value={formData.travelerTypes.join('\n')} onChange={handleTravelerTypesChange} placeholder="Tipos de Viajero (uno por línea)" className="neu-textarea w-full h-24 p-3 rounded-lg" />
+                    <textarea value={formData.amenities.join('\n')} onChange={handleAmenitiesChange} placeholder="Comodidades (una por línea)" className="neu-textarea w-full h-24 p-3 rounded-lg" />
                     <textarea value={formData.images.join('\n')} onChange={handleImagesChange} placeholder="URLs de Imagen (una por línea)" className="neu-textarea w-full h-24 p-3 rounded-lg" />
                     <textarea value={formData.includes.join('\n')} onChange={handleIncludesChange} placeholder="Incluye (un item por línea)" className="neu-textarea w-full h-24 p-3 rounded-lg" />
                      <div className="flex items-center gap-3 p-3">
