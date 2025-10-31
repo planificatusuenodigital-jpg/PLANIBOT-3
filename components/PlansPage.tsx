@@ -181,7 +181,10 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                  </select>
              </FilterGroup>
             <FilterGroup title="Ideal para...">
-                {allTravelerTypes.map(type => <Checkbox key={type} label={type} value={type} checked={filters.travelerTypes.includes(type)} onChange={(v) => handleCheckboxChange('travelerTypes', v)}/>)}
+                {allTravelerTypes.map(type => {
+                    const label = type === 'Parejas' ? 'Parejas (Lunamieleros)' : type;
+                    return <Checkbox key={type} label={label} value={type} checked={filters.travelerTypes.includes(type)} onChange={(v) => handleCheckboxChange('travelerTypes', v)}/>
+                })}
             </FilterGroup>
             {Object.entries(ALL_AMENITIES).map(([group, amenities]) => (
                 <FilterGroup key={group} title={group}>

@@ -1,6 +1,5 @@
-
-
 import React, { useState, useEffect, useCallback } from 'react';
+import { createClient, Session } from '@supabase/supabase-js';
 import { Section, Plan, Destination, Testimonial, AboutUsContent, LegalContent, FAQItem } from './types';
 import { 
     DEFAULT_TRAVEL_PLANS, 
@@ -30,6 +29,11 @@ import SocialProof from './components/SocialProof';
 import GlassCard from './components/GlassCard';
 import WatermarkedImage from './components/WatermarkedImage';
 import AdminPanel from './components/AdminPanel';
+
+// Supabase client initialization
+const supabaseUrl = 'https://vwckkdlyxsrohqnlsevg.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Y2trZGx5eHNyb2hxbmxzZXZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDM0MTksImV4cCI6MjA3NzQ3OTQxOX0.mv_WdRDJyjoO2p0fPRAGZ4Q-dG78whJ7kGDZRQuVOn8';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Define the shape of our entire app's data
 interface AppData {
@@ -216,20 +220,26 @@ Enviado desde el sitio web.`;
     );
 };
 
-const AdminLogin: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
-    const [username, setUsername] = useState('');
+const SupabaseAdminLogin: React.FC = () => {
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Hardcoded credentials
-        if (username === 'admin' && password === 'planifica2024') {
-            setError('');
-            onLogin();
-        } else {
-            setError('Usuario o contraseña incorrectos.');
+        setLoading(true);
+        setError('');
+        
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (error) {
+            setError('Credenciales inválidas. Por favor, intente de nuevo.');
         }
+        setLoading(false);
     };
 
     return (
@@ -240,12 +250,13 @@ const AdminLogin: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                 {error && <p className="bg-red-500/50 text-white text-center p-2 rounded-lg mb-4">{error}</p>}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-white/80">Usuario</label>
+                        <label className="block text-sm font-medium text-white/80">Correo Electrónico</label>
                         <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none"
+                            required
                         />
                     </div>
                     <div>
@@ -255,10 +266,11 @@ const AdminLogin: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none"
+                            required
                         />
                     </div>
-                    <button type="submit" className="w-full bg-pink-500 font-bold py-2.5 rounded-lg hover:bg-pink-600 transition-colors">
-                        Ingresar
+                    <button type="submit" disabled={loading} className="w-full bg-pink-500 font-bold py-2.5 rounded-lg hover:bg-pink-600 transition-colors disabled:opacity-50">
+                        {loading ? 'Ingresando...' : 'Ingresar'}
                     </button>
                 </form>
                  <a href="/" className="block text-center mt-4 text-sm text-white/70 hover:text-white transition-colors">
@@ -279,8 +291,9 @@ const App: React.FC = () => {
   const [quoteRequestPlan, setQuoteRequestPlan] = useState<Plan | null>(null);
   const [appData, setAppData] = useState<AppData | null>(null);
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
   const [isAdminRoute, setIsAdminRoute] = useState(false);
+  const [loadingSession, setLoadingSession] = useState(true);
   
   // Data persistence logic
   useEffect(() => {
@@ -321,10 +334,17 @@ const App: React.FC = () => {
     if (params.get('admin') === 'true') {
         setIsAdminRoute(true);
     }
-    const adminAuth = localStorage.getItem('isAdminAuthenticated');
-    if (adminAuth === 'true') {
-        setIsAdmin(true);
-    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+        setLoadingSession(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
   
   useEffect(() => {
@@ -351,27 +371,27 @@ const App: React.FC = () => {
     return () => clearTimeout(splashTimer);
   }, [appData]);
 
-  const handleLogin = () => {
-    localStorage.setItem('isAdminAuthenticated', 'true');
-    setIsAdmin(true);
-  };
-  
-  const handleLogout = () => {
-    localStorage.removeItem('isAdminAuthenticated');
-    setIsAdmin(false);
-    setIsAdminRoute(false);
-    window.location.search = '';
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Error logging out:', error.message);
+    // The onAuthStateChange listener will handle setting session to null.
+    // Navigate home after logout.
+    window.location.href = window.location.origin + window.location.pathname;
   };
 
-  if (showSplash) return <WelcomeSplash logoUrl={appData?.logoUrl || DEFAULT_LOGO_URL} />;
-  if (!appData) return <div>Cargando...</div>; // Loading state
-
-  if (isAdminRoute && !isAdmin) {
-    return <AdminLogin onLogin={handleLogin} />;
+  if (loadingSession) {
+    return <div className="fixed inset-0 flex items-center justify-center bg-gray-900 text-white"><p>Verificando sesión...</p></div>;
   }
+  
+  if (showSplash) return <WelcomeSplash logoUrl={appData?.logoUrl || DEFAULT_LOGO_URL} />;
+  if (!appData) return <div className="fixed inset-0 flex items-center justify-center bg-gray-900 text-white"><p>Cargando datos de la aplicación...</p></div>;
 
-  if (isAdmin) {
+  if (session) {
     return <AdminPanel appData={appData} setAppData={handleSetAppData} onLogout={handleLogout} />;
+  }
+  
+  if (isAdminRoute) {
+    return <SupabaseAdminLogin />;
   }
 
   const renderSection = () => {
