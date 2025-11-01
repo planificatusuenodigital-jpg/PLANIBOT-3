@@ -499,6 +499,9 @@ const App: React.FC = () => {
       <PlaniBot 
         planibotAvatarUrl={appData.planibotAvatarUrl}
         contactInfo={appData.contact}
+        socialLinks={appData.social}
+        travelPlans={appData.plans}
+        faqs={appData.faqs}
       />
 
       {qrModalPlan && <QRCodeModal plan={qrModalPlan} onClose={() => setQrModalPlan(null)} />}

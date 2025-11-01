@@ -1,6 +1,6 @@
 
 
-import React from 'react';
+import React, { useState } from 'react';
 import GlassCard from './GlassCard';
 import { DEFAULT_CONTACT_INFO } from '../constants';
 
@@ -10,6 +10,29 @@ interface ContactPageProps {
 }
 
 const ContactPage: React.FC<ContactPageProps> = ({ contactInfo }) => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      const message = `✨ Solicitud de Contacto ✨
+---------------------------------
+*Nombre:* ${formData.name}
+*Email:* ${formData.email}
+
+*Mensaje:*
+${formData.message}
+---------------------------------
+Enviado desde el formulario de contacto del sitio web.`;
+
+      const whatsappUrl = `https://wa.me/${contactInfo.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      setFormData({ name: '', email: '', message: '' }); // Reset form
+  };
+
   return (
     <div className="max-w-6xl mx-auto animate-fade-in">
       <div className="text-center">
@@ -22,18 +45,18 @@ const ContactPage: React.FC<ContactPageProps> = ({ contactInfo }) => {
       <div className="mt-12 grid md:grid-cols-2 gap-8">
         <GlassCard className="p-8 space-y-6">
           <h2 className="text-3xl font-bold text-white">Envíanos un Mensaje</h2>
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="text-white/80">Nombre Completo</label>
-              <input type="text" id="name" className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
+              <input type="text" id="name" value={formData.name} onChange={handleChange} required className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
             </div>
             <div>
               <label htmlFor="email" className="text-white/80">Correo Electrónico</label>
-              <input type="email" id="email" className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
+              <input type="email" id="email" value={formData.email} onChange={handleChange} required className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
             </div>
             <div>
               <label htmlFor="message" className="text-white/80">Mensaje</label>
-              <textarea id="message" rows={4} className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none"></textarea>
+              <textarea id="message" rows={4} value={formData.message} onChange={handleChange} required className="w-full mt-1 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none"></textarea>
             </div>
             <button type="submit" className="w-full bg-pink-500 text-white font-bold py-3 rounded-lg hover:bg-pink-600 transition-colors shadow-lg">
               Enviar Cotización

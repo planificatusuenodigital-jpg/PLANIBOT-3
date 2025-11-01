@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ChatMessage } from '../types';
+import { ChatMessage, Plan, FAQItem } from '../types';
 import { sendMessageToGemini, startChat, isChatInitialized } from '../services/geminiService';
-import { DEFAULT_CONTACT_INFO } from '../constants';
+import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from '../constants';
 
 const PlaniBotAvatar: React.FC<{ className?: string, planibotAvatarUrl: string }> = ({ className, planibotAvatarUrl }) => (
     <img
@@ -47,24 +47,22 @@ const ContactForm: React.FC<{ onFormSent: () => void, contactInfo: typeof DEFAUL
     );
 };
 
-// FIX: Added props to use dynamic data from App.tsx state.
 interface PlaniBotProps {
     planibotAvatarUrl: string;
     contactInfo: typeof DEFAULT_CONTACT_INFO;
-    // The following props are passed from App.tsx but are used by geminiService, which is not refactored to accept them.
-    // socialLinks: any;
-    // travelPlans: any;
-    // faqs: any;
+    socialLinks: typeof DEFAULT_SOCIAL_LINKS;
+    travelPlans: Plan[];
+    faqs: FAQItem[];
 }
 
 
-const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) => {
+const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, socialLinks, travelPlans, faqs }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
-  const [isChatAvailable, setIsChatAvailable] = useState(true);
+  const [isChatAvailable, setIsChatAvailable] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<number | null>(null);
 
@@ -81,7 +79,12 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) =
 
   useEffect(() => {
     if (isOpen) {
-        startChat();
+        startChat({
+            plans: travelPlans,
+            faqs,
+            contact: contactInfo,
+            social: socialLinks,
+        });
         const chatReady = isChatInitialized();
         setIsChatAvailable(chatReady);
         if (chatReady) {
@@ -97,7 +100,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) =
         // Reset state when closing to ensure a fresh conversation next time
         setMessages([]);
     }
-  }, [isOpen]);
+  }, [isOpen, travelPlans, faqs, contactInfo, socialLinks]);
 
   useEffect(() => {
     scrollToBottom();
