@@ -1,12 +1,12 @@
-
-import React, { useState } from 'react';
-import { Section } from '../types';
+import React, { useState, useMemo } from 'react';
+import { Section, Plan } from '../types';
 
 interface HeaderProps {
   activeSection: Section;
   setActiveSection: (section: Section) => void;
   setGlobalSearch: (term: string) => void;
   logoUrl: string;
+  plans: Plan[];
 }
 
 const NavLink: React.FC<{
@@ -35,41 +35,70 @@ const SearchModal: React.FC<{
     onClose: () => void;
     setGlobalSearch: (term: string) => void;
     setActiveSection: (section: Section) => void;
-}> = ({ onClose, setGlobalSearch, setActiveSection }) => {
+    plans: Plan[];
+}> = ({ onClose, setGlobalSearch, setActiveSection, plans }) => {
     const [searchTerm, setSearchTerm] = useState('');
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!searchTerm.trim()) return;
-        setGlobalSearch(searchTerm);
+    const handleSearch = (term: string) => {
+        if (!term.trim()) return;
+        setGlobalSearch(term);
         setActiveSection(Section.Planes);
         setSearchTerm('');
         onClose();
     };
     
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleSearch(searchTerm);
+    };
+
+    const suggestions = useMemo(() => {
+        if (!searchTerm) return [];
+        return plans.filter(plan => 
+            plan.isVisible && plan.title.toLowerCase().includes(searchTerm.toLowerCase())
+        ).slice(0, 5); // Limit to 5 suggestions
+    }, [searchTerm, plans]);
+    
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in" onClick={onClose}>
-            <div className="w-full max-w-md" onClick={e => e.stopPropagation()}>
-                 <form onSubmit={handleSearch} className="relative">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-24 bg-black/60 backdrop-blur-sm p-4 animate-fade-in" onClick={onClose}>
+            <div className="w-full max-w-lg" onClick={e => e.stopPropagation()}>
+                 <form onSubmit={handleSubmit} className="relative">
                     <input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Busca tu próxima aventura soñada..."
                         autoFocus
-                        className="w-full bg-white/20 border border-white/30 text-white text-lg placeholder-white/60 rounded-full px-6 py-3 focus:ring-2 focus:ring-pink-400 focus:outline-none"
+                        className="w-full bg-white/20 border border-white/30 text-white text-lg placeholder-white/60 rounded-full px-6 py-4 focus:ring-2 focus:ring-pink-400 focus:outline-none"
                     />
                     <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-2">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </button>
                 </form>
+                 {suggestions.length > 0 && (
+                    <div className="mt-2 bg-black/20 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden animate-fade-in">
+                        <ul>
+                            {suggestions.map(plan => (
+                                <li key={plan.id}>
+                                    <button 
+                                        onClick={() => handleSearch(plan.title)}
+                                        className="w-full text-left flex items-center gap-4 p-3 hover:bg-white/10 transition-colors"
+                                    >
+                                        <img src={plan.images[0]} alt={plan.title} className="w-16 h-10 object-cover rounded-md flex-shrink-0" />
+                                        <span className="text-white">{plan.title}</span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
 
-const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection, setGlobalSearch, logoUrl }) => {
+const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection, setGlobalSearch, logoUrl, plans }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -132,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection, setGlo
           )}
         </nav>
       </header>
-      {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} setGlobalSearch={setGlobalSearch} setActiveSection={setActiveSection} />}
+      {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} setGlobalSearch={setGlobalSearch} setActiveSection={setActiveSection} plans={plans} />}
     </>
   );
 };

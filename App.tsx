@@ -488,7 +488,7 @@ const App: React.FC = () => {
       `}</style>
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Header activeSection={activeSection} setActiveSection={setActiveSection} setGlobalSearch={setGlobalSearch} logoUrl={appData.logoUrl} />
+        <Header activeSection={activeSection} setActiveSection={setActiveSection} setGlobalSearch={setGlobalSearch} logoUrl={appData.logoUrl} plans={appData.plans} />
         <main className="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           {renderSection()}
         </main>

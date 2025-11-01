@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatMessage } from '../types';
 import { sendMessageToGemini, startChat, isChatInitialized } from '../services/geminiService';
@@ -197,7 +196,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo }) =
               {messages.map((msg, index) => (
                 <div key={index} className={`flex items-end gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[80%] p-3 rounded-2xl ${msg.role === 'user' ? 'bg-pink-500/60 backdrop-blur-sm text-white rounded-br-none' : 'bg-white/20 text-white rounded-bl-none'}`}>
-                     <p className="text-sm" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, '<br />') + (typingIntervalRef.current && index === messages.length - 1 ? '▋' : '') }}></p>
+                     <p className="text-sm" dangerouslySetInnerHTML={{ __html: msg.text + (typingIntervalRef.current && index === messages.length - 1 ? '▋' : '') }}></p>
                   </div>
                 </div>
               ))}
