@@ -1,11 +1,28 @@
-import { GoogleGenAI, Chat, FunctionDeclaration, Type, GenerateContentResponse } from "@google/genai";
+
+import { Plan, FAQItem, BotResponse } from '../types';
 import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from "../constants";
-import { Plan, FAQItem } from '../types';
 
-let ai: GoogleGenAI | null = null;
-let chat: Chat | null = null;
+// --- TIPOS DE ESTADO Y CONTEXTO ---
 
-// Define the shape of the data needed by the bot
+type ConversationStep = 
+    | 'GREETING'       // Saludo inicial, pide nombre
+    | 'ASK_DESTINATION' // Ya tiene nombre, pide destino
+    | 'ASK_DATES'      // Ya tiene destino, pide fechas
+    | 'ASK_PEOPLE'     // Ya tiene fechas, pide pax
+    | 'ASK_BUDGET'     // (Opcional) Pide presupuesto o cierra
+    | 'COMPLETED';     // Flujo terminado
+
+interface ConversationContext {
+    step: ConversationStep;
+    data: {
+        name?: string;
+        destination?: string;
+        dates?: string;
+        people?: string;
+        budget?: string;
+    };
+}
+
 interface AppDataForBot {
     plans: Plan[];
     faqs: FAQItem[];
@@ -13,144 +30,205 @@ interface AppDataForBot {
     social: typeof DEFAULT_SOCIAL_LINKS;
 }
 
-const getAi = (): GoogleGenAI | null => {
-    if (!ai) {
-        const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
+// --- ESTADO GLOBAL (SIMULADO) ---
+let botData: AppDataForBot | null = null;
+let isInitialized = false;
 
-        if (!apiKey) {
-            console.error("API_KEY environment variable not set. PlaniBot functionality will be disabled.");
-            return null;
-        }
-        try {
-            ai = new GoogleGenAI({ apiKey });
-        } catch (error) {
-            console.error("Failed to initialize GoogleGenAI:", error);
-            return null;
+// Contexto de la conversación actual (En una app real, esto iría por sesión de usuario)
+let context: ConversationContext = {
+    step: 'GREETING',
+    data: {}
+};
+
+// --- BASE DE CONOCIMIENTO (CEREBRO DEL EXPERTO) ---
+
+const KNOWLEDGE_BASE: Record<string, { description: string; bestSeason: string; food: string; tips: string }> = {
+    "san andres": {
+        description: "El mar de los siete colores. Es perfecto para bucear, relajarse en Johnny Cay y darle la vuelta a la isla en mulita.",
+        bestSeason: "Enero a abril es ideal (temporada seca), aunque el Caribe es sabroso todo el año.",
+        food: "Rondón, cangrejo y limonada de coco.",
+        tips: "Usa zapatos de agua y bloqueador biodegradable."
+    },
+    "cartagena": {
+        description: "Historia en la ciudad amurallada, rumba en Getsemaní y playas en Barú.",
+        bestSeason: "Diciembre a abril para evitar lluvias.",
+        food: "Arepa de huevo, cazuela de mariscos y cocadas.",
+        tips: "Camina la ciudad vieja al atardecer."
+    },
+    "santa marta": {
+        description: "Sierra Nevada y mar. El Parque Tayrona es imperdible.",
+        bestSeason: "Enero a marzo y junio a agosto.",
+        food: "Cayeye y pescado frito.",
+        tips: "Vacuna de fiebre amarilla para el Tayrona."
+    },
+    "eje cafetero": {
+        description: "Paisajes verdes, Salento, Valle del Cocora y termales.",
+        bestSeason: "Todo el año es templado, evita octubre por lluvias.",
+        food: "Bandeja paisa, trucha al ajillo y café.",
+        tips: "Lleva abrigo ligero para las noches."
+    },
+    "amazonas": {
+        description: "Conexión con la naturaleza, delfines rosados y selva.",
+        bestSeason: "Julio a octubre (playas), Diciembre a mayo (selva inundada).",
+        food: "Pescado moqueado y fariña.",
+        tips: "Repelente y vacuna de fiebre amarilla obligatoria."
+    },
+    "cancun": {
+        description: "Playas turquesas, cenotes, fiesta y cultura maya.",
+        bestSeason: "Noviembre a abril.",
+        food: "Tacos y cochinita pibil.",
+        tips: "Revisa si tu hotel incluye transporte a Xcaret."
+    },
+    "punta cana": {
+        description: "Resorts todo incluido de lujo y playas infinitas.",
+        bestSeason: "Diciembre a abril.",
+        food: "Mofongo y Sancocho.",
+        tips: "Disfruta del Resort Todo Incluido."
+    }
+};
+
+// --- UTILIDADES ---
+
+const normalize = (text: string) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+const extractName = (input: string): string => {
+    // Intenta extraer el nombre de frases como "Soy Juan", "Me llamo Maria", "Mi nombre es Pedro"
+    const clean = input.replace(/[¿?!¡.,]/g, ''); // Quitar puntuación
+    const words = clean.split(' ');
+    
+    // Heurística simple: si es una palabra, es el nombre
+    if (words.length === 1) return words[0].charAt(0).toUpperCase() + words[0].slice(1);
+
+    const triggers = ["soy", "llamo", "es"];
+    for (let i = 0; i < words.length; i++) {
+        if (triggers.includes(words[i].toLowerCase()) && i + 1 < words.length) {
+            let name = words[i+1];
+            if (name.toLowerCase() === "el" || name.toLowerCase() === "la") continue; // Evitar "Soy el..."
+            return name.charAt(0).toUpperCase() + name.slice(1);
         }
     }
-    return ai;
+    // Si no encuentra patrón, toma la última palabra si no es muy larga (probablemente el nombre)
+    const lastWord = words[words.length - 1];
+    if (lastWord.length > 2) return lastWord.charAt(0).toUpperCase() + lastWord.slice(1);
+    
+    return "Viajero";
 };
 
-const displayContactFormFunctionDeclaration: FunctionDeclaration = {
-    name: 'displayContactForm',
-    description: 'Muestra un formulario para que el usuario ingrese su nombre, el plan o tema de interés y la hora preferida para ser contactado por un asesor.',
-    parameters: {
-        type: Type.OBJECT,
-        properties: {},
-    },
-};
-
-const createSystemInstruction = (appData: AppDataForBot): string => {
-    const faqFormatted = appData.faqs.map(faq => `P: ${faq.question}\nR: ${faq.answer}`).join('\n\n');
-    const plansFormatted = appData.plans
-        .filter(p => p.isVisible)
-        .map(p => `- <b>${p.title}</b>: ${p.description.substring(0, 80)}... desde ${p.price}. Incluye: ${p.includes.join(', ')}.`)
-        .join('<br>');
-
-    return `
-Eres "PlaniBot" 🤖, el asistente virtual experto y amigable de la agencia de viajes "Planifica Tu Sueño".
-Tu misión es ayudar a los usuarios con sus consultas de viaje, proporcionar información precisa sobre la agencia y, lo más importante, facilitarles el contacto con un asesor.
-
-**Personalidad:** Eres profesional, pero cercano y entusiasta. Usas emojis para hacer la conversación más amena (✈️, ☀️, 🌴, ✨). Siempre hablas en español.
-
-**Reglas de Formato de Respuesta (MUY IMPORTANTE):**
-- **Usa HTML Básico para Formato:** El chat puede renderizar HTML. Usa las siguientes etiquetas para dar formato a tu texto y hacerlo más legible. NO USES MARKDOWN.
-    - **Negrita:** \`<b>texto</b>\`
-    - **Listas:** \`<ul><li>Item 1</li><li>Item 2</li></ul>\`
-    - **Saltos de línea:** Usa \`<br>\` para los saltos de línea.
-- **Genera Enlaces Clicables:** Cuando proporciones información de contacto, ¡hazla útil! Genera etiquetas HTML \`<a>\` para que el usuario pueda hacer clic directamente.
-    - **Teléfono:** \`<a href="tel:${appData.contact.phone.replace(/\D/g, '')}" target="_blank">${appData.contact.phone}</a>\`
-    - **WhatsApp:** \`<a href="${appData.contact.whatsappLink}" target="_blank">Enviar un mensaje por WhatsApp</a>\`
-    - **Correo Electrónico:** \`<a href="mailto:${appData.contact.email}" target="_blank">${appData.contact.email}</a>\`
-    - **Dirección:** \`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(appData.contact.address)}" target="_blank">${appData.contact.address}</a>\`
-    - **Redes Sociales:**
-        - Facebook: \`<a href="${appData.social.facebook}" target="_blank">Síguenos en Facebook</a>\`
-        - Instagram: \`<a href="${appData.social.instagram}" target="_blank">Síguenos en Instagram</a>\`
-        - TikTok: \`<a href="${appData.social.tiktok}" target="_blank">Síguenos en TikTok</a>\`
-
-**Información Clave de la Agencia (Base de Conocimiento):**
-- **Nombre:** Planifica Tu Sueño
-- **Descripción:** No somos solo una agencia; somos el vehículo para cumplir tu sueño de viajar. Nos dedicamos a crear experiencias únicas y personalizadas.
-- **Teléfono y WhatsApp:** ${appData.contact.phone}
-- **Correo Electrónico:** ${appData.contact.email}
-- **Dirección Física:** ${appData.contact.address}
-- **Horario de Atención:** ${appData.contact.schedule}
-- **RNT (Registro Nacional de Turismo):** ${appData.contact.rnt}
-- **Redes Sociales:** Facebook, Instagram, TikTok.
-
-**Planes de Viaje Disponibles (Ejemplos):**
-${plansFormatted}
-*Nota: Estos son ejemplos, siempre puedes preguntar al usuario sobre su destino soñado, fechas y presupuesto para dar una recomendación más personalizada y sugerir que pida una cotización formal.*
-
-**Capacidades Especiales:**
-- **Agendar una Llamada:** Puedes mostrar un formulario para que el usuario deje sus datos (nombre, tema de interés, hora para llamar) y envíe la solicitud directamente por WhatsApp.
-
-**Reglas de Interacción y Comportamiento:**
-1.  **Preséntate Siempre:** Comienza la conversación presentándote como "PlaniBot de Planifica Tu Sueño".
-2.  **Usa la Información Proporcionada:** Basa TODAS tus respuestas en la información de este prompt. Si te preguntan algo que no está aquí, debes decir "Esa es una excelente pregunta. Para darte la información más precisa, te recomiendo contactar a uno de nuestros asesores expertos." y luego ofrecer las opciones de contacto (usando los enlaces HTML).
-3.  **Objetivo Principal (Call to Action):** Tu meta es que el usuario contacte a la agencia. Si el usuario muestra interés en un plan, pregunta si quiere más detalles o si prefiere "hablar con un asesor" o "recibir una cotización".
-4.  **Usa tus herramientas:** Cuando el usuario quiera cotizar, ser llamado, o contactar a un asesor, **debes** usar la herramienta \`displayContactForm\`. Frases como "quiero cotizar", "llámenme", "quiero hablar con alguien" deben activar esta herramienta.
-5.  **Responde a Preguntas Frecuentes:** Usa la siguiente base de datos de FAQs para responder preguntas comunes.
-6.  **Sé Conciso:** Da respuestas claras, bien estructuradas y fáciles de leer.
-7.  **Manejo de Consultas Post-Venta (Check-in, Programación):** Si un usuario pregunta sobre su check-in, la programación de su viaje, su itinerario, o cualquier consulta relacionada con un viaje ya comprado (ej: "mi reserva", "detalles de mi vuelo"), debes responder EXACTAMENTE con el siguiente texto (incluyendo el HTML):
-    "Hola, claro que sí.<br>Te estamos redirigiendo a nuestra área operativa. Si tu viaje está programado para las siguientes 24 horas, serás atendido por nuestro asesor.<br>Si aún faltan días para tu viaje, nos estaremos comunicando contigo en el menor tiempo posible.<br>Recuerda que si no tienes ningún cambio o solicitud, 24 horas antes te enviaremos toda la documentación, programación e indicaciones de tu viaje.<br>¡Feliz día!"
-    **Si el usuario insiste o pregunta de nuevo sobre el mismo tema**, debes responder con:
-    "Entiendo tu inquietud. Para una atención más directa, por favor comunícate con nuestra área operativa a través de este enlace de WhatsApp: <a href='${appData.contact.whatsappLink}' target='_blank'>Contactar Área Operativa</a>"
-8.  **Sugiere Alternativas:** Si un usuario pregunta por un plan específico, después de darle la información, puedes sugerirle 1 o 2 planes similares de la lista de \`Planes de Viaje Disponibles\` que también podrían interesarle. Por ejemplo, si pregunta por un plan de playa en Colombia, podrías sugerir otro plan de playa en Colombia.
-
----
-**Base de Conocimiento de Preguntas Frecuentes (FAQ):**
-${faqFormatted}
----
-
-**Ejemplo de Interacción con Herramienta:**
-*Usuario:* "Hola, quiero cotizar un viaje a Cancún"
-*PlaniBot:* "¡Excelente elección! Cancún es un paraíso 🌴.<br>Para darte la mejor cotización, necesito algunos datos. Te mostraré un pequeño formulario para que completes."
-(En este punto, el bot llama a la función \`displayContactForm\`).
-`;
-}
-
+// --- INICIALIZACIÓN ---
 
 export const startChat = (appData: AppDataForBot) => {
-    const geminiAI = getAi();
-    if (geminiAI) {
-        const systemInstruction = createSystemInstruction(appData);
-        chat = geminiAI.chats.create({
-            model: 'gemini-2.5-flash',
-            config: {
-                systemInstruction,
-                tools: [{ functionDeclarations: [displayContactFormFunctionDeclaration] }],
-            },
-        });
-    } else {
-        chat = null;
+    botData = appData;
+    isInitialized = true;
+    // Reiniciar contexto al iniciar
+    context = { step: 'GREETING', data: {} };
+};
+
+export const resetBotContext = () => {
+    context = { step: 'GREETING', data: {} };
+};
+
+// --- MOTOR DE LÓGICA ---
+
+const processFlow = (input: string): BotResponse => {
+    const cleanInput = normalize(input);
+    
+    // 0. INTERRUPCIONES GLOBALES (Ayuda, Reinicio, Saludos genéricos si ya se saludó)
+    if (/(reiniciar|borrar|inicio|empezar de nuevo)/.test(cleanInput)) {
+        resetBotContext();
+        return { text: "¡Listo! Empecemos de cero. 👋\n\nPara poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**" };
     }
+
+    // 1. MAQUINA DE ESTADOS
+    switch (context.step) {
+        case 'GREETING':
+            // Esperamos el nombre
+            const name = extractName(input);
+            context.data.name = name;
+            context.step = 'ASK_DESTINATION';
+            return {
+                text: `¡Un gusto saludarte, **${name}**! 👋\n\nPara ayudarte a encontrar el viaje perfecto, cuéntame: \n\n🌎 **¿A qué destino sueñas viajar?**\n_(Ej: San Andrés, Cancún, Eje Cafetero, o busco recomendaciones)_`
+            };
+
+        case 'ASK_DESTINATION':
+            context.data.destination = input; // Guardamos lo que escribió tal cual para naturalidad
+            context.step = 'ASK_DATES';
+            
+            // Detectar si mencionó un lugar conocido para dar un dato curioso
+            let funFact = "";
+            const knownKey = Object.keys(KNOWLEDGE_BASE).find(k => cleanInput.includes(k));
+            if (knownKey) {
+                funFact = `\n\n✨ _Excelente elección. ${KNOWLEDGE_BASE[knownKey].description}_`;
+            }
+
+            return {
+                text: `¡${context.data.destination} suena espectacular! ${funFact}\n\n📅 **¿Para qué fechas tienes planeado tu viaje?**\n_(Ej: En Diciembre, Del 15 al 20 de Octubre, Fechas flexibles)_`
+            };
+
+        case 'ASK_DATES':
+            context.data.dates = input;
+            context.step = 'ASK_PEOPLE';
+            return {
+                text: "Entendido. 🗓️ Ya casi terminamos.\n\n👨‍👩‍👧‍👦 **¿Cuántas personas viajan contigo?**\n_(Por favor indícame cuántos adultos y si viajan niños con sus edades)_"
+            };
+
+        case 'ASK_PEOPLE':
+            context.data.people = input;
+            context.step = 'COMPLETED'; // Saltamos presupuesto para no ser invasivos, o lo dejamos opcional en el form
+            
+            // GENERAR ENLACE DE WHATSAPP
+            const phone = botData?.contact.phone.replace(/\D/g, '') || "573113653379";
+            const message = `👋 Hola Planifica Tu Sueño, soy *${context.data.name}*.\n\nEstoy interesado en viajar a: *${context.data.destination}*.\n🗓️ Fechas: ${context.data.dates}\n👥 Viajeros: ${context.data.people}\n\nQuedo atento a la cotización. ¡Gracias!`;
+            const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+            return {
+                text: `¡Perfecto, **${context.data.name}**! Ya tengo todos los datos para armar tu plan ideal. 🤩\n\nComo los precios de vuelos y hoteles cambian rápido, un asesor humano necesita verificar disponibilidad en tiempo real.\n\n👇 **Presiona el botón de abajo para enviar tu solicitud a nuestro WhatsApp oficial:**`,
+                whatsappLink: waLink
+            };
+
+        case 'COMPLETED':
+             // Si sigue escribiendo después de completar
+             return {
+                 text: "¡Ya tengo tus datos! 😊 Si deseas cambiar algo, dime 'reiniciar'. De lo contrario, dale clic al botón de arriba para chatear con un asesor humano en WhatsApp."
+             };
+    }
+
+    return { text: "Lo siento, me perdí un poco. ¿Podrías repetirme?" };
 };
 
-export const isChatInitialized = (): boolean => {
-    return chat !== null;
-};
 
-const createMockErrorResponse = (text: string): GenerateContentResponse => ({
-    text,
-    functionCalls: undefined,
-    candidates: [],
-    promptFeedback: undefined
-});
+const processLocalResponse = (input: string): BotResponse => {
+    if (!botData) return { text: "Error: Cerebro no inicializado." };
+    const cleanInput = normalize(input);
 
-export const sendMessageToGemini = async (message: string): Promise<GenerateContentResponse> => {
-    if (!chat) {
-        // This case should ideally not be hit if startChat is called correctly,
-        // but as a fallback, it prevents a crash.
-        console.error("Chat not initialized before sending message.");
-        return createMockErrorResponse('Lo siento, el servicio de chat no está disponible. Por favor, reinicia la conversación.');
+    // --- MANEJO DE PREGUNTAS FRECUENTES (INTERRUPCIONES AL FLUJO) ---
+    // Si el usuario pregunta algo específico (ubicación, redes, rnt), respondemos y NO avanzamos el flujo de cotización,
+    // o recordamos el flujo.
+
+    if (/(ubicacion|direccion|donde estan|oficina)/.test(cleanInput)) {
+        return { text: `Estamos ubicados en: **${botData.contact.address}**.` };
     }
     
-    try {
-        const result = await chat.sendMessage({ message });
-        return result;
-    } catch(error) {
-        console.error("Error sending message to Gemini:", error);
-        return createMockErrorResponse('Lo siento, ha ocurrido un error al comunicarme con mi cerebro 🧠. Por favor, intenta de nuevo o contacta a un asesor.');
+    if (/(telefono|celular|numero)/.test(cleanInput)) {
+        return { text: `Nuestro número es: **${botData.contact.phone}**.` };
     }
+
+    if (/(redes|instagram|facebook)/.test(cleanInput)) {
+         return { 
+             text: "¡Claro! Síguenos en:\n" +
+                   `📷 Instagram: ${botData.social.instagram}\n` +
+                   `📘 Facebook: ${botData.social.facebook}`
+         };
+    }
+
+    // Si no es una pregunta fáctica, procesamos el flujo de ventas
+    return processFlow(input);
+};
+
+export const sendMessageToBot = async (message: string): Promise<BotResponse> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const response = processLocalResponse(message);
+            resolve(response);
+        }, 700 + Math.random() * 800); 
+    });
 };

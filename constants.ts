@@ -1,3 +1,4 @@
+
 import { Plan, Destination, Testimonial, AboutUsContent, LegalContent, FAQItem } from './types';
 
 export const DEFAULT_LOGO_URL = 'https://lh3.googleusercontent.com/pw/AP1GczMVaa2t54xizfCT4x_LuthxbgVvbVait9QQs24AIFmmP11LvYGDQCc64rLNBOLySyjTMcywDRVWC5dm5Qlh5NNm9pOTJYkVQXX9XOHUlLIpOHbE4-5gZOdIICB1sueb_fejAJa5mRmHv-1PNAbqA-U=w991-h991-s-no-gm?authuser=0';
@@ -20,6 +21,36 @@ export const DEFAULT_SOCIAL_LINKS = {
   tiktok: "https://www.tiktok.com/@planificatusueno",
 };
 
+export const DEFAULT_CATEGORIES = [
+    "Sol y Playa",
+    "Rural",
+    "Internacional",
+    "Caribeño",
+    "Aventura",
+    "Cultural",
+    "Romántico"
+];
+
+export const COMMON_AMENITIES = [
+    "Piscina", "Jacuzzi", "Wifi Gratis", "Aire Acondicionado", 
+    "Restaurante", "Bar / Lounge", "Estacionamiento", 
+    "Gimnasio", "Spa", "Turco / Baño de vapor", 
+    "Club de niños", "Acceso a la Playa", "Vista al Mar",
+    "Minibar / Refrigerador", "Agua Caliente", "Mesa de Tours",
+    "Salón de Eventos / Conferencias", "Hotel accesible",
+    "Balcón / Terraza", "Se admiten mascotas"
+];
+
+export const COMMON_INCLUDES = [
+    "Alojamiento", "Desayuno", "Almuerzo", "Cena", 
+    "Snacks ilimitados", "Bebidas ilimitadas", 
+    "Tiquetes Aéreos", "Transporte terrestre", 
+    "Seguro de viaje", "Impuestos hoteleros",
+    "Tours guiados", "Tarjeta de asistencia médica",
+    "Traslado Aeropuerto-Hotel-Aeropuerto",
+    "Bar abierto", "Shows nocturnos"
+];
+
 export const DEFAULT_TRAVEL_PLANS: Plan[] = [
   {
     id: 1,
@@ -28,9 +59,27 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 350000,
     durationDays: 2,
-    description: "Un paraíso rural para el descanso. Disfruta de habitaciones confortables, piscina, jacuzzi, turco, senderos ecológicos y cascadas naturales. Una experiencia de desconexión total con todas las comodidades. No se admiten mascotas.",
-    images: ["https://picsum.photos/seed/finca-san-isidro-1/800/600", "https://picsum.photos/seed/finca-san-isidro-2/800/600", "https://picsum.photos/seed/finca-san-isidro-3/800/600"],
-    includes: ["Alojamiento", "Alimentación (cena, desayuno, almuerzo)", "Seguro de accidentes", "Acceso a piscina, jacuzzi y turco", "Senderos ecológicos"],
+    description: "Disfruta de un paraíso rural con todas las comodidades: habitaciones equipadas, Wifi, Piscina, Jacuzzi, Turco, senderos ecológicos y cascadas naturales. Un lugar ideal para el descanso y la desconexión. La tarifa incluye alojamiento, alimentación completa (cena, desayuno y almuerzo), seguro de accidentes y acceso a todas las amenidades. Nota: no se permite el ingreso de mascotas.",
+    images: [
+        "https://lh3.googleusercontent.com/p/AF1QipM8Kpo53KGYF6YYW_CeQ9SSqnJfOg6W6DUTXTI0=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipNA4WZ-5zXaTsATL8TYbz_giPQnWLPCLsLuU7gS=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPLC900XKcREcroDsn467WB_7B7kHQrNPmJu-mJ=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOo2GeX5NFRwWsRpI7L_FymO3UDklFjgsL0zFbG=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipN1fmF2nz9khyLu6vTtVi-Z95v1JZmR8qjwrrgy=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOIH0q4ff0iUVFOyIsfGRmDRfuL9zhDC3Qb4nHJ=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipO1XVZztAp58803GhLr7VhSTkw6nvxjls8oudcd=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPA1WfWZcXIzrFsuvuUdY4VkLmOlnrDStxnra4c=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPJuyxBH71GnLpUG6u3hvfsjtZaA4mTRjDTQ5nx=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipO3fmHAOr71qCb2L4qHCfCQWvQYekehOE7n0zea=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPiiWI8byu-k2v822Eoyj-Yf9XirsYlhzoGiSix=s1360-w1360-h1020-rw"
+    ],
+    includes: [
+        "Alojamiento",
+        "Alimentación (cena, desayuno, almuerzo)",
+        "Seguro de accidentes",
+        "Acceso a piscina, jacuzzi y turco",
+        "Senderos ecológicos y cascadas"
+    ],
     isVisible: true,
     departureDate: "2024-11-10",
     returnDate: "2024-11-12",

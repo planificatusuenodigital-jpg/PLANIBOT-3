@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from '../types';
-import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from '../constants';
+import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, COMMON_AMENITIES, COMMON_INCLUDES } from '../constants';
 
 type AppData = {
   plans: Plan[];
@@ -13,6 +14,7 @@ type AppData = {
   logoUrl: string;
   planibotAvatarUrl: string;
   seoImageUrl: string;
+  categories: string[];
 };
 
 interface AdminPanelProps {
@@ -26,7 +28,7 @@ interface AdminSubComponentProps {
     setEditedData: React.Dispatch<React.SetStateAction<AppData>>;
 }
 
-type AdminSection = 'dashboard' | 'plans' | 'testimonials' | 'content' | 'settings';
+type AdminSection = 'dashboard' | 'plans' | 'categories' | 'testimonials' | 'content' | 'settings';
 
 const NeumorphicCard: React.FC<{ children: React.ReactNode; className?: string; onClick?: (event: React.MouseEvent<HTMLDivElement>) => void; type?: 'convex' | 'concave' | 'flat' }> = ({ children, className = '', onClick, type = 'convex' }) => {
     const typeClass = {
@@ -73,14 +75,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ appData, setAppData, onLogout }
     }
   };
 
-  const newLogoUrl = "https://lh3.googleusercontent.com/pw/AP1GczOrs6-mkW2-MVNJc6ZYLOnXBo_5I5wqzIdxAK73M2iO9-i_veQAxrgl-l-ijl3tz6dmijK5KG0wuI7z_2WJ4YJLzd6r0MKjhmR6lNGFSFBBC5bAyEBV60o5cH-UGkC1idHPiqRfXxDUE6JFpjHmYEVs=w991-h991-s-no-gm?authuser=0";
-
   const renderSection = () => {
     switch (activeSection) {
       case 'dashboard':
         return <Dashboard />;
       case 'plans':
         return <PlansManager editedData={editedData} setEditedData={setEditedData} />;
+      case 'categories':
+        return <CategoriesManager editedData={editedData} setEditedData={setEditedData} />;
       case 'testimonials':
         return <TestimonialsManager editedData={editedData} setEditedData={setEditedData} />;
       case 'content':
@@ -153,18 +155,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ appData, setAppData, onLogout }
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        /* Custom scrollbar for admin panel */
+        .admin-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .admin-scroll::-webkit-scrollbar-track {
+            background: #e0e0e0;
+        }
+        .admin-scroll::-webkit-scrollbar-thumb {
+            background-color: #bbb;
+            border-radius: 20px;
+        }
       `}</style>
       <div className="admin-panel-body min-h-screen">
         <div className="flex">
           {/* Sidebar */}
           <aside className={`fixed md:relative top-0 left-0 h-full z-20 w-64 p-4 flex-col bg-[var(--admin-bg)] transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:flex`}>
             <div className="flex items-center gap-3 mb-8">
-              <img src={newLogoUrl} alt="Logo" className="h-12 w-auto" />
+              <img src={editedData.logoUrl} alt="Logo" className="h-12 w-auto" />
               <h1 className="font-bold text-lg">Admin Panel</h1>
             </div>
             <nav className="flex-grow space-y-4">
               <NavButton section="dashboard" label="Dashboard" />
               <NavButton section="plans" label="Planes y Servicios" />
+              <NavButton section="categories" label="Categorías" />
               <NavButton section="testimonials" label="Testimonios" />
               <NavButton section="content" label="Contenido de Páginas" />
               <NavButton section="settings" label="Ajustes Generales" />
@@ -187,7 +201,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ appData, setAppData, onLogout }
             
             {isDirty && (
                  <div className="fixed bottom-0 right-0 p-4 w-full md:w-[calc(100%-16rem)] flex justify-end gap-4 bg-[var(--admin-bg)]/80 backdrop-blur-sm neumorphic-convex z-30 animate-fade-in">
-                    <p className='font-semibold self-center'>Tienes cambios sin guardar</p>
+                    <p className='font-semibold self-center hidden sm:block'>Tienes cambios sin guardar</p>
                     <NeumorphicButton onClick={handleDiscardChanges} className="px-5 py-2 text-gray-700">Descartar</NeumorphicButton>
                     <NeumorphicButton onClick={handleSaveChanges} className="px-5 py-2 text-pink-600 font-bold">Guardar Cambios</NeumorphicButton>
                 </div>
@@ -211,7 +225,7 @@ const Dashboard: React.FC = () => (
             <div>
                  <h2 className="text-3xl font-bold mb-2">¡Bienvenido al Panel de Administración!</h2>
                 <p className="text-gray-600 max-w-lg">
-                    Desde aquí puedes gestionar todo el contenido de tu sitio web. Usa el menú para navegar entre las diferentes secciones y dar vida a tus planes de viaje.
+                    Desde aquí puedes gestionar todo el contenido de tu sitio web. Usa el menú para navegar entre las diferentes secciones, crear nuevos planes y gestionar tus categorías.
                 </p>
             </div>
         </NeumorphicCard>
@@ -250,42 +264,112 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
         <div className="animate-fade-in">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <h1 className="text-4xl font-bold">Gestionar Planes</h1>
-                <NeumorphicButton onClick={() => { setEditingPlan(null); setIsModalOpen(true); }} className="py-2 px-4 text-pink-600">
-                    Añadir Nuevo Plan
+                <NeumorphicButton onClick={() => { setEditingPlan(null); setIsModalOpen(true); }} className="py-2 px-4 text-pink-600 bg-pink-100">
+                    + Añadir Nuevo Plan
                 </NeumorphicButton>
             </div>
              <NeumorphicCard type="flat" className="p-4">
                 <div className="space-y-4">
                     {editedData.plans.map(plan => (
-                        <NeumorphicCard key={plan.id} className="flex flex-col md:flex-row items-center justify-between p-3">
-                            <div className="mb-2 md:mb-0">
-                                <h3 className="font-bold">{plan.title} <span className={`text-xs font-normal ${plan.isVisible ? 'text-green-600' : 'text-gray-500'}`}>{plan.isVisible ? '(Visible)' : '(Oculto)'}</span></h3>
-                                <p className="text-sm text-gray-600">{plan.category} - {plan.price}</p>
+                        <NeumorphicCard key={plan.id} className="flex flex-col md:flex-row items-center justify-between p-4 hover:shadow-xl transition-shadow">
+                            <div className="mb-2 md:mb-0 w-full md:w-auto">
+                                <div className="flex items-center gap-2">
+                                     <h3 className="font-bold text-lg">{plan.title}</h3>
+                                     <span className={`text-[10px] px-2 py-0.5 rounded-full ${plan.isVisible ? 'bg-green-200 text-green-800' : 'bg-gray-300 text-gray-700'}`}>{plan.isVisible ? 'Visible' : 'Oculto'}</span>
+                                </div>
+                                <p className="text-sm text-gray-600">{plan.city}, {plan.country} • {plan.category}</p>
+                                <p className="text-sm font-semibold text-pink-600">{plan.price}</p>
                             </div>
-                            <div className="flex items-center gap-2 flex-wrap justify-center">
-                                <NeumorphicButton onClick={() => handleToggleVisibility(plan.id)} className={`px-3 py-1 text-xs ${plan.isVisible ? 'text-yellow-700' : 'text-green-700'}`}>
-                                    {plan.isVisible ? 'Ocultar' : 'Mostrar'}
+                            <div className="flex items-center gap-3 flex-wrap justify-end w-full md:w-auto mt-2 md:mt-0">
+                                <NeumorphicButton onClick={() => handleToggleVisibility(plan.id)} className={`px-4 py-2 text-sm ${plan.isVisible ? 'text-gray-600' : 'text-green-700'}`}>
+                                    {plan.isVisible ? 'Ocultar' : 'Publicar'}
                                 </NeumorphicButton>
-                                <NeumorphicButton onClick={() => { setEditingPlan(plan); setIsModalOpen(true); }} className="px-3 py-1 text-xs text-blue-700">Editar</NeumorphicButton>
-                                <NeumorphicButton onClick={() => handleDeletePlan(plan.id)} className="px-3 py-1 text-xs text-red-700">Eliminar</NeumorphicButton>
+                                <NeumorphicButton onClick={() => { setEditingPlan(plan); setIsModalOpen(true); }} className="px-4 py-2 text-sm text-blue-700">Editar</NeumorphicButton>
+                                <NeumorphicButton onClick={() => handleDeletePlan(plan.id)} className="px-4 py-2 text-sm text-red-700">Eliminar</NeumorphicButton>
                             </div>
                         </NeumorphicCard>
                     ))}
                 </div>
             </NeumorphicCard>
-            {isModalOpen && <PlanFormModal plan={editingPlan} onSave={handleSavePlan} onClose={() => setIsModalOpen(false)} />}
+            {isModalOpen && <PlanFormModal plan={editingPlan} categories={editedData.categories} onSave={handleSavePlan} onClose={() => setIsModalOpen(false)} />}
         </div>
     );
 };
 
-const PlanFormModal: React.FC<{ plan: Plan | null, onSave: (plan: Plan) => void, onClose: () => void }> = ({ plan, onSave, onClose }) => {
+// Helper component for multi-select (checkboxes)
+const CheckboxGroup: React.FC<{ options: string[], selected: string[], onChange: (selected: string[]) => void, title: string, allowCustom?: boolean }> = ({ options, selected, onChange, title, allowCustom = true }) => {
+    const [customVal, setCustomVal] = useState('');
+
+    const toggleOption = (option: string) => {
+        if (selected.includes(option)) {
+            onChange(selected.filter(s => s !== option));
+        } else {
+            onChange([...selected, option]);
+        }
+    };
+
+    const addCustom = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (customVal && !selected.includes(customVal)) {
+            onChange([...selected, customVal]);
+            setCustomVal('');
+        }
+    };
+
+    return (
+        <div className="mb-4">
+            <label className="text-sm font-bold text-gray-700 block mb-2">{title}</label>
+            <div className="bg-[#e0e0e0] p-3 rounded-lg neumorphic-concave">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto admin-scroll p-1">
+                    {options.map(opt => (
+                        <label key={opt} className="flex items-center space-x-2 text-sm cursor-pointer hover:bg-black/5 rounded p-1">
+                            <input 
+                                type="checkbox" 
+                                checked={selected.includes(opt)} 
+                                onChange={() => toggleOption(opt)}
+                                className="w-4 h-4 text-pink-600 rounded border-gray-300 focus:ring-pink-500"
+                            />
+                            <span>{opt}</span>
+                        </label>
+                    ))}
+                    {/* Show selected custom options that aren't in the default list */}
+                    {selected.filter(s => !options.includes(s)).map(opt => (
+                         <label key={opt} className="flex items-center space-x-2 text-sm cursor-pointer hover:bg-black/5 rounded p-1 bg-pink-100">
+                            <input 
+                                type="checkbox" 
+                                checked={true} 
+                                onChange={() => toggleOption(opt)}
+                                className="w-4 h-4 text-pink-600 rounded border-gray-300 focus:ring-pink-500"
+                            />
+                            <span>{opt}</span>
+                        </label>
+                    ))}
+                </div>
+                {allowCustom && (
+                    <div className="mt-3 flex gap-2">
+                        <input 
+                            type="text" 
+                            value={customVal} 
+                            onChange={e => setCustomVal(e.target.value)} 
+                            placeholder="Añadir otro..." 
+                            className="neu-input flex-1 p-2 rounded-lg text-sm"
+                        />
+                        <button type="button" onClick={addCustom} className="neumorphic-convex px-3 py-1 text-xs font-bold text-pink-600 rounded-lg">+</button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave: (plan: Plan) => void, onClose: () => void }> = ({ plan, categories, onSave, onClose }) => {
     const [formData, setFormData] = useState<Plan>({
         id: plan?.id || 0,
         title: plan?.title || '',
-        category: plan?.category || '',
+        category: plan?.category || categories[0] || '',
         price: plan?.price || '',
         priceValue: plan?.priceValue || 0,
-        durationDays: plan?.durationDays || 0,
+        durationDays: plan?.durationDays || 1,
         description: plan?.description || '',
         images: plan?.images || [],
         includes: plan?.includes || [],
@@ -301,10 +385,8 @@ const PlanFormModal: React.FC<{ plan: Plan | null, onSave: (plan: Plan) => void,
     const [activeTab, setActiveTab] = useState('basic');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
-    const handleIncludesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({...p, includes: e.target.value.split('\n')}));
     const handleImagesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({ ...p, images: e.target.value.split('\n').filter(url => url.trim() !== '') }));
-    const handleTravelerTypesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({...p, travelerTypes: e.target.value.split('\n').filter(t => t.trim() !== '') as TravelerType[]}));
-    const handleAmenitiesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({ ...p, amenities: e.target.value.split('\n').filter(a => a.trim() !== '') }));
+    const handleTravelerTypesChange = (selected: string[]) => setFormData(p => ({...p, travelerTypes: selected as TravelerType[]}));
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -313,13 +395,14 @@ const PlanFormModal: React.FC<{ plan: Plan | null, onSave: (plan: Plan) => void,
     };
     
     const allRegimes: Regime[] = ['Todo Incluido', 'Pensión Completa', 'Con Desayuno Incluido', 'Solo Alojamiento', 'Paquete Promocional'];
-    
+    const allTravelerTypes: TravelerType[] = ['Familias', 'Parejas', 'Grupos', 'Negocios', 'Descanso / Relax', 'Cultural', 'Aventura'];
+
     const TabButton: React.FC<{tabId: string, label: string}> = ({tabId, label}) => (
         <button
             type="button"
             onClick={() => setActiveTab(tabId)}
             className={`px-4 py-2 text-sm font-semibold rounded-t-lg transition-all duration-200 ${
-                activeTab === tabId ? 'neumorphic-pressed text-pink-600' : 'neumorphic-convex active:neumorphic-pressed hover:text-pink-500'
+                activeTab === tabId ? 'neumorphic-pressed text-pink-600 bg-gray-200' : 'hover:bg-gray-300 text-gray-600'
             }`}
         >
             {label}
@@ -327,81 +410,214 @@ const PlanFormModal: React.FC<{ plan: Plan | null, onSave: (plan: Plan) => void,
     );
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4" onClick={onClose}>
-            <NeumorphicCard className="p-6 w-full max-w-2xl text-[var(--admin-text)] flex flex-col" onClick={e => e.stopPropagation()}>
-                <h2 className="text-2xl font-bold mb-4">{plan ? 'Editar' : 'Añadir'} Plan</h2>
-                
-                <div className="flex border-b border-gray-300/50 mb-4">
-                    <TabButton tabId="basic" label="Básico" />
-                    <TabButton tabId="details" label="Detalles" />
-                    <TabButton tabId="media" label="Contenido" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-md p-4 animate-fade-in" onClick={onClose}>
+            <div className="bg-[#e0e0e0] w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+                <div className="p-6 bg-[#e0e0e0] border-b border-gray-300 flex justify-between items-center">
+                    <h2 className="text-2xl font-bold text-gray-800">{plan ? 'Editar Plan' : 'Nuevo Plan de Viaje'}</h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-red-500 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="flex flex-col flex-grow">
-                    <div className="flex-grow space-y-3 overflow-y-auto pr-2 max-h-[65vh]">
+                <div className="flex bg-gray-200 px-6 pt-2 space-x-1">
+                    <TabButton tabId="basic" label="Información Básica" />
+                    <TabButton tabId="details" label="Detalles y Ubicación" />
+                    <TabButton tabId="features" label="Comodidades e Incluye" />
+                    <TabButton tabId="media" label="Imágenes" />
+                </div>
+                
+                <form onSubmit={handleSubmit} className="flex flex-col flex-grow overflow-hidden">
+                    <div className="flex-grow overflow-y-auto p-6 space-y-4 admin-scroll">
                         {activeTab === 'basic' && (
-                            <div className="space-y-3 animate-fade-in">
-                                <input name="title" value={formData.title} onChange={handleChange} placeholder="Título" className="neu-input w-full p-3 rounded-lg" required />
-                                <input name="category" value={formData.category} onChange={handleChange} placeholder="Categoría" className="neu-input w-full p-3 rounded-lg" />
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <input name="price" value={formData.price} onChange={handleChange} placeholder="Precio (texto, ej: $1,200,000 COP)" className="neu-input w-full p-3 rounded-lg" />
-                                    <input type="number" name="priceValue" value={formData.priceValue} onChange={handleChange} placeholder="Precio (valor numérico)" className="neu-input w-full p-3 rounded-lg" />
+                            <div className="space-y-4 animate-fade-in">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">Título del Plan</label>
+                                        <input name="title" value={formData.title} onChange={handleChange} placeholder="Ej: Escapada a San Andrés" className="neu-input w-full p-3 rounded-lg" required />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">Categoría</label>
+                                        <select name="category" value={formData.category} onChange={handleChange} className="neu-select w-full p-3 rounded-lg">
+                                            <option value="">Selecciona una categoría</option>
+                                            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                                        </select>
+                                    </div>
                                 </div>
-                                <input type="number" name="durationDays" value={formData.durationDays} onChange={handleChange} placeholder="Duración (días)" className="neu-input w-full p-3 rounded-lg" />
-                                <div className="flex items-center gap-3 p-3">
-                                    <input type="checkbox" id="isVisible" name="isVisible" checked={formData.isVisible} onChange={e => setFormData(p => ({...p, isVisible: e.target.checked}))} className="w-5 h-5" />
-                                    <label htmlFor="isVisible">Visible en el sitio</label>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                         <label className="block text-sm font-bold text-gray-700 mb-1">Precio (Texto)</label>
+                                        <input name="price" value={formData.price} onChange={handleChange} placeholder="Ej: $1,200,000 COP" className="neu-input w-full p-3 rounded-lg" />
+                                    </div>
+                                    <div>
+                                         <label className="block text-sm font-bold text-gray-700 mb-1">Valor (Numérico)</label>
+                                        <input type="number" name="priceValue" value={formData.priceValue} onChange={handleChange} placeholder="Ej: 1200000" className="neu-input w-full p-3 rounded-lg" />
+                                    </div>
+                                    <div>
+                                         <label className="block text-sm font-bold text-gray-700 mb-1">Duración (Días)</label>
+                                        <input type="number" name="durationDays" value={formData.durationDays} onChange={handleChange} className="neu-input w-full p-3 rounded-lg" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Descripción</label>
+                                    <textarea name="description" value={formData.description} onChange={handleChange} className="neu-textarea w-full h-32 p-3 rounded-lg" placeholder="Descripción detallada del plan..." />
+                                </div>
+                                
+                                <div className="flex items-center gap-3 p-3 bg-white/40 rounded-lg">
+                                    <input type="checkbox" id="isVisible" name="isVisible" checked={formData.isVisible} onChange={e => setFormData(p => ({...p, isVisible: e.target.checked}))} className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500" />
+                                    <label htmlFor="isVisible" className="font-semibold text-gray-700 cursor-pointer">Publicar este plan (Visible en la web)</label>
                                 </div>
                             </div>
                         )}
                         
                         {activeTab === 'details' && (
-                            <div className="space-y-3 animate-fade-in">
-                                <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-4 animate-fade-in">
+                                <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-xs ml-2 text-gray-500">Fecha Salida</label>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Salida</label>
                                         <input type="date" name="departureDate" value={formData.departureDate} onChange={handleChange} className="neu-input w-full p-3 rounded-lg"/>
                                     </div>
                                     <div>
-                                        <label className="text-xs ml-2 text-gray-500">Fecha Regreso</label>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Regreso</label>
                                         <input type="date" name="returnDate" value={formData.returnDate} onChange={handleChange} className="neu-input w-full p-3 rounded-lg"/>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <input name="country" value={formData.country} onChange={handleChange} placeholder="País" className="neu-input w-full p-3 rounded-lg" />
-                                    <input name="city" value={formData.city} onChange={handleChange} placeholder="Ciudad" className="neu-input w-full p-3 rounded-lg" />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">País</label>
+                                        <input name="country" value={formData.country} onChange={handleChange} placeholder="Ej: Colombia" className="neu-input w-full p-3 rounded-lg" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">Ciudad / Destino</label>
+                                        <input name="city" value={formData.city} onChange={handleChange} placeholder="Ej: Cartagena" className="neu-input w-full p-3 rounded-lg" />
+                                    </div>
                                 </div>
-                                <select name="regime" value={formData.regime} onChange={handleChange} className="neu-select w-full p-3 rounded-lg">
-                                    {allRegimes.map(r => <option key={r} value={r}>{r}</option>)}
-                                </select>
-                                <label className="text-sm font-semibold ml-1 block">Ideal para... (uno por línea)</label>
-                                <textarea value={formData.travelerTypes.join('\n')} onChange={handleTravelerTypesChange} className="neu-textarea w-full h-24 p-3 rounded-lg" />
-                                <label className="text-sm font-semibold ml-1 block">Comodidades (uno por línea)</label>
-                                <textarea value={formData.amenities.join('\n')} onChange={handleAmenitiesChange} className="neu-textarea w-full h-24 p-3 rounded-lg" />
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Régimen de Alojamiento</label>
+                                    <select name="regime" value={formData.regime} onChange={handleChange} className="neu-select w-full p-3 rounded-lg">
+                                        {allRegimes.map(r => <option key={r} value={r}>{r}</option>)}
+                                    </select>
+                                </div>
+                                <CheckboxGroup 
+                                    title="Tipo de Viajero (Ideal para)" 
+                                    options={allTravelerTypes} 
+                                    selected={formData.travelerTypes} 
+                                    onChange={handleTravelerTypesChange} 
+                                    allowCustom={false}
+                                />
+                            </div>
+                        )}
+
+                        {activeTab === 'features' && (
+                            <div className="space-y-6 animate-fade-in">
+                                <CheckboxGroup 
+                                    title="Comodidades y Servicios (Amenities)" 
+                                    options={COMMON_AMENITIES} 
+                                    selected={formData.amenities} 
+                                    onChange={(newVal) => setFormData(p => ({...p, amenities: newVal}))} 
+                                />
+                                
+                                <CheckboxGroup 
+                                    title="¿Qué incluye el plan?" 
+                                    options={COMMON_INCLUDES} 
+                                    selected={formData.includes} 
+                                    onChange={(newVal) => setFormData(p => ({...p, includes: newVal}))} 
+                                />
                             </div>
                         )}
 
                         {activeTab === 'media' && (
-                            <div className="space-y-3 animate-fade-in">
-                                <label className="text-sm font-semibold ml-1 block">Descripción del Plan</label>
-                                <textarea name="description" value={formData.description} onChange={handleChange} className="neu-textarea w-full h-28 p-3 rounded-lg" />
-                                <label className="text-sm font-semibold ml-1 block">URLs de Imagen (una por línea)</label>
-                                <textarea value={formData.images.join('\n')} onChange={handleImagesChange} className="neu-textarea w-full h-24 p-3 rounded-lg" />
-                                <label className="text-sm font-semibold ml-1 block">El plan incluye (un item por línea)</label>
-                                <textarea value={formData.includes.join('\n')} onChange={handleIncludesChange} className="neu-textarea w-full h-24 p-3 rounded-lg" />
+                            <div className="space-y-4 animate-fade-in">
+                                <div className="bg-yellow-100 p-3 rounded-lg text-yellow-800 text-sm mb-2">
+                                    💡 Pega aquí las URLs de las imágenes. Una URL por línea.
+                                </div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">URLs de Imagen</label>
+                                <textarea 
+                                    value={formData.images.join('\n')} 
+                                    onChange={handleImagesChange} 
+                                    className="neu-textarea w-full h-64 p-3 rounded-lg font-mono text-sm" 
+                                    placeholder="https://ejemplo.com/imagen1.jpg&#10;https://ejemplo.com/imagen2.jpg"
+                                />
+                                <div className="mt-4">
+                                    <p className="text-sm font-bold text-gray-700 mb-2">Vista Previa:</p>
+                                    <div className="flex gap-2 overflow-x-auto pb-2">
+                                        {formData.images.map((img, idx) => (
+                                            <img key={idx} src={img} alt="preview" className="w-24 h-24 object-cover rounded-lg border border-gray-300" onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150?text=Error')} />
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="flex justify-end gap-4 mt-4 border-t border-gray-300/50 pt-4 flex-shrink-0">
-                        <NeumorphicButton onClick={onClose} className="px-4 py-2 text-gray-700">Cancelar</NeumorphicButton>
-                        <NeumorphicButton type="submit" className="px-4 py-2 text-pink-600">Guardar</NeumorphicButton>
+                    <div className="p-4 bg-[#e0e0e0] border-t border-gray-300 flex justify-end gap-4">
+                        <NeumorphicButton onClick={onClose} className="px-6 py-2 text-gray-700">Cancelar</NeumorphicButton>
+                        <NeumorphicButton type="submit" className="px-6 py-2 text-white bg-pink-500 hover:bg-pink-600 shadow-md">
+                            {plan ? 'Guardar Cambios' : 'Crear Plan'}
+                        </NeumorphicButton>
                     </div>
                 </form>
-            </NeumorphicCard>
+            </div>
         </div>
     );
 };
+
+const CategoriesManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedData }) => {
+    const [newCategory, setNewCategory] = useState('');
+
+    const addCategory = () => {
+        if (newCategory.trim() && !editedData.categories.includes(newCategory.trim())) {
+            setEditedData(prev => ({
+                ...prev,
+                categories: [...prev.categories, newCategory.trim()]
+            }));
+            setNewCategory('');
+        }
+    };
+
+    const removeCategory = (cat: string) => {
+        if (window.confirm(`¿Eliminar categoría "${cat}"?`)) {
+            setEditedData(prev => ({
+                ...prev,
+                categories: prev.categories.filter(c => c !== cat)
+            }));
+        }
+    };
+
+    return (
+         <div className="animate-fade-in">
+            <h1 className="text-4xl font-bold mb-6">Gestionar Categorías</h1>
+            <p className="mb-4 text-gray-600">Define las categorías que estarán disponibles al crear nuevos planes.</p>
+            
+            <NeumorphicCard type="flat" className="p-6 max-w-2xl">
+                <div className="flex gap-3 mb-6">
+                    <input 
+                        type="text" 
+                        value={newCategory} 
+                        onChange={e => setNewCategory(e.target.value)} 
+                        placeholder="Nueva categoría..." 
+                        className="neu-input flex-1 p-3 rounded-lg"
+                        onKeyPress={e => e.key === 'Enter' && addCategory()}
+                    />
+                    <NeumorphicButton onClick={addCategory} className="px-6 py-2 text-white bg-pink-500">Añadir</NeumorphicButton>
+                </div>
+                
+                <div className="flex flex-wrap gap-3">
+                    {editedData.categories.map(cat => (
+                        <div key={cat} className="neumorphic-convex px-4 py-2 rounded-full flex items-center gap-3 bg-gray-100">
+                            <span className="font-semibold text-gray-700">{cat}</span>
+                            <button onClick={() => removeCategory(cat)} className="text-red-500 hover:text-red-700 font-bold px-1 rounded hover:bg-red-100 transition-colors">
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                    {editedData.categories.length === 0 && <p className="text-gray-500 italic">No hay categorías definidas.</p>}
+                </div>
+            </NeumorphicCard>
+        </div>
+    );
+}
 
 const TestimonialsManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedData }) => {
     

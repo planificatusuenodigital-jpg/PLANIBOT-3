@@ -48,9 +48,19 @@ export interface Testimonial {
   text: string;
 }
 
+// Updated to support visual cards in chat
 export interface ChatMessage {
     role: 'user' | 'model';
     text: string;
+    recommendedPlans?: Plan[];
+    whatsappSummaryLink?: string; // New field for the final CTA
+}
+
+export interface BotResponse {
+    text: string;
+    recommendedPlans?: Plan[];
+    functionCalls?: { name: string; args: Record<string, any>; }[];
+    whatsappLink?: string; // New field to pass the link from service to UI
 }
 
 export interface AboutUsContent {
