@@ -287,8 +287,8 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
         <div className="animate-fade-in">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <h1 className="text-4xl font-bold">Gestionar Planes</h1>
-                <NeumorphicButton onClick={() => { setEditingPlan(null); setIsModalOpen(true); }} className="py-2 px-4 text-pink-600 bg-pink-100">
-                    + Añadir Nuevo Plan
+                <NeumorphicButton onClick={() => { setEditingPlan(null); setIsModalOpen(true); }} className="py-2 px-4 text-pink-600 bg-pink-100 flex items-center gap-2">
+                    <span className="text-xl">+</span> Añadir Nuevo Plan
                 </NeumorphicButton>
             </div>
              <NeumorphicCard type="flat" className="p-4">
@@ -430,13 +430,14 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
                 ...prev,
                 ...extractedData,
                 // Ensure array fields are not null/undefined
-                images: extractedData.images || prev.images,
-                includes: extractedData.includes || prev.includes,
+                images: extractedData.images && extractedData.images.length > 0 ? extractedData.images : prev.images,
+                includes: extractedData.includes && extractedData.includes.length > 0 ? extractedData.includes : prev.includes,
                 travelerTypes: (extractedData.travelerTypes as TravelerType[]) || prev.travelerTypes,
-                amenities: extractedData.amenities || prev.amenities,
+                amenities: extractedData.amenities && extractedData.amenities.length > 0 ? extractedData.amenities : prev.amenities,
                 // Ensure required defaults
                 category: extractedData.category || prev.category,
-                regime: (extractedData.regime as Regime) || prev.regime
+                regime: (extractedData.regime as Regime) || prev.regime,
+                whatsappCatalogUrl: extractedData.whatsappCatalogUrl || prev.whatsappCatalogUrl
             }));
             setShowAIInput(false);
             setAiInputText('');
@@ -472,9 +473,9 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
                     <div className="flex items-center gap-2">
                         <NeumorphicButton 
                             onClick={() => setShowAIInput(!showAIInput)} 
-                            className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none shadow-lg"
+                            className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none shadow-lg animate-pulse"
                         >
-                            ✨ Autocompletar con IA
+                            ✨ Insertar prompt para cargar producto
                         </NeumorphicButton>
                         <button onClick={onClose} className="text-gray-500 hover:text-red-500 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -484,21 +485,21 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
                 
                 {showAIInput && (
                     <div className="p-4 bg-purple-50 border-b border-purple-200 animate-fade-in">
-                        <p className="text-sm text-purple-800 mb-2 font-semibold">Pega aquí la información del plan (texto, enlaces de fotos, precios) y deja que la IA llene el formulario:</p>
+                        <p className="text-sm text-purple-800 mb-2 font-semibold">Pega aquí toda la información del plan (Texto, Links de Fotos, WhatsApp, etc). La IA organizará todo por ti:</p>
                         <textarea 
                             value={aiInputText}
                             onChange={(e) => setAiInputText(e.target.value)}
-                            className="w-full h-32 p-3 rounded-lg border border-purple-200 focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
-                            placeholder="Ej: Hotel Decameron en San Andrés. Precio $2.500.000. Incluye tiquetes y alimentación. Fotos: https://... https://..."
+                            className="w-full h-48 p-3 rounded-lg border border-purple-200 focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm font-mono"
+                            placeholder="Ej: HOTEL SANSIRAKA (SANTA MARTA)... (Pega aquí todo el texto desordenado)"
                         />
                         <div className="flex justify-end gap-2 mt-2">
                             <button onClick={() => setShowAIInput(false)} className="px-4 py-1.5 text-sm text-gray-600 hover:text-gray-800">Cancelar</button>
                             <button 
                                 onClick={handleAIProcess} 
                                 disabled={isAiLoading || !aiInputText}
-                                className="px-4 py-1.5 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2"
+                                className="px-4 py-1.5 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2 shadow-lg"
                             >
-                                {isAiLoading ? 'Procesando...' : 'Generar Datos'}
+                                {isAiLoading ? 'Analizando texto...' : 'Generar Plan'}
                             </button>
                         </div>
                     </div>

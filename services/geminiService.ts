@@ -334,32 +334,40 @@ export const parseTravelPlanFromText = async (rawText: string): Promise<Partial<
         
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `You are an expert travel agent assistant. Extract structured travel plan data from the following raw text. 
-            If specific details are missing, use plausible defaults or leave empty strings, but do NOT make up distinct features.
+            contents: `You are an expert travel agent data entry assistant. 
+            Your task is to parse unstructured text about a hotel or travel plan and convert it into a valid JSON object.
             
-            Raw Text:
+            EXTREMELY IMPORTANT:
+            1. Extract ALL image URLs. Look for links starting with 'http' or 'https' that look like images (e.g., googleusercontent, picsum, jpg, png). Place them in the 'images' array.
+            2. Extract any WhatsApp Catalog URL (e.g. wa.me/p/...) and put it in 'whatsappCatalogUrl'.
+            3. Infer 'amenities' from the description. If text mentions 'aire acondicionado', add 'Aire Acondicionado' to amenities. If it mentions 'piscina', 'alberca', or 'pool', add 'Piscina'. Use standard amenities: 'Piscina', 'Jacuzzi', 'Wifi Gratis', 'Aire Acondicionado', 'Restaurante', 'Bar / Lounge', 'Estacionamiento', 'Gimnasio', 'Spa', 'Turco / Baño de vapor', 'Club de niños', 'Acceso a la Playa', 'Vista al Mar', 'Minibar / Refrigerador', 'Agua Caliente', 'Mesa de Tours'.
+            4. Infer 'includes' list (e.g. breakfast, tours).
+            5. Determine the best 'category' from: 'Sol y Playa', 'Rural', 'Internacional', 'Caribeño', 'Aventura', 'Cultural', 'Romántico'.
+            6. Clean up the 'description' to be professional.
+            
+            Raw Text to Parse:
             "${rawText}"
             
-            Return the result in JSON format matching the schema.`,
+            Return ONLY the JSON.`,
             config: {
                 responseMimeType: "application/json",
                 responseSchema: {
                     type: Type.OBJECT,
                     properties: {
                         title: { type: Type.STRING, description: "Name of the hotel or plan" },
-                        category: { type: Type.STRING, description: "Best fit category: 'Sol y Playa', 'Rural', 'Internacional', 'Caribeño', 'Aventura', 'Cultural', 'Romántico'" },
+                        category: { type: Type.STRING },
                         price: { type: Type.STRING, description: "Formatted price string e.g. '$1.200.000 COP' or 'Consultar Precio'" },
                         priceValue: { type: Type.NUMBER, description: "Numeric price value" },
                         durationDays: { type: Type.INTEGER, description: "Number of days" },
-                        description: { type: Type.STRING, description: "Full description, summarized if too long" },
-                        images: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of image URLs found in text" },
+                        description: { type: Type.STRING, description: "Full description" },
+                        images: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of ALL extracted image URLs" },
                         includes: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of items included" },
                         country: { type: Type.STRING },
                         city: { type: Type.STRING },
                         regime: { type: Type.STRING, description: "One of: 'Todo Incluido', 'Pensión Completa', 'Con Desayuno Incluido', 'Solo Alojamiento', 'Paquete Promocional'" },
                         travelerTypes: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Target audience e.g. 'Familias', 'Parejas'" },
-                        amenities: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Facilities like 'Piscina', 'Wifi Gratis', etc." },
-                        whatsappCatalogUrl: { type: Type.STRING, description: "WhatsApp catalog link if present" },
+                        amenities: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of facilities/amenities found" },
+                        whatsappCatalogUrl: { type: Type.STRING, description: "The WhatsApp catalog link found in text" },
                         departureDate: { type: Type.STRING, description: "YYYY-MM-DD if present" },
                         returnDate: { type: Type.STRING, description: "YYYY-MM-DD if present" },
                     }
