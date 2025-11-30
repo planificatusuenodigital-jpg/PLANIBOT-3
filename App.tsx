@@ -338,63 +338,124 @@ const App: React.FC = () => {
   
   // Data persistence logic
   useEffect(() => {
-    try {
-      let data: AppData;
-      const storedData = localStorage.getItem('appData');
-      if (storedData) {
-        data = JSON.parse(storedData);
-      } else {
-        data = {
-          plans: DEFAULT_TRAVEL_PLANS,
-          destinations: DEFAULT_DESTINATIONS,
-          testimonials: DEFAULT_TESTIMONIALS,
-          aboutUs: DEFAULT_ABOUT_US_CONTENT,
-          legal: DEFAULT_LEGAL_CONTENT,
-          faqs: DEFAULT_FAQS,
-          contact: DEFAULT_CONTACT_INFO,
-          social: DEFAULT_SOCIAL_LINKS,
-          logoUrl: DEFAULT_LOGO_URL,
-          planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
-          seoImageUrl: DEFAULT_SEO_IMAGE_URL,
-          categories: DEFAULT_CATEGORIES
-        };
-        localStorage.setItem('appData', JSON.stringify(data));
-      }
+    const initializeData = async () => {
+        // 1. Initialize from LocalStorage or Constants (Instant Load)
+        let data: AppData;
+        try {
+            const storedData = localStorage.getItem('appData');
+            if (storedData) {
+                data = JSON.parse(storedData);
+            } else {
+                data = {
+                    plans: DEFAULT_TRAVEL_PLANS,
+                    destinations: DEFAULT_DESTINATIONS,
+                    testimonials: DEFAULT_TESTIMONIALS,
+                    aboutUs: DEFAULT_ABOUT_US_CONTENT,
+                    legal: DEFAULT_LEGAL_CONTENT,
+                    faqs: DEFAULT_FAQS,
+                    contact: DEFAULT_CONTACT_INFO,
+                    social: DEFAULT_SOCIAL_LINKS,
+                    logoUrl: DEFAULT_LOGO_URL,
+                    planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
+                    seoImageUrl: DEFAULT_SEO_IMAGE_URL,
+                    categories: DEFAULT_CATEGORIES
+                };
+                localStorage.setItem('appData', JSON.stringify(data));
+            }
 
-      // Sanitize data to prevent runtime errors from malformed or old data.
-      const sanitizedPlans = (data.plans || []).map(plan => ({
-        ...plan,
-        images: Array.isArray(plan.images) ? plan.images : [],
-        includes: Array.isArray(plan.includes) ? plan.includes : [],
-        amenities: Array.isArray(plan.amenities) ? plan.amenities : [],
-        travelerTypes: Array.isArray(plan.travelerTypes) ? plan.travelerTypes : [],
-      }));
+            // Sanitize data to prevent runtime errors from malformed or old data.
+            const sanitizedPlans = (data.plans || []).map(plan => ({
+                ...plan,
+                images: Array.isArray(plan.images) ? plan.images : [],
+                includes: Array.isArray(plan.includes) ? plan.includes : [],
+                amenities: Array.isArray(plan.amenities) ? plan.amenities : [],
+                travelerTypes: Array.isArray(plan.travelerTypes) ? plan.travelerTypes : [],
+            }));
 
-      // Ensure categories exist in old data
-      const categories = Array.isArray(data.categories) ? data.categories : DEFAULT_CATEGORIES;
+            // Fix for destinations page blank screen
+            // Ensure destinations exist and are an array. If not, use defaults.
+            const sanitizedDestinations = (Array.isArray(data.destinations) && data.destinations.length > 0)
+                ? data.destinations
+                : DEFAULT_DESTINATIONS;
 
-      setAppData({ ...data, plans: sanitizedPlans, categories });
+            // Ensure categories exist in old data
+            const categories = Array.isArray(data.categories) ? data.categories : DEFAULT_CATEGORIES;
+            
+            const initialAppData = { 
+                ...data, 
+                plans: sanitizedPlans, 
+                destinations: sanitizedDestinations, 
+                categories 
+            };
+            setAppData(initialAppData);
 
-    } catch (error) {
-      console.error("Failed to load or parse app data. Resetting to default.", error);
-      // Fallback if localStorage is corrupt
-      const defaultData: AppData = {
-          plans: DEFAULT_TRAVEL_PLANS,
-          destinations: DEFAULT_DESTINATIONS,
-          testimonials: DEFAULT_TESTIMONIALS,
-          aboutUs: DEFAULT_ABOUT_US_CONTENT,
-          legal: DEFAULT_LEGAL_CONTENT,
-          faqs: DEFAULT_FAQS,
-          contact: DEFAULT_CONTACT_INFO,
-          social: DEFAULT_SOCIAL_LINKS,
-          logoUrl: DEFAULT_LOGO_URL,
-          planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
-          seoImageUrl: DEFAULT_SEO_IMAGE_URL,
-          categories: DEFAULT_CATEGORIES
-      };
-      setAppData(defaultData);
-      localStorage.setItem('appData', JSON.stringify(defaultData));
-    }
+        } catch (error) {
+            console.error("Failed to load or parse app data. Resetting to default.", error);
+            // Fallback if localStorage is corrupt
+            const defaultData: AppData = {
+                plans: DEFAULT_TRAVEL_PLANS,
+                destinations: DEFAULT_DESTINATIONS,
+                testimonials: DEFAULT_TESTIMONIALS,
+                aboutUs: DEFAULT_ABOUT_US_CONTENT,
+                legal: DEFAULT_LEGAL_CONTENT,
+                faqs: DEFAULT_FAQS,
+                contact: DEFAULT_CONTACT_INFO,
+                social: DEFAULT_SOCIAL_LINKS,
+                logoUrl: DEFAULT_LOGO_URL,
+                planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
+                seoImageUrl: DEFAULT_SEO_IMAGE_URL,
+                categories: DEFAULT_CATEGORIES
+            };
+            setAppData(defaultData);
+            localStorage.setItem('appData', JSON.stringify(defaultData));
+        }
+
+        // 2. Fetch latest Plans from Supabase (Async Update)
+        try {
+            const { data: dbPlans, error } = await supabase
+                .from('plans')
+                .select('*')
+                .order('id', { ascending: true });
+
+            if (!error && dbPlans && dbPlans.length > 0) {
+                // Map Supabase snake_case columns to TypeScript camelCase properties
+                const mappedPlans: Plan[] = dbPlans.map((p: any) => ({
+                    id: p.id,
+                    title: p.title,
+                    category: p.category,
+                    price: p.price,
+                    priceValue: p.price_value,
+                    durationDays: p.duration_days,
+                    description: p.description,
+                    images: p.images || [],
+                    includes: p.includes || [],
+                    isVisible: p.is_visible,
+                    departureDate: p.departure_date || '',
+                    returnDate: p.return_date || '',
+                    country: p.country || '',
+                    city: p.city || '',
+                    regime: p.regime || 'Solo Alojamiento',
+                    travelerTypes: p.traveler_types || [],
+                    amenities: p.amenities || [],
+                    whatsappCatalogUrl: p.whatsapp_catalog_url
+                }));
+
+                // Update state with DB plans, keeping other local data intact
+                setAppData(prev => {
+                    if (!prev) return null;
+                    const newData = { ...prev, plans: mappedPlans };
+                    localStorage.setItem('appData', JSON.stringify(newData)); // Update local cache
+                    return newData;
+                });
+            } else if (error) {
+                console.warn("Could not fetch plans from Supabase, using local fallback.", error.message);
+            }
+        } catch (err) {
+            console.error("Unexpected error fetching from Supabase:", err);
+        }
+    };
+
+    initializeData();
   }, []);
 
   const handleSetAppData = useCallback((data: AppData) => {
