@@ -62,7 +62,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 350000,
     durationDays: 2,
-    description: "Dentro del alojamiento 🏨 podrá encontrar todas las comodidades: habitaciones equipadas con línea hotelera, Wifi, Piscina , Jacuzzy, Turco, senderos ecológicos, cascadas de nacimiento y muchas otras actividades que lo convierten en un lugar ideal para visitar y descansar.",
+    description: "Dentro del alojamiento 🏨 podrá encontrar todas las comodidades: habitaciones equipadas con línea hotelera, Wifi, Piscina , Jacuzzy, Turco, senderos ecológicos, cascadas de nacimiento y muchas otras actividades que lo convierten en un lugar ideal para visitar y descansar. Nuestra tarifa incluye cena, desayuno y almuerzo del dia siguiente al ingreso.",
     images: [
         "https://lh3.googleusercontent.com/p/AF1QipM8Kpo53KGYF6YYW_CeQ9SSqnJfOg6W6DUTXTI0=s1360-w1360-h1020-rw",
         "https://lh3.googleusercontent.com/p/AF1QipNA4WZ-5zXaTsATL8TYbz_giPQnWLPCLsLuU7gS=s1360-w1360-h1020-rw",
@@ -1108,7 +1108,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "$799,000 COP",
     priceValue: 799000,
     durationDays: 4,
-    description: "🌈SANTA MARTA🌈 Su principal característica es su territorio: paisajes inolvidables en los que el verde de su vegetación, sus montañas, el azul de sus mares, el amarillo del sol y el contraste de las playas con el blanco de la Sierra Nevada, hacen de este paraíso un destino obligado.☀️",
+    description: "🌈SANTA MARTA🌈 Su principal característica es su territorio: paisajes inolvidables en los que el verde de su vegetación, sus montañas, el azul de sus mares, el amarillo del sol y el contraste de las playas con el blanco de la Sierra Nevada, hacen de este paraíso un destino obligado. Es una ciudad que cautiva.☀️",
     images: [
         "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTKZOVcReCrEJ0vrUkqTkZNpj4a4iHUwxgqNQloE68m3oKHYpSNnOgnTPUxz8c3N4gbzbwgUO_-UBntbx0p7uohog8&s=19",
         "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcT2fjWAzpan3XMHEsrxqofGZfwzNgp_wBIJpBXvK_XfczKTFZBgEPRXbTIyYb0vtlReriYgRhRHFplkAIaXBPpsdMg&s=19",
@@ -1140,16 +1140,12 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
     name: "San Andrés Isla",
     description: "Conocida por su mar de siete colores, es el destino perfecto para el buceo, el snorkel y relajarse en playas de arena blanca. Un paraíso en el Caribe colombiano.",
     images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTIiSxeewtn35vOo9zt6goz9ED1XkbVVmxSeaqfHExjKdvpqVMCI21ZEblyD0iGDghSnYbAwBkfrTUIAY7_ElFRUfg&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSwCCUpJCp3fI6tOISpgcVfqfihIOtvT16hR0MKvn192-vEQixmX8L6nmay9JD8OaklkFp-y0pXbOWfiYjrQbdwlXg&s=19",
+        "https://lh3.googleusercontent.com/p/AF1QipN15dmY4yI2iXGp6oS-xyd4-JQmmP5oMNmHsxQT=s1360-w1360-h1020-rw",
         "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxGVWK40EA_k7RGua_pRxLB1asExdlroqHgJeZmQbmhxYzts3jrb848IfoxQSkQJzTx6jwk39VSbxEgD684qQWTzxwscGyWppGKBLjOV-yOb03XXpSCW5cAh50EeCTjTsk-FbkAEONjGfa2=w675-h390-n-k-no",
         "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxJdqeAS2oxm1IM1Hxh7GPz_1gEVySk-Ro6VZIGGhsPsywgGhHcjZhnzVMHj1Wq7jEAC8Q1NdmNXAVN75GDea8NoRb4Eua2EAvifExziER6yMur6u1ssS3RQaFwazFpr9UekNU=w675-h390-n-k-no",
         "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSQV3qf6TMTDASh_QiLKxg2FxU11crW_odJurT7TBB29LJ1fdXEirXRPfGJwjVHqY9ej6sL1ayV4MGp5g3sPOlCPvw&s=19",
         "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQu-Rab6f37P4t5W3BRwTXBBJ4ARohzoIRZ9DkHWhjg7zlEQDzVD4xoi4x-9vIArtqVN848yiU1TboIfQ-4x2ccOZQ&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw34ebCi6cHdo8B9Qn_ooZ6LG2CD7dnI0v8NbVBZdHuFMq-AIAtmfgk6Fn24zFPFm48s_yNQ_UHowcAKNr9alulPEhRvylVmJ4sP3fr5o5ix-66i8cfZNuDV3FUqwW4gqS8qPG1=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzAgG7gP0F_-9ymZEXLAqLzbn_anDTpZ8yjmZsRZgkaRfbtuOAGEGpgcHcnFMOajI0DvBEroKTMJApBCbc2lNxVkSMzbJd86XWA5peT3QyJl-gpc7FICiahZUiliLg8ghiJYTCqOw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSws8dLgv3oQWcSCStVkK5k-_cH6SB5tTJKtOCdKZ17cC9dVvqE8-7KtFapnySsX3N0x8Nc4fVT6O1HOK_Lj7FLFMdaDhW3iiP5y-gANOauXH92OZbXKC1HXO-TkufDGy2zqdjbiiA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQbggdIgQa1tYbumnrYsSSEkT585zTjiW_0vfuY02kfnh27K0QH5ZpWSba5KUuzTwVrQyJhH2npaX5KMYS2WmZq6zs&s=19"
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw34ebCi6cHdo8B9Qn_ooZ6LG2CD7dnI0v8NbVBZdHuFMq-AIAtmfgk6Fn24zFPFm48s_yNQ_UHowcAKNr9alulPEhRvylVmJ4sP3fr5o5ix-66i8cfZNuDV3FUqwW4gqS8qPG1=w675-h390-n-k-no"
     ],
   },
   {
@@ -1157,16 +1153,12 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
     name: "Santa Marta",
     description: "La magia de tenerlo todo. Disfruta de playas paradisíacas, la imponente Sierra Nevada y un centro histórico lleno de vida y color. La perla del Caribe te espera.",
     images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTKZOVcReCrEJ0vrUkqTkZNpj4a4iHUwxgqNQloE68m3oKHYpSNnOgnTPUxz8c3N4gbzbwgUO_-UBntbx0p7uohog8&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcT2fjWAzpan3XMHEsrxqofGZfwzNgp_wBIJpBXvK_XfczKTFZBgEPRXbTIyYb0vtlReriYgRhRHFplkAIaXBPpsdMg&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwVH07F_etyRzJBbKGvb53MZPdg67g3E45NKTNwJTrDeiGq-i1C4LIN_IoCe1lLXLr76U_9jN-lcN55yNOaFbjXzgP4FiW07_Me_lDpyxoVvQgOK6fJAcX77oZhJUi5_vdWqLiO=w675-h390-n-k-no",
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx_WELKHeIVXFaKPtGmPEfm5Wdn-Bmd6o_PB7Bm0yMra_inUhoB2DZ2zBY744mE2SnRCZM863B4ByKRB6cLc_i2zpUjCNpZS4ogqTY49WqR1O8_nX7nQBBlqxGziw9VlX0wVd6-=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxAisyBjhaGF7hiibuQnccWHEIBzMoTBT4EA0H8-Rmc8wEWvKNBp5lZOahRMko361C_wt4AZusPbWUfU96Ppre6ueal0gP5if2HnD_c-BypZqyzv-vHiLqQzlY-4ps7h-S_5LLe=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOmCHDxh7sRuqZdvEr0e7iKg5kfbPzjY6m39DnU=s1360-w1360-h1020-rw",
         "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz-SfaQfd0px2o-qfeC_ax39S1rECtwrQkbxNmrHQlMiUyo1dc-2yiDIP5x95CtAsAUNlh0kL_mop76MltKbDh20OnYpyrsA-TP5MzpWOwdO2BbleafTjuAPXfLT3NmGrA91mbc=w675-h390-n-k-no",
         "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTnTd4_G3nwu1QI2h8Bi256ECvJA_3NFStdSWYdsX5U8WqmY_Ml53cxRHXuZiydmPNZMk0kLLvVkZmhoU85T9BoogN7&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcR2SdTL2K-aKOsbxaP2EIVDTL7A8gGvHz5XFPZruSZQwS2mbUphE0uI0Ko6lBWKtxxWPty8P2ujkXa9gEW2eLL32x9t&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwmShtdFzgn2zUwTF7Nu9baNAroDrhGIyZYfPJVowAcRqES0SZgSdSQxMit3_f_5LXmtoo-C_STCL88RPm_DWpmUP0d_cJ7Lo2bX3WpDugVlG4lYnJ3kkRbiyqBLR4eXtdLLA=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy-7kj5gOFZ5f6h1s8uFM3MkWfn2rEhLUWpduqNQ3M4UnniA7pXP5R-VoM7TDXuisVCMh40FeBVMC8Rtz6CoQ4j9vFCla7PapV2AgitJXkm-0HTbEnLdANMhnTGJUhQouVc2dQUiQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwSR8KOc5gYE19YPKeKVisgmKqiHAx6hD8_MhX_4Y_0C8cTJDCJ1AW-RAuBAFY1pWGY3kcTCtrgeOccbcR0o-HfjKcIFrzZwPbOUTRSiLhwnaCAID_FEGQbeeuGLWL7bfLHcUJA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRspauFC8QnkIwWNVezyhOOl6ouIA7B3Slb07Eo57Tg5iDHKJL1VPkItKz6VxUst4Z7Pb3VFQDHTA8FO4mgGlKEvLI&s=19"
+        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcR2SdTL2K-aKOsbxaP2EIVDTL7A8gGvHz5XFPZruSZQwS2mbUphE0uI0Ko6lBWKtxxWPty8P2ujkXa9gEW2eLL32x9t&s=19"
     ],
   },
   {
@@ -1174,16 +1166,12 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
     name: "Cartagena",
     description: "Sumérgete en el encanto de la ciudad amurallada, con sus calles coloniales, balcones floridos e historia vibrante. Un destino que enamora a cada paso.",
     images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQdItM4cf0JCQvUu4T6PpWEtC5iYeNJO_h-4NfBTINcrDHiWbWIePdMlfVIPimIUOlzUhYQrt88eKxvgjHQheSyeJ8&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQc5c4xN5NfC-ExEHnrFwiBOPMA-AB-v7dInxwyOZSy0gvkfOTy-1_hlUj3tldCZaeeXsLZbUMuipOB_RK16F01zQ4&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzLSKyxBOWSx3XPfVFsvWIA_aNDnsboOeqr6jtmVZIw4oSfqHWFNtW13TdyJuHReSUNNhe8ewWe0pK1dxQ0MgPPp0U7APN_V4UbBC_HN0m4zoh5G8lOiZCtzVSjfh1aXyabvLtyBQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwowOR-Mdb9Es71SkxfpHy6cbAotjGMqqVcPCSQhB3LmANwRbJVfEd7WvJzEK-vbyt_pXdy4-qpUJAxWU_A9PS7IvYbnp4UGYfiInZYwc3mY9oYcaKjCpisujya56JAR8okLGdeaA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQrINn2TqVM-XheKfhHCRa7HcbZJCS03pC3orXVpnO-KeCfn7RzEOOOIyHOfbwWYdB71VTcZMhHZfL1tSadTER7Wd0&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQkU3uTvR0ihRboDBw8U3Cfa-S5GmNIB8zwYqLGmYUd5WqDAxFHTeU1HBQ62L5j-gMru9gF0SLRzEQ0EiMN1aWnKrrb&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz-iJ8qBgrebZiYqr07sDUHgP7oEZCY051VLiWHfKA0m61-AhLNZRgp8up8v242r7kljGZyd-aQYLLqLUS10EQPz3m8JZ_a34Wxp9O_qhtYddj4QrXR7r4e7SCpXBuIpryuhGNzig=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxokkjszcbdA-LrK6ct55DwnPSVCrvKVH-F1mFy5-w0A3qSiLbBlIAVBiqKdiQGTxKK1Xi8BdYLp0fdt5MaiyryUe6bv9VbmYq9Ar__wAb_v6cxTi2h6NMCWhopKAP-tuuKpOi-=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwjuUqCyJ3XOBg76Wra5ircT6nVmrZethSsA7KWgJHiuDIuoCrTXskweXpjUVWan8sp4DhSc44QhyT5t7lz-FcCn4188lwjLGPJHI3NGUlguBQmCzAyg6TzOo5G3ruYfx6x5lQ=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS3MSAPvnQXTEV1zKo2vRkKHHNp5LlB95pm8eNmRVLS2RhWBEI9MpwWz0JbFIKjA3bgzBxddLEIQuHWjnbOybRIhok&s=19"
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyHBLy3iGtK8aK-ZI1RrdkDKHs-v-0EhKBt3ibMQccu28aMon52tHMuE0PvUqMUYov1hzJxbOmxtCeKQ5jVJ8JOvTYHxLvCR30c_VbBPWhe_63C1qAdqYHRKj3o89ewB6bVJHH7=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/proxy/86C0VIObQgwlhQfF0OHiWZ_NEDpGAuUNxe8TMW4tXLRXLsgZhRa0CLnKghJqm4wZs-xnha_KEU0q1Oxe852ZaFLuWrBJy8YFFB2W2PNNIxZu9225PJOTrjatr5IbVZ77d3ddenSmjvrhAFd7AcWOkWRRG8zZlIo=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/proxy/vM9FWh2yRAYH2BKSzXQSuXbtOXMzegRn_H7ar5YaSleJSg5cfMbpRxjpy0vYlDn6UgD8cGK6C2TxPdMIYjMKB79b2JNwagiN7AtOhmYsHbVjulXEX7omrnrFImTWLDiEBbpideXwVXdK8yhhNQG7txFtaZ4vVg=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/proxy/BoKmdxQF5a5Db13LK7kI1ksywEKj2BxIucf5oYFk_fB1iU_Wu3d4ERIB6KJHMIClIgUZfUW3z_xKKlanxBXE8kV0zPxv1CXRfoblHQHQ8jxl-roh9yFeqOnAkXVMysaT0qfFLJ6m3IQHh-yOecsDUY5j3qv39hQ=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/proxy/3zBqv87VuHBjKiv3I_RASIqhwCfGtYv4EYwsBF8jYUtOadTw5nh36ZRtbCQnGlcRl0YYW9yLuAko5NoxyH8_LHiqLppmGxlNTcAOm1L5tI_D7kmpJFGqYFuKX3IuFR0WDlwk9938V69u6riXiDYrAhB9n7S-OTQ=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwt3BleYgdPo5w412ItjjKPC2466xenpp7Uak8oRSYNzTHY5Uy3sQeMNne9EXq0DbF08YtAtAYo6FsRITnnjd_1lE6R7BZoaqtc3u8zPFRHL7aqxxE3EmGDYqBidKAFHabBP067=s1360-w1360-h1020-rw"
     ],
   },
   {
@@ -1191,16 +1179,12 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
     name: "Eje Cafetero",
     description: "El corazón de la cultura cafetera de Colombia. Paisajes montañosos, pueblos coloridos y el aroma del mejor café del mundo te esperan en esta región única.",
     images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSynhxjVM1KK7hH4zkxqBFBvYNdvAdRsWqhk1ssR_TdZMUvUggm9a2NsPjmO4II3ESr0zXjFXThJnFJ_qkQIFabX8_bN4exRk9uK0ZQlH5kE5y55CTT0bawNZD2GkKzD8HcgO1nQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwK-VAOOkSLFS4fz-vTQ07HMTi50ezYGw_4vDaXePJNNtJ4Npc2uTj8m800zlBTmV_Z6NN-vaQXy0ZIUW9Ww96YnwfyDsMZcn8vboj5ggEN-JILPGpFo5zU6OZiSm2f1QEo_qwA=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybSnfy_Ak4T2BI3viy7H0XweSsjRYM851CaZsBK7ajRKbkZ8Fo_g7-D4THtfQkw-FUXZKfYaebIX8X_26digcSNTO7OW3seLLnG2wkXOqqhDL0zj1ggVtr_TTBHFj3DUY6z_NAVw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw3gFB1nvX9RGJVZlYEZ_K06NBTPW9Hc1VG1CJuU0FD54tBeoklhysmGrgjdKIvKm0BW6JFnc1bBNDpBDoT4hDM4aQ2iExQ2MDc8LK-7XsHSJ4TC3orFkwwSqa5av9I8qOONdRciQ=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQr_88F56x7RxNCW8nzg8mnAvFrqxUFZx6dZWu4NOstzTzIILUqgEQytjFabtFEU12x9pEXy43JGWGd0xP4I_vySg8&s=19",
+        "https://lh3.googleusercontent.com/p/AF1QipNA4WZ-5zXaTsATL8TYbz_giPQnWLPCLsLuU7gS=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPLC900XKcREcroDsn467WB_7B7kHQrNPmJu-mJ=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOo2GeX5NFRwWsRpI7L_FymO3UDklFjgsL0zFbG=s1360-w1360-h1020-rw",
         "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTcjC86DfnG0-ZPc5AYKIjfp6tH8nzr8K5FxO0hg0E19kLER36fCg20W_mirwOr-mebwePVAlovN08gkED9ZMRfDB4&s=19",
         "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy7RCc3sxTlCbY4byClmMrWgecu0GK-WyanpaqstoRvTSe4aX3Was135Ckt9cJFsTKSAlsS5NbMF40iL8JAggjnf7awgm2xrnOfQDfK2hv-lS42AJYOubDZZCO6J-UVxs1yaNPyuw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzsbYI-H-vwPQqsyWIUCg-7HBVcJjDV07an3yHyFxxhVeqro2R6DjSZ3OnmsQVYwqiHcyd5ZBtMvb2Ogkliz_9A5t4WlXRBXUYANxHyxNvWDEnZ-XczcipgKgZZKzh0iARdcWfp=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyYGoQZTV-GDv51tPX2MYs6TgyE2FNg1NDAHbFUWKK1IhHJ2LRzD4HT5d7Iqgk7SjvRfsWq7kXApxsXLZc5IE4twNbyWG-9dfTSnw-t7upc9MpUMWYOpr7mPdaOAjbjaSyos0hR9Ht6NiY=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSu-mh9PoNoNbN3799Ud0WYiJ1nd2v58HGN6Gm39EfgtLo1fiGDUjSzmrSXWAE4q_TRl05C8qDRecnwfXck7bIBl5U&s=19"
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzsbYI-H-vwPQqsyWIUCg-7HBVcJjDV07an3yHyFxxhVeqro2R6DjSZ3OnmsQVYwqiHcyd5ZBtMvb2Ogkliz_9A5t4WlXRBXUYANxHyxNvWDEnZ-XczcipgKgZZKzh0iARdcWfp=w675-h390-n-k-no"
     ],
   },
   {
@@ -1208,25 +1192,12 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
     name: "Cancún y Punta Cana",
     description: "Vive el lujo del Caribe en su máxima expresión. Resorts todo incluido, playas de arena blanca, aguas turquesas y una infinidad de actividades para unas vacaciones perfectas.",
     images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS-WZjHb-mVyFsnekpAiEPBradpBx69wWa1FyWrXY0eLEUiztzcmFIGae4BAdrSdfoUV4fkBGpQ3ToRF9vjLpW5ess&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyIOFeo7p40r1cIEeJyh1Zpv-Nv5zsBl2a-myzsgZr8PlpfH2f861nSplEobZa9u0x5mkypi4e79hgpVFhMC2rMZMs84GcRJWftdXpsoa1_YcWA3AJs0FisRPiMiGG0KXoiYtc3=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzbvCwKoHiTwXH4IFhDXRku0zBjHKfUEs3q6F78OL4CJiboTV1bXVzHSxA03BxGN6qJW5FtpQoRP7DLyagj9zs9cd-Fnm-7A7B97r4n7hW95aoBqamK5ZyHH5QrE6uPJtl-v4vu=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRMALTgarXo9GJ-xdhXoC1LRvwxucO8ZpkB-rfEs7ktFd2D0pdWmKTEwEMnmTxmNUE7UftkUIoG7zl7zQ89nmv-vI6G&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSDJbca9IMU4MGYCUsFjanoJSVq1tAEwQJOIezUsdzOsvrUVrSr-hKmng6KYqlQA7mYUB3SsQuM-9MtSsKXRBehqsi9&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzX77c6Gw60-Ccciw4_ZyZSc9RkCTobtVSz-oSnwZ5XxXfEIq_XQY81AtQZyCOCOPToyWFtZDKROTwcxDShnuAWuYLU2j1EKVKSUX8vmPAJBGpSrtIoomNinnuQuDRmTPzrXntV=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz2WG0y2HV-iMbZqQIciY0Qdijlc6T0B1A0sYTZa9J8dBUY_nHn0WT91-fR8wOiRn1V7RsvxDOlwezGpTDGOrDkNSKpa1ky0rNB_syV0fXeRoXOjTQQsCapS3bQays5DX5x6gw=w675-h390-n-k-no",
+        "https://lh3.googleusercontent.com/proxy/nTAZG78kvDj3rUcU4H20xr3fOFR9ppraudl-mlCgdP1wf1p0x9hi3PsQx5XhPgXlDPqoQ98u9Ml4oLzd_9YtBqdrmG4tH2BhPpe-YWXoQEQ6AbeLb_e0enmZYlsYbcC7EquUqLs6YjzcgyrUw3QRr6lQTcVa5Q=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOa_KOa336ytKWl6LrJF34YopSWdHPegD4jz7cd=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/proxy/I5JnoQkQ2n5_2bAv32_5pJWGiqRUnA70EcpGHDfn2vds4qNVGkA6FcWkSJoz7oe6IhQqQCxzLqH5UPV2t8tnbnmgFcOvTkwR-kcLOwqUqecpIjuuoFN_ap8mTX1W_gwSCdHh9kMej_1mWTt0e_sfQVAPN__12v8=s1360-w1360-h1020-rw",
         "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSztBDLIVFJS2aqq5feJbKtM1b7_b9MHophOONjU-kg6XnGRcQ8zf68gBbFTxpeyg-fE6ivuWzsd3ruErECTGcEl1vdwwEpMwDzsDVunCmtqvucJ0-n3Tn33-hSqDEVdYwF74yUA=w675-h390-n-k-no",
         "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS2WztQ85paHU1jsQnui8QKrFCb7jvjzx6JwhHlADS42GPxFUQTpRFCspflAB00Np4TFf-AJ0P39Hbl2X06jioy4eg1&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRAIkOYtLlYnanDPxYxedhwNhhNY2wntus2kxfqjdxTCQoczkpqPezs7WxV4jbEsiNF8_Vno4wT36pClwSdKVHFWkg&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSbYQYdWM0eQKHvZ2Pf2JTB4uk9GzNf21yPCuo7TLoADkYqRdnWEeqdfGZqnVXAD7txxDSk28Gzl-1CVc_XnpgNass&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwoUdQKrSY0scLicOGckd1YJkbVDQkJAFTxnGFt9xEMe0xeDX4zRIXO4XwQo9i0w623OFuv6I-L_75AMq96EtZcDpJwhUwJdz5LrcBk3A1vFM-PoU1ec9tuKxnoru1LnL5ja531=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzrk4XszDWsoHqObxopmH9smWD6jLsKCn3y7sOvJ35sU4kdnxrG1TVhge5R1Z0hJhZ3UAacqrHUH8IZUycuoU8V1HcuO0EUxfaofFBRhUETVnI9p71uVWHL4q76XcrNoqeC4K70=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS4P79t1-eNdD8KIzQdd3GRLr1Ww1p7efJ6v9PcYfmaLCEXaQXzvXUKC6leZb00CVGxFrb-c2FeF_Xd_2RhjIEEdkc&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSKmlm06gB7KmIyiFSQCZL6lBRAlQ2Y8BJKv6F988F8kXeME2IWUdGelp9SUXF2yqxPjtKMMtOpbiAb4-KD-Y4-mLX6&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw3eFETV4YLMH0go6f9NvPx-_5ZUmqKUEiXzB2tEKGmQ-qr7w2363x6Wef23ih5db2Y4JQ-02uZkLr2A9Ey0O3zXv-o5Gt7CYMlnIMd51kvc_MdhIeBU_ezaTnsNYVa-AtJdHh2Ow=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxHT7GVauXLW4HrxhZs3ZWUl2asxFDOyRORBTP5c_TtbxAfUH8YoiGteJzGDGxvT4113qKFIhLBvhROcxxoF03CVF3kISXLw2-puMUKvI1NPOVeDDLTZ8D75OAIfljd0ZoiRfaw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwF9yEIGj7tbO-GM5Pv6LyamdkjTVIWC5rQH2YbobhFCv2Fi7kxK9nF8NHFvGrojqXU_j0K5gCGHm-16xzGl6L4Gdh9orh0AozC8aPWiklRSXVsnN2posGmDybyiD3TOYBP5Ltm=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRjmm4k-kqm5v55EWDD83qeWv0XO6mLlaLtXyf2GDUtehNLL_Lwfwzdoi9c40g4_mDJBQo6RquvYFhZA858nvt6aWs&s=19"
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyIOFeo7p40r1cIEeJyh1Zpv-Nv5zsBl2a-myzsgZr8PlpfH2f861nSplEobZa9u0x5mkypi4e79hgpVFhMC2rMZMs84GcRJWftdXpsoa1_YcWA3AJs0FisRPiMiGG0KXoiYtc3=w675-h390-n-k-no"
     ],
   },
   {
@@ -1234,66 +1205,12 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
     name: "Panamá",
     description: "Un destino de contrastes. Desde la modernidad de su capital y el icónico canal, hasta las playas vírgenes de sus costas. Panamá te sorprenderá.",
     images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyQF7n12BTodERQgisLudHoJgIbo2CmrTvzrP-8PsPyLIetvNe2SyllRmcawGN_Z00o1Q51rJIYBvdwaQwDgwBlTU9xrs4UFnI3XJwKFAoFEk4P3F6qyHnM1rR3l2OfFm70_DeT=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQTcrqyp-APhgBoEG3VZAWmfuK3p8T_uKYqY_EX3CmZgeA8KdTqHZ0xD5gdtYpxoq3XWFJ_syci41ocEQ9DojrUHoo&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz3MAGCD4tsmHxZvQwn197HZMuYclBqHYgJnjStKxuc9Tr-f5qtxFgNKzv77vCa5aSWnfi5oDIcAlM2JbrKMRCqer_fY1Fv5FCNVi9ApLpOFVzcx17Am6Dxib2FlMAXyGb6CN5xZw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxFmZJgD0jdoNeaeWNwz-hUwYuPeOsr5e9hQP1LaPMoAJma1iwBGZ6nub8w7wMaKKdzf5G2hnqnPMZcqMVXxtk1rofzFAhW45K9J7tbb_U2Xkw3xsb2mtQA37a9xn3B5FVStEzdYQ=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQ6fmmvLTfQ2oLtJBF9F03yVP1Y0H6tEb0yCxunZt87lCD2VT0-H-s4lXvUUo3QteijPiwhNgl5wugaCBGLtQnzuJ4&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTxytf4DNqwuKD_gDZS8t-XXpq4WvZLdccMrqciCdBKCiuIqKip5KhRR78dJn2dL2OK3tFvjvkt7zBsc9bty9baIeE&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyXsfOTpxqXesGCaA1VWzTj5h_9AkWg9ydqFUMqijd0IaD4Sl9FgaodDnPEsPxXNuBtK-JQAsa6m5fOU4YCwo-WQfjydGY0sIqWAUjZzbOE7UqAzhiAphbfiZaRM7DbvYazkooeUw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxVnc-cfIyu1zDIfQmlmqS7mDoVdyrmMGjunmu2e69jyhEWcboSX71MRPqjCYhUSiy-jHa9SHegGyIctoZ_L21J8tzdpzlYlbgPjpm_sYJz5XYR9H18sJ0S54QGvI2CI1ZxGDkIIw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSySbWYLvBh-ogb4TzrOBxaaxGhUL2cJuO02qW4uPQ7HwHXEBqj6jDvGY92YCVTe7mi6VWFchvug7Scc4IfbSDiVjfV6r9JAXf0xZzD-D_gMg9YofuO8pf0SFPIw0ZkHQbNT5KEY=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRm0CsLj92u3kisGyLoRaK5vWDzNmzO3h2FszW8KUzGRMuA56uqxeHjORukGtN1XmKaWXgVcPVzKce4u3g2lMrrl_o&s=19"
+        "https://lh3.googleusercontent.com/p/AF1QipNcxxLCEKm4eCis6G_qZgCIEGLWYNu_sDxn-EBe=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOuhc4urtufPb92Vel8UZ3h5JPJNzoMISW8qqx9=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipNSr-KOO6xvCJ9a-1A2WEstuMspr8ryn3Ak-Dpz=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPPeMb4oZIxGqHwzrs2YUFVfvtfOpVxlllq4ALi=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPFgh9J4KLlyPa-HFf09PrCAQ9NtuwUui6eWWBI=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/proxy/KkZJHVEbwhLt_7t3KI6ktgi-muDL8HposfxZ8ppE00a6LC_SeQxh-9eetmkxOFxNclwLtAuxq5hPPhVTF39X_tWqvQXKG60AxDHI7MwgW-S-Xod2uR4nIX8rZHouuZzYtNG3p_tGd0RwM8y2Veqayns8qaNDIMo=s1360-w1360-h1020-rw"
     ],
   },
-];
-
-
-export const DEFAULT_TESTIMONIALS: Testimonial[] = [
-    { id: 1, author: "Ana Pérez", text: "¡El viaje a San Andrés fue increíble! Todo estuvo perfectamente organizado. Gracias a Planifica Tu Sueño por hacer nuestras vacaciones inolvidables.", rating: 5 },
-    { id: 2, author: "Carlos Gómez", text: "Excelente servicio y atención al detalle. Nos ayudaron a personalizar nuestro tour por el Eje Cafetero y superó todas nuestras expectativas.", rating: 5 },
-    { id: 3, author: "Lucía Fernández", text: "La mejor agencia de viajes. Son profesionales, amables y siempre están dispuestos a ayudar. ¡Recomendadísimos!", rating: 4 },
-];
-
-export const DEFAULT_ABOUT_US_CONTENT: AboutUsContent = {
-    mission: "Ser el portal profesional de salida (gateway) que facilita la materialización de los sueños de escape vacacional y ocio de la población en el Occidente de Caldas, ofreciendo una gestión de viajes organizada, vibrante y confiable.",
-    vision: "Consolidar el liderazgo de reputación en nuestro mercado regional, manteniendo el alto nivel de satisfacción del cliente demostrado por nuestra calificación promedio de 4.9 estrellas sobre 5.0, y proyectar una imagen de marca dinámica, accesible y profesional.",
-    foundations: [
-        "Adherencia al régimen de responsabilidad establecido por la Ley 300/96 y normativas relacionadas.",
-        "Operar como una Agencia de Viajes y Turismo clasificada como Prestadora de Servicios Turísticos (PST), con RNT 181495.",
-        "El alto Capital Reputacional (4.9/5.0) y la integración en la economía social local.",
-        "La identidad de 'Organización de Sueños' proyectada a través de una estética vibrante y soñadora."
-    ],
-    principles: [
-        { title: "Legalidad", text: "El tratamiento debe sujetarse a la ley y las disposiciones que la desarrollen." },
-        { title: "Finalidad", text: "El tratamiento debe obedecer a una finalidad legítima de acuerdo con la Constitución y la Ley." },
-        { title: "Libertad", text: "El tratamiento solo puede ejercerse con el consentimiento previo, expreso e informado del titular." },
-        { title: "Veracidad o Calidad", text: "La información debe ser veraz, completa, exacta, actualizada, comprobable y comprensible." },
-        { title: "Transparencia", text: "Se debe garantizar el derecho del titular a obtener información acerca de la existencia de datos que le conciernan." },
-        { title: "Acceso y Circulación Restringida", text: "El tratamiento se sujeta a los límites derivados de la naturaleza de los datos y solo podrá hacerse por personas autorizadas." },
-        { title: "Seguridad", text: "La información se deberá manejar con las medidas necesarias para evitar su adulteración, pérdida, consulta o acceso no autorizado." },
-        { title: "Confidencialidad", text: "Las personas que intervengan en el tratamiento de datos no públicos están obligadas a garantizar la reserva de la información." }
-    ],
-    values: [
-        { title: "Confianza y Amabilidad", text: "Generada por nuestra alta reputación online y una atención cercana." },
-        { title: "Profesionalismo y Seriedad", text: "Reflejado en nuestro conocimiento y atención al detalle." },
-        { title: "Dinamismo y Entusiasmo", text: "Transmitido por nuestra energía y la pasión por lo que hacemos." },
-        { title: "Organización", text: "Implícito en nuestro nombre, garantizando atención al detalle en la planificación." },
-        { title: "Conocimiento Global", text: "Representando nuestra capacidad de ofrecer una amplia variedad de viajes." }
-    ]
-};
-
-export const DEFAULT_LEGAL_CONTENT: LegalContent = {
-    generalPolicy: `Planifica tu sueño está sujeta al régimen de responsabilidad que establece la ley 300/96, D.R. 1075/97, Decreto 2438 de 2010 y las normas que los modifiquen, adicionen o reformen. La responsabilidad del organizador del plan o paquete turístico se limita a los términos y condiciones del programa en relación con la prestación y calidad de los servicios. La agencia no asume ninguna responsabilidad frente al usuario por el servicio de transporte aéreo, salvo que se trate de vuelo fletado y de acuerdo con las condiciones del contrato de transporte. Las políticas de reembolso de los servicios no prestados en razón a situaciones de fuerza mayor o caso fortuito, acción u omisión de terceros o del pasajero, no atribuibles a la agencia de viajes, antes o durante el viaje, que puedan ser objeto de devolución, serán definidas por cada operador y las mismas serán confirmadas al usuario una vez se reserven y expidan los documentos de viaje, así como los porcentajes de penalidades o deducciones a que hubiere lugar. En caso de fuerza mayor o caso fortuito antes o durante el viaje (accidentes, huelgas, asonadas, terremotos, factores climáticos, condiciones de seguridad, etc.), o para garantizar el éxito del plan, el operador y/o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos, hoteles, servicios opcionales, lo cual es desde ahora aceptado por el pasajero al momento de adquirir los servicios. El pasajero será el exclusivo responsable de la custodia de su equipaje y documentos de viaje.`,
-    privacyPolicy: `Conscientes de la importancia que tiene la protección y el buen manejo de la información personal suministrada, LA AGENCIA DE VIAJES PLANIFICA TU SUEÑO ha diseñado la presente política para hacer un uso adecuado de sus datos personales, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013. Su objetivo es garantizar la reserva de la información y la seguridad sobre el tratamiento que se le dará a la misma a todos los clientes, proveedores, empleados y terceros. El tratamiento de datos personales debe realizarse respetando las normas generales y especiales sobre la materia. Usted tiene derecho a conocer, actualizar, rectificar, consultar sus datos personales, solicitar prueba de la autorización otorgada, ser informado sobre el uso de sus datos, presentar quejas ante la Superintendencia de Industria y Comercio, revocar la autorización y/o solicitar la supresión de algún dato, y acceder en forma gratuita a sus datos personales.`
-};
-
-export const DEFAULT_FAQS: FAQItem[] = [
-    { id: 1, category: "Legal y Operacional", question: "¿Cuál es la ubicación física y el teléfono de contacto?", answer: "Nuestra oficina está en el Centro Comercial La Colmena, Carrera 4 #13-32, Anserma, Caldas. Nuestro teléfono es 311 3653379." },
-    { id: 2, category: "Legal y Operacional", question: "¿Cuál es el número del Registro Nacional de Turismo (RNT)?", answer: "Nuestro RNT es el 181495. Estamos clasificados como una Agencia de Viajes y Turismo (PST)." },
-    { id: 3, category: "Políticas de Viaje", question: "¿Qué sucede si mi viaje se cancela por fuerza mayor?", answer: "En casos de fuerza mayor (clima, huelgas, etc.), para garantizar el éxito del plan, el operador o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos y hoteles. Estas condiciones son aceptadas al adquirir los servicios." },
-    { id: 4, category: "Políticas de Viaje", question: "¿En cuánto tiempo se procesan los reembolsos?", answer: "Los reembolsos, si aplican, se realizarán dentro de los 30 días calendario siguientes a la solicitud. El monto dependerá de las condiciones del proveedor y los gastos de administración." },
-    { id: 5, category: "Políticas de Viaje", question: "¿La agencia se encarga del trámite de visas?", answer: "Brindamos la asesoría necesaria, pero el trámite, costos y la decisión final son de exclusiva autonomía de la autoridad consular. En caso de negativa de visa, no habrá lugar a reembolso." },
-    { id: 6, category: "Datos Personales", question: "¿Cuáles son mis derechos sobre mis datos personales?", answer: "Usted tiene derecho a conocer, actualizar, rectificar, consultar y solicitar la supresión de sus datos personales, así como revocar la autorización para su tratamiento." },
-    { id: 7, category: "Datos Personales", question: "¿Cómo puedo hacer una consulta o reclamo sobre mis datos?", answer: "Puede enviar sus solicitudes al correo electrónico planificatusueno12@gmail.com. Las consultas se atienden en máximo 10 días hábiles y los reclamos en 15 días hábiles." },
 ];
