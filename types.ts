@@ -33,19 +33,21 @@ export interface Plan {
   regime: Regime;
   travelerTypes: TravelerType[];
   amenities: string[];
+  whatsappCatalogUrl?: string; // New field for specific WhatsApp catalog link
 }
 
 export interface Destination {
   id: number;
   name: string;
   description: string;
-  image: string;
+  images: string[]; // Updated to support multiple images
 }
 
 export interface Testimonial {
   id: number;
   author: string;
   text: string;
+  rating: number; // New field for star rating (1-5)
 }
 
 // Updated to support visual cards in chat
@@ -54,6 +56,9 @@ export interface ChatMessage {
     text: string;
     recommendedPlans?: Plan[];
     whatsappSummaryLink?: string; // New field for the final CTA
+    image?: string; // New field for sending images
+    showDatePicker?: boolean; // New field to trigger date picker UI
+    videoId?: string; // New field to trigger video change
 }
 
 export interface BotResponse {
@@ -61,6 +66,9 @@ export interface BotResponse {
     recommendedPlans?: Plan[];
     functionCalls?: { name: string; args: Record<string, any>; }[];
     whatsappLink?: string; // New field to pass the link from service to UI
+    image?: string; // New field for sending images from bot
+    showDatePicker?: boolean; // New field to trigger date picker UI
+    videoId?: string; // New field to pass video ID
 }
 
 export interface AboutUsContent {

@@ -42,6 +42,36 @@ const WhatsappSummaryButton: React.FC<{ link: string }> = ({ link }) => (
     </a>
 );
 
+// New Component: Date Picker inside Chat
+const ChatDatePicker: React.FC<{ onDateSelect: (date: string) => void }> = ({ onDateSelect }) => {
+    const [selectedDate, setSelectedDate] = useState('');
+
+    const handleConfirm = () => {
+        if (selectedDate) {
+            onDateSelect(selectedDate);
+        }
+    };
+
+    return (
+        <div className="mt-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 w-full max-w-xs shadow-lg animate-fade-in-up">
+            <label className="block text-white text-xs font-bold mb-2 uppercase tracking-wide">Selecciona tu fecha de viaje</label>
+            <input 
+                type="date" 
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full bg-white/80 text-gray-800 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-pink-500 mb-3 text-sm font-medium"
+            />
+            <button 
+                onClick={handleConfirm}
+                disabled={!selectedDate}
+                className="w-full bg-pink-500 hover:bg-pink-600 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm shadow-md"
+            >
+                Confirmar Fecha
+            </button>
+        </div>
+    );
+};
+
 interface PlaniBotProps {
     planibotAvatarUrl: string;
     contactInfo: typeof DEFAULT_CONTACT_INFO;
@@ -58,6 +88,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
   const [isLoading, setIsLoading] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [isListening, setIsListening] = useState(false);
+  const [currentVideoId, setCurrentVideoId] = useState("i9E_Blai8vk"); // Default video
   
   const chatEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<number | null>(null);
@@ -142,41 +173,50 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
         const modelResponseText = response.text;
         const recommendedPlans = response.recommendedPlans;
         const whatsappLink = response.whatsappLink;
+        const image = response.image;
+        const showDatePicker = response.showDatePicker;
+        const videoId = response.videoId;
+
+        if (videoId) {
+            setCurrentVideoId(videoId);
+        }
 
         if (modelResponseText) {
             setMessages(prev => [...prev, { 
                 role: 'model', 
                 text: '', 
                 recommendedPlans: recommendedPlans,
-                whatsappSummaryLink: whatsappLink
+                whatsappSummaryLink: whatsappLink,
+                image: image,
+                showDatePicker: showDatePicker,
+                videoId: videoId
             }]);
             
             speakText(modelResponseText);
 
             let i = 0;
+            const chunkSize = 2; 
+            const intervalSpeed = 15; 
+
             typingIntervalRef.current = window.setInterval(() => {
-                if (i < modelResponseText.length) {
+                const chunk = modelResponseText.substring(i, i + chunkSize);
+                
+                if (chunk) {
                     setMessages(prev => {
                         const newMessages = [...prev];
                         if (newMessages.length > 0) {
-                            newMessages[newMessages.length - 1].text += modelResponseText[i];
+                            newMessages[newMessages.length - 1].text += chunk;
                         }
                         return newMessages;
                     });
                     scrollToBottom();
-                    i++; 
-                    if(i < modelResponseText.length) {
-                         setMessages(prev => {
-                            const newMessages = [...prev];
-                            newMessages[newMessages.length - 1].text += modelResponseText[i];
-                            return newMessages;
-                         });
-                         i++;
-                    }
-                } else {
+                    i += chunkSize;
+                }
+
+                if (i >= modelResponseText.length) {
                     stopTypingEffect();
                 }
-            }, 10);
+            }, intervalSpeed);
         }
 
     } catch (error) {
@@ -190,7 +230,8 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       stopTypingEffect();
       window.speechSynthesis.cancel();
       localStorage.removeItem('planiBotHistory');
-      resetBotContext(); // Important: Reset service state
+      resetBotContext(); 
+      setCurrentVideoId("i9E_Blai8vk"); // Reset video to default
       
       const welcomeMsg = '¡Hola! 👋 Soy PlaniBot. Para poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**';
       setMessages([{ role: 'model', text: welcomeMsg }]);
@@ -268,7 +309,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
             }
         }
 
-        // Nuevo inicio predeterminado que inicia el flujo de Lead Qualification
         const welcomeMsg = '¡Hola! 👋 Soy PlaniBot, tu asistente de viajes inteligente. Para poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**';
         setMessages([{ role: 'model', text: welcomeMsg }]);
         speakText(welcomeMsg);
@@ -304,13 +344,13 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-5 right-5 z-40 w-16 h-16 bg-gradient-to-tr from-green-400 to-green-600 text-white rounded-full shadow-[0_0_20px_rgba(34,197,94,0.6)] flex items-center justify-center transform hover:scale-110 transition-all duration-300 border border-white/30 backdrop-blur-md"
+        className="fixed bottom-5 right-5 z-40 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-tr from-green-400 to-green-600 text-white rounded-full shadow-[0_0_20px_rgba(34,197,94,0.6)] flex items-center justify-center transform hover:scale-110 transition-all duration-300 border border-white/30 backdrop-blur-md"
         aria-label="Abrir PlaniBot"
       >
         {isOpen ? (
-             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
         ) : (
-             <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+             <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 md:h-9 md:w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
         )}
       </button>
 
@@ -342,6 +382,21 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                  </button>
             </div>
           </div>
+          
+          {/* Dynamic Video Player Area */}
+           <div className="w-full h-48 bg-black/50 relative flex-shrink-0">
+               <iframe 
+                   width="100%" 
+                   height="100%" 
+                   src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${currentVideoId}`} 
+                   title="Destino Video" 
+                   frameBorder="0" 
+                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                   allowFullScreen
+                   className="pointer-events-none" // Disable interaction for background feel
+               ></iframe>
+               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+           </div>
 
           {/* Chat Body */}
           <div className="flex-1 p-4 overflow-y-auto whatsapp-bg relative">
@@ -364,6 +419,23 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                        <div className="max-w-[85%] mt-1">
                           <WhatsappSummaryButton link={msg.whatsappSummaryLink} />
                        </div>
+                  )}
+                  
+                  {/* Bot sent image */}
+                  {msg.image && (
+                      <div className="max-w-[85%] mt-2">
+                          <img 
+                              src={msg.image} 
+                              alt="Mensaje del Bot" 
+                              className="rounded-xl w-full h-auto shadow-lg border border-white/20 animate-fade-in-up"
+                              onError={(e) => (e.currentTarget.style.display = 'none')}
+                          />
+                      </div>
+                  )}
+
+                  {/* Render Date Picker if requested by bot */}
+                  {msg.showDatePicker && index === messages.length - 1 && (
+                      <ChatDatePicker onDateSelect={(date) => handleSendMessage(null, date)} />
                   )}
 
                   {/* Render Recommended Plans Miniatures */}
@@ -467,19 +539,12 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(40px) scale(0.95);
+                transform: translate3d(0, 20px, 0);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translate3d(0, 0, 0);
             }
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
         }
       `}</style>
     </>

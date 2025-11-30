@@ -1,16 +1,26 @@
 
 import { Plan, FAQItem, BotResponse } from '../types';
-import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from "../constants";
+import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, REVIEW_MESSAGE, REVIEW_IMAGE_URL } from "../constants";
 
-// --- TIPOS DE ESTADO Y CONTEXTO ---
+// --- CONFIGURACIÓN DE VIDEOS ---
+const DEFAULT_VIDEO_ID = "i9E_Blai8vk"; 
+const DESTINATION_VIDEOS: Record<string, string> = {
+    "san andres": "Kj6W5Z5vQz0",
+    "cartagena": "8X7Gg4Q5X0A",
+    "santa marta": "Vq1_1hZq6Xg",
+    "eje cafetero": "Zt2fC0oVq_w",
+    "amazonas": "e7bC30sI1Yg",
+    "cancun": "S-gYtE3GvQ8", 
+    "punta cana": "rM2C3w6hJk8", 
+    "panama": "5_w1f7y3x8k" 
+};
 
 type ConversationStep = 
-    | 'GREETING'       // Saludo inicial, pide nombre
-    | 'ASK_DESTINATION' // Ya tiene nombre, pide destino
-    | 'ASK_DATES'      // Ya tiene destino, pide fechas
-    | 'ASK_PEOPLE'     // Ya tiene fechas, pide pax
-    | 'ASK_BUDGET'     // (Opcional) Pide presupuesto o cierra
-    | 'COMPLETED';     // Flujo terminado
+    | 'GREETING'       
+    | 'OPEN_QUESTION'  // Nuevo estado flexible
+    | 'ASK_DATES'      
+    | 'ASK_PEOPLE'     
+    | 'COMPLETED';     
 
 interface ConversationContext {
     step: ConversationStep;
@@ -19,7 +29,7 @@ interface ConversationContext {
         destination?: string;
         dates?: string;
         people?: string;
-        budget?: string;
+        selectedPlanId?: number;
     };
 }
 
@@ -30,96 +40,77 @@ interface AppDataForBot {
     social: typeof DEFAULT_SOCIAL_LINKS;
 }
 
-// --- ESTADO GLOBAL (SIMULADO) ---
 let botData: AppDataForBot | null = null;
-let isInitialized = false;
-
-// Contexto de la conversación actual (En una app real, esto iría por sesión de usuario)
 let context: ConversationContext = {
     step: 'GREETING',
     data: {}
 };
 
-// --- BASE DE CONOCIMIENTO (CEREBRO DEL EXPERTO) ---
-
-const KNOWLEDGE_BASE: Record<string, { description: string; bestSeason: string; food: string; tips: string }> = {
-    "san andres": {
-        description: "El mar de los siete colores. Es perfecto para bucear, relajarse en Johnny Cay y darle la vuelta a la isla en mulita.",
-        bestSeason: "Enero a abril es ideal (temporada seca), aunque el Caribe es sabroso todo el año.",
-        food: "Rondón, cangrejo y limonada de coco.",
-        tips: "Usa zapatos de agua y bloqueador biodegradable."
-    },
-    "cartagena": {
-        description: "Historia en la ciudad amurallada, rumba en Getsemaní y playas en Barú.",
-        bestSeason: "Diciembre a abril para evitar lluvias.",
-        food: "Arepa de huevo, cazuela de mariscos y cocadas.",
-        tips: "Camina la ciudad vieja al atardecer."
-    },
-    "santa marta": {
-        description: "Sierra Nevada y mar. El Parque Tayrona es imperdible.",
-        bestSeason: "Enero a marzo y junio a agosto.",
-        food: "Cayeye y pescado frito.",
-        tips: "Vacuna de fiebre amarilla para el Tayrona."
-    },
-    "eje cafetero": {
-        description: "Paisajes verdes, Salento, Valle del Cocora y termales.",
-        bestSeason: "Todo el año es templado, evita octubre por lluvias.",
-        food: "Bandeja paisa, trucha al ajillo y café.",
-        tips: "Lleva abrigo ligero para las noches."
-    },
-    "amazonas": {
-        description: "Conexión con la naturaleza, delfines rosados y selva.",
-        bestSeason: "Julio a octubre (playas), Diciembre a mayo (selva inundada).",
-        food: "Pescado moqueado y fariña.",
-        tips: "Repelente y vacuna de fiebre amarilla obligatoria."
-    },
-    "cancun": {
-        description: "Playas turquesas, cenotes, fiesta y cultura maya.",
-        bestSeason: "Noviembre a abril.",
-        food: "Tacos y cochinita pibil.",
-        tips: "Revisa si tu hotel incluye transporte a Xcaret."
-    },
-    "punta cana": {
-        description: "Resorts todo incluido de lujo y playas infinitas.",
-        bestSeason: "Diciembre a abril.",
-        food: "Mofongo y Sancocho.",
-        tips: "Disfruta del Resort Todo Incluido."
-    }
-};
-
-// --- UTILIDADES ---
-
 const normalize = (text: string) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
 const extractName = (input: string): string => {
-    // Intenta extraer el nombre de frases como "Soy Juan", "Me llamo Maria", "Mi nombre es Pedro"
-    const clean = input.replace(/[¿?!¡.,]/g, ''); // Quitar puntuación
-    const words = clean.split(' ');
-    
-    // Heurística simple: si es una palabra, es el nombre
-    if (words.length === 1) return words[0].charAt(0).toUpperCase() + words[0].slice(1);
+    const cleanText = input.replace(/[^\w\sÁÉÍÓÚáéíóúñÑ]/g, " ").trim();
+    const strongPattern = /(?:me llamo|mi nombre es|yo soy|soy)(?:\s+el|\s+la)?\s+([a-zA-ZáéíóúÁÉÍÓÚñÑ]+)/i;
+    const match = cleanText.match(strongPattern);
 
-    const triggers = ["soy", "llamo", "es"];
-    for (let i = 0; i < words.length; i++) {
-        if (triggers.includes(words[i].toLowerCase()) && i + 1 < words.length) {
-            let name = words[i+1];
-            if (name.toLowerCase() === "el" || name.toLowerCase() === "la") continue; // Evitar "Soy el..."
-            return name.charAt(0).toUpperCase() + name.slice(1);
+    if (match && match[1]) {
+        const potentialName = match[1];
+        const blackList = ['un', 'una', 'el', 'la', 'tu', 'viajero', 'cliente', 'usuario', 'planifica', 'sueno', 'bot', 'inteligencia', 'interesado', 'hola'];
+        if (!blackList.includes(potentialName.toLowerCase())) {
+            return potentialName.charAt(0).toUpperCase() + potentialName.slice(1).toLowerCase();
         }
     }
-    // Si no encuentra patrón, toma la última palabra si no es muy larga (probablemente el nombre)
-    const lastWord = words[words.length - 1];
-    if (lastWord.length > 2) return lastWord.charAt(0).toUpperCase() + lastWord.slice(1);
-    
     return "Viajero";
 };
 
-// --- INICIALIZACIÓN ---
+// Algoritmo de búsqueda inteligente de planes
+const findBestMatchingPlans = (input: string, plans: Plan[]): Plan[] => {
+    const normalizedInput = normalize(input);
+    const keywords = normalizedInput.split(' ').filter(w => w.length > 3);
+
+    // Sistema de puntuación
+    const scoredPlans = plans.map(plan => {
+        let score = 0;
+        const normalizedTitle = normalize(plan.title);
+        const normalizedDesc = normalize(plan.description);
+        const normalizedCity = normalize(plan.city);
+        const normalizedCountry = normalize(plan.country);
+        const normalizedAmenities = plan.amenities.map(a => normalize(a));
+        const normalizedIncludes = plan.includes.map(i => normalize(i));
+
+        // Coincidencia de destino (Alto valor)
+        if (normalizedInput.includes(normalizedCity)) score += 20;
+        if (normalizedInput.includes(normalizedCountry)) score += 15;
+
+        // Coincidencia en título
+        if (normalizedTitle.includes(normalizedInput)) score += 25;
+
+        // Búsqueda por palabras clave
+        keywords.forEach(keyword => {
+            if (normalizedTitle.includes(keyword)) score += 5;
+            if (normalizedDesc.includes(keyword)) score += 2;
+            if (normalizedAmenities.some(a => a.includes(keyword))) score += 4; // Ej: "Piscina", "Wifi"
+            if (normalizedIncludes.some(i => i.includes(keyword))) score += 3; // Ej: "Todo incluido"
+        });
+
+        // Detectar intenciones específicas
+        if ((input.includes('pareja') || input.includes('novios')) && plan.travelerTypes.includes('Parejas')) score += 10;
+        if ((input.includes('familia') || input.includes('niños')) && plan.travelerTypes.includes('Familias')) score += 10;
+        if (input.includes('barato') || input.includes('economico')) score -= (plan.priceValue / 100000); // Penaliza precio alto levemente
+
+        return { plan, score };
+    });
+
+    // Filtrar y ordenar
+    return scoredPlans
+        .filter(item => item.score > 5) // Umbral mínimo de relevancia
+        .sort((a, b) => b.score - a.score)
+        .map(item => item.plan)
+        .slice(0, 5); // Top 5
+};
 
 export const startChat = (appData: AppDataForBot) => {
     botData = appData;
-    isInitialized = true;
-    // Reiniciar contexto al iniciar
     context = { step: 'GREETING', data: {} };
 };
 
@@ -127,100 +118,119 @@ export const resetBotContext = () => {
     context = { step: 'GREETING', data: {} };
 };
 
-// --- MOTOR DE LÓGICA ---
-
 const processFlow = (input: string): BotResponse => {
     const cleanInput = normalize(input);
     
-    // 0. INTERRUPCIONES GLOBALES (Ayuda, Reinicio, Saludos genéricos si ya se saludó)
     if (/(reiniciar|borrar|inicio|empezar de nuevo)/.test(cleanInput)) {
         resetBotContext();
-        return { text: "¡Listo! Empecemos de cero. 👋\n\nPara poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**" };
+        return { 
+            text: "¡Listo! Empecemos de cero. 👋\n\nPara poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**",
+            videoId: DEFAULT_VIDEO_ID 
+        };
     }
 
-    // 1. MAQUINA DE ESTADOS
     switch (context.step) {
         case 'GREETING':
-            // Esperamos el nombre
             const name = extractName(input);
-            context.data.name = name;
-            context.step = 'ASK_DESTINATION';
-            return {
-                text: `¡Un gusto saludarte, **${name}**! 👋\n\nPara ayudarte a encontrar el viaje perfecto, cuéntame: \n\n🌎 **¿A qué destino sueñas viajar?**\n_(Ej: San Andrés, Cancún, Eje Cafetero, o busco recomendaciones)_`
-            };
-
-        case 'ASK_DESTINATION':
-            context.data.destination = input; // Guardamos lo que escribió tal cual para naturalidad
-            context.step = 'ASK_DATES';
+            if (name !== "Viajero") context.data.name = name;
             
-            // Detectar si mencionó un lugar conocido para dar un dato curioso
-            let funFact = "";
-            const knownKey = Object.keys(KNOWLEDGE_BASE).find(k => cleanInput.includes(k));
-            if (knownKey) {
-                funFact = `\n\n✨ _Excelente elección. ${KNOWLEDGE_BASE[knownKey].description}_`;
+            // Si el usuario ya menciona un destino en el saludo (ej: "Hola soy Juan y quiero ir a San Andrés")
+            const initialPlans = findBestMatchingPlans(input, botData?.plans || []);
+            
+            if (initialPlans.length > 0) {
+                context.step = 'ASK_DATES'; // Saltamos directo a fechas si ya entendimos qué quiere
+                context.data.destination = initialPlans[0].city; // Asumimos el destino del mejor match
+                
+                const greeting = context.data.name ? `¡Hola ${context.data.name}! ` : "¡Hola! ";
+                
+                return {
+                    text: `${greeting}Veo que te interesa **${context.data.destination}**. ¡Tengo excelentes opciones!\n\nMira estos planes que coinciden con lo que buscas 👇\n\n¿Para qué **fecha** te gustaría viajar?`,
+                    recommendedPlans: initialPlans,
+                    videoId: DESTINATION_VIDEOS[normalize(initialPlans[0].city)] || DEFAULT_VIDEO_ID,
+                    showDatePicker: true
+                };
             }
 
+            context.step = 'OPEN_QUESTION';
+            const greeting = context.data.name ? `¡Un gusto, **${context.data.name}**! 👋` : "¡Un gusto saludarte! 👋";
             return {
-                text: `¡${context.data.destination} suena espectacular! ${funFact}\n\n📅 **¿Para qué fechas tienes planeado tu viaje?**\n_(Ej: En Diciembre, Del 15 al 20 de Octubre, Fechas flexibles)_`
+                text: `${greeting}\n\nSoy experto en todos nuestros destinos. Cuéntame, **¿qué tipo de experiencia buscas?**\n\n_(Ej: "Quiero playa en San Andrés", "Un hotel con piscina en Santa Marta", "Algo romántico en Cartagena" o "Aventura en el Amazonas")_`,
+                videoId: DEFAULT_VIDEO_ID
             };
+
+        case 'OPEN_QUESTION':
+            // Análisis profundo de la intención
+            const matchedPlans = findBestMatchingPlans(input, botData?.plans || []);
+
+            if (matchedPlans.length > 0) {
+                context.data.destination = matchedPlans[0].city;
+                context.step = 'ASK_DATES';
+                
+                // Determinar video
+                let videoId = DEFAULT_VIDEO_ID;
+                for (const [key, id] of Object.entries(DESTINATION_VIDEOS)) {
+                    if (normalize(input).includes(key) || normalize(matchedPlans[0].city).includes(key)) {
+                        videoId = id;
+                        break;
+                    }
+                }
+
+                return {
+                    text: `¡Excelente elección! 🤩 Basado en lo que me dices, **estos planes son perfectos para ti**:\n\nPara verificar disponibilidad y darte el mejor precio, ¿tienes una **fecha tentativa** para tu viaje?`,
+                    recommendedPlans: matchedPlans,
+                    videoId: videoId,
+                    showDatePicker: true
+                };
+            } else {
+                // No se encontró nada específico, respuesta genérica pero útil
+                return {
+                    text: "Mmm, suena interesante pero necesito un poco más de detalle para encontrar el plan perfecto. 🤔\n\n¿Tienes algún destino en mente como **San Andrés, Santa Marta, Cartagena o Cancún**? ¿O prefieres que te recomiende algo según tu presupuesto?",
+                    videoId: DEFAULT_VIDEO_ID
+                };
+            }
 
         case 'ASK_DATES':
             context.data.dates = input;
             context.step = 'ASK_PEOPLE';
             return {
-                text: "Entendido. 🗓️ Ya casi terminamos.\n\n👨‍👩‍👧‍👦 **¿Cuántas personas viajan contigo?**\n_(Por favor indícame cuántos adultos y si viajan niños con sus edades)_"
+                text: `¡Anotado! 🗓️ Viajar en **${input}** es una gran idea.\n\nPor último, cuéntame **¿cuántas personas viajarían?** (Adultos y niños). Así podré calcular el presupuesto exacto.`,
             };
 
         case 'ASK_PEOPLE':
             context.data.people = input;
-            context.step = 'COMPLETED'; // Saltamos presupuesto para no ser invasivos, o lo dejamos opcional en el form
+            context.step = 'COMPLETED';
             
-            // GENERAR ENLACE DE WHATSAPP
             const phone = botData?.contact.phone.replace(/\D/g, '') || "573113653379";
-            const message = `👋 Hola Planifica Tu Sueño, soy *${context.data.name}*.\n\nEstoy interesado en viajar a: *${context.data.destination}*.\n🗓️ Fechas: ${context.data.dates}\n👥 Viajeros: ${context.data.people}\n\nQuedo atento a la cotización. ¡Gracias!`;
+            const nameMsg = context.data.name ? `, soy *${context.data.name}*` : "";
+            const destMsg = context.data.destination ? ` a *${context.data.destination}*` : "";
+            
+            const message = `👋 Hola Planifica Tu Sueño${nameMsg}.\n\nEstoy chateando con PlaniBot y me interesan los planes${destMsg}.\n🗓️ Fechas: *${context.data.dates}*\n👥 Viajeros: ${context.data.people}\n\nQuedo atento a la cotización formal. ¡Gracias!`;
             const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
             return {
-                text: `¡Perfecto, **${context.data.name}**! Ya tengo todos los datos para armar tu plan ideal. 🤩\n\nComo los precios de vuelos y hoteles cambian rápido, un asesor humano necesita verificar disponibilidad en tiempo real.\n\n👇 **Presiona el botón de abajo para enviar tu solicitud a nuestro WhatsApp oficial:**`,
+                text: `¡Perfecto! Ya tengo toda la información. 🎉\n\nUn asesor humano revisará la disponibilidad real para esas fechas y te enviará la cotización oficial.\n\n👇 **Da clic abajo para finalizar tu solicitud en WhatsApp:**`,
                 whatsappLink: waLink
             };
 
         case 'COMPLETED':
-             // Si sigue escribiendo después de completar
              return {
-                 text: "¡Ya tengo tus datos! 😊 Si deseas cambiar algo, dime 'reiniciar'. De lo contrario, dale clic al botón de arriba para chatear con un asesor humano en WhatsApp."
+                 text: "¡Ya tenemos tus datos! 😊 Si quieres consultar otro destino, escribe 'reiniciar'.",
+                 whatsappLink: `https://wa.me/${botData?.contact.phone.replace(/\D/g, '')}?text=Hola,%20quisiera%20retomar%20mi%20cotización`
              };
     }
 
-    return { text: "Lo siento, me perdí un poco. ¿Podrías repetirme?" };
+    return { text: "¿Podrías repetirme eso? Estoy aprendiendo y a veces me confundo. 😅" };
 };
-
 
 const processLocalResponse = (input: string): BotResponse => {
     if (!botData) return { text: "Error: Cerebro no inicializado." };
     const cleanInput = normalize(input);
 
-    // --- MANEJO DE PREGUNTAS FRECUENTES (INTERRUPCIONES AL FLUJO) ---
-    // Si el usuario pregunta algo específico (ubicación, redes, rnt), respondemos y NO avanzamos el flujo de cotización,
-    // o recordamos el flujo.
+    // Respuestas Fácticas Rápidas
+    if (/(ubicacion|direccion|donde estan|oficina)/.test(cleanInput)) return { text: `Estamos en: **${botData.contact.address}**.` };
+    if (/(telefono|celular|numero|whatsapp)/.test(cleanInput)) return { text: `Contáctanos al: **${botData.contact.phone}**.` };
+    if (/(redes|instagram|facebook|fotos|confiable)/.test(cleanInput)) return { text: REVIEW_MESSAGE, image: REVIEW_IMAGE_URL };
 
-    if (/(ubicacion|direccion|donde estan|oficina)/.test(cleanInput)) {
-        return { text: `Estamos ubicados en: **${botData.contact.address}**.` };
-    }
-    
-    if (/(telefono|celular|numero)/.test(cleanInput)) {
-        return { text: `Nuestro número es: **${botData.contact.phone}**.` };
-    }
-
-    if (/(redes|instagram|facebook)/.test(cleanInput)) {
-         return { 
-             text: "¡Claro! Síguenos en:\n" +
-                   `📷 Instagram: ${botData.social.instagram}\n` +
-                   `📘 Facebook: ${botData.social.facebook}`
-         };
-    }
-
-    // Si no es una pregunta fáctica, procesamos el flujo de ventas
     return processFlow(input);
 };
 
@@ -229,6 +239,6 @@ export const sendMessageToBot = async (message: string): Promise<BotResponse> =>
         setTimeout(() => {
             const response = processLocalResponse(message);
             resolve(response);
-        }, 700 + Math.random() * 800); 
+        }, 600 + Math.random() * 600); 
     });
 };

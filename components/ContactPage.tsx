@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import GlassCard from './GlassCard';
 import { DEFAULT_CONTACT_INFO } from '../constants';
@@ -86,7 +85,7 @@ Enviado desde el formulario de contacto del sitio web.`;
           </GlassCard>
           <GlassCard className="overflow-hidden">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3978.106666993859!2d-75.7770850852388!3d4.398688496738092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e470877a5617c5d%3A0x6b44a478b0561e12!2sCentro%20Comercial%20La%20Colmena!5e0!3m2!1sen!2sco!4v1678886543210!5m2!1sen!2sco"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3974.288224522923!2d-75.7883026852367!3d5.233586036979213!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xab6a0df834c4492!2sPlanifica%20Tu%20Sue%C3%B1o!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
               width="100%"
               height="250"
               style={{ border: 0 }}

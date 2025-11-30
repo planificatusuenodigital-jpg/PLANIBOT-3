@@ -10,7 +10,7 @@ import {
     DEFAULT_LEGAL_CONTENT, 
     DEFAULT_FAQS, 
     DEFAULT_CONTACT_INFO, 
-    DEFAULT_SOCIAL_LINKS,
+    DEFAULT_SOCIAL_LINKS, 
     DEFAULT_LOGO_URL,
     DEFAULT_PLANIBOT_AVATAR_URL,
     DEFAULT_SEO_IMAGE_URL,
@@ -90,7 +90,7 @@ const QRCodeModal: React.FC<{ plan: Plan; onClose: () => void }> = ({ plan, onCl
   );
 };
 
-const PlanDetailModal: React.FC<{ plan: Plan; onClose: () => void; logoUrl: string }> = ({ plan, onClose, logoUrl }) => {
+const PlanDetailModal: React.FC<{ plan: Plan; onClose: () => void; logoUrl: string; onQuote: (plan: Plan) => void }> = ({ plan, onClose, logoUrl, onQuote }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     useEffect(() => {
@@ -151,8 +151,27 @@ const PlanDetailModal: React.FC<{ plan: Plan; onClose: () => void; logoUrl: stri
                         </ul>
                     </div>
                 </div>
-                 <div className="p-4 border-t border-white/20 flex-shrink-0">
-                    <button onClick={onClose} className="w-full bg-white/20 text-white py-2.5 rounded-lg hover:bg-white/30 transition-colors font-semibold">Cerrar</button>
+                 <div className="p-4 border-t border-white/20 flex-shrink-0 flex flex-col gap-3">
+                    <div className="flex gap-4">
+                        <button onClick={onClose} className="flex-1 bg-white/20 text-white py-2.5 rounded-lg hover:bg-white/30 transition-colors font-semibold">Cerrar</button>
+                        <button 
+                            onClick={() => { onClose(); onQuote(plan); }} 
+                            className="flex-1 bg-pink-500 text-white font-bold py-2.5 rounded-lg hover:bg-pink-600 transition-colors shadow-lg"
+                        >
+                            Cotizar Ahora
+                        </button>
+                    </div>
+                    {plan.whatsappCatalogUrl && (
+                        <a 
+                            href={plan.whatsappCatalogUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[10px] sm:text-xs text-center text-green-300 hover:text-green-400 transition-colors opacity-80 hover:opacity-100 flex items-center justify-center gap-1"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.698c1.024.558 1.983.851 3.21.853 3.183.001 5.771-2.587 5.771-5.767 0-3.18-2.589-5.767-5.769-5.767zm2.96 4.138c0 .274-.112.527-.477.712-.365.187-.822.253-1.141.253-.319 0-.776-.066-1.141-.253-.365-.186-.477-.438-.477-.712 0-.274.112-.527.477-.713.365-.186.822-.252 1.141-.252.319 0 .776.066 1.141.252.365.186.477.439.477.713zm-5.77 1.628c0 2.247 1.832 4.079 4.081 4.079 2.249 0 4.082-1.832 4.082-4.079 0-2.249-1.833-4.081-4.082-4.081-2.249 0-4.081 1.832-4.081 4.081z"/></svg>
+                            ver en WhatsApp
+                        </a>
+                    )}
                 </div>
             </div>
         </div>
@@ -170,7 +189,7 @@ const QuoteRequestModal: React.FC<{ plan: Plan; contactInfo: typeof DEFAULT_CONT
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const message = `✨ Solicitud de Cotización ✨
+        let message = `✨ Solicitud de Cotización ✨
 ---------------------------------
 *Plan de Interés:* ${plan.title}
 
@@ -187,6 +206,11 @@ const QuoteRequestModal: React.FC<{ plan: Plan; contactInfo: typeof DEFAULT_CONT
 ${formData.dates || 'Flexibles'}
 ---------------------------------
 Enviado desde el sitio web.`;
+
+        // If the plan has a WhatsApp Catalog URL, append it to the message
+        if (plan.whatsappCatalogUrl) {
+            message += `\n\n🔗 Ver en Catálogo: ${plan.whatsappCatalogUrl}`;
+        }
 
         const whatsappUrl = `https://wa.me/${contactInfo.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
@@ -300,7 +324,7 @@ const SupabaseAdminLogin: React.FC = () => {
 
 
 const App: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<Section>(Section.Inicio);
+  const [activeSection, setActiveSection] = useState<Section>(Section.Planes);
   const [showSplash, setShowSplash] = useState(true);
   const [globalSearch, setGlobalSearch] = useState('');
   const [qrModalPlan, setQrModalPlan] = useState<Plan | null>(null);
@@ -528,7 +552,7 @@ const App: React.FC = () => {
       />
 
       {qrModalPlan && <QRCodeModal plan={qrModalPlan} onClose={() => setQrModalPlan(null)} />}
-      {detailModalPlan && <PlanDetailModal plan={detailModalPlan} onClose={() => setDetailModalPlan(null)} logoUrl={appData.logoUrl} />}
+      {detailModalPlan && <PlanDetailModal plan={detailModalPlan} onClose={() => setDetailModalPlan(null)} logoUrl={appData.logoUrl} onQuote={(plan) => setQuoteRequestPlan(plan)} />}
       {quoteRequestPlan && <QuoteRequestModal plan={quoteRequestPlan} contactInfo={appData.contact} onClose={() => setQuoteRequestPlan(null)} />}
     </div>
   );

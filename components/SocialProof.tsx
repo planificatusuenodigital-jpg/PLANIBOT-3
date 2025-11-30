@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 
 const messages = [
@@ -36,13 +37,13 @@ const SocialProof: React.FC = () => {
 
   return (
     <div
-      className={`fixed bottom-5 left-5 z-50 transition-all duration-500 ${
+      className={`fixed bottom-24 left-2 md:bottom-5 md:left-5 z-30 transition-all duration-500 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
       }`}
     >
-      <div className="bg-black/20 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg p-4 max-w-xs flex items-center gap-3">
-        <span className="text-2xl">🎉</span>
-        <p className="text-sm text-white/90">{message}</p>
+      <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-lg shadow-lg p-2 md:p-4 max-w-[200px] md:max-w-xs flex items-center gap-2 md:gap-3">
+        <span className="text-lg md:text-2xl">🎉</span>
+        <p className="text-[10px] md:text-sm text-white/90 leading-tight">{message}</p>
       </div>
     </div>
   );
