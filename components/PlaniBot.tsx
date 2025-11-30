@@ -176,7 +176,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
         const image = response.image;
         const showDatePicker = response.showDatePicker;
         const videoId = response.videoId;
-        const options = response.options;
 
         if (videoId) {
             setCurrentVideoId(videoId);
@@ -190,8 +189,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                 whatsappSummaryLink: whatsappLink,
                 image: image,
                 showDatePicker: showDatePicker,
-                videoId: videoId,
-                options: options
+                videoId: videoId
             }]);
             
             speakText(modelResponseText);
@@ -445,21 +443,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                       <div className="mt-3 w-full flex gap-3 overflow-x-auto pb-2 pl-1 snap-x no-scrollbar">
                           {msg.recommendedPlans.map(plan => (
                               <PlanMiniCard key={plan.id} plan={plan} onClick={() => onOpenPlan(plan)} />
-                          ))}
-                      </div>
-                  )}
-
-                  {/* Render Options if present */}
-                  {msg.options && msg.options.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2 animate-fade-in-up max-w-[85%]">
-                          {msg.options.map((option, idx) => (
-                              <button
-                                  key={idx}
-                                  onClick={() => handleSendMessage(null, option)}
-                                  className="bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs sm:text-sm px-3 py-1.5 rounded-full transition-colors backdrop-blur-sm shadow-sm"
-                              >
-                                  {option}
-                              </button>
                           ))}
                       </div>
                   )}

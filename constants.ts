@@ -5,6 +5,8 @@ export const DEFAULT_LOGO_URL = 'https://lh3.googleusercontent.com/pw/AP1GczMVaa
 export const DEFAULT_PLANIBOT_AVATAR_URL = 'https://lh3.googleusercontent.com/pw/AP1GczN-20Rl_25uHFSXkszlbrLCBXowweXMKM6gxTaAT5SxEiJzHe6w1RzNl3uS9CDqypFK2VJwzZ0FJTKL2B9BsZwJg4yYjms8Xs6DGU6GvzMZ842bWpb6K9sot2XwqJdManGzs9soffeOFZjMlRm6COE=w991-h991-s-no-gm?authuser=0';
 export const DEFAULT_SEO_IMAGE_URL = 'https://lh3.googleusercontent.com/pw/AP1GczNUIa2Fy-Hhas1rZIB4R6Mj0mFRmPDohbP1jYOdZnKtBVNxvp55GGLoti6L45527kFqs5qmxVBLk19-42n2WG70HqrA97KhoOwO-WMxBKEfGXtvdjc5Qo4n9yno1pj5BwZAOb7ZkPpqc0hPRs3vEC0=w991-h991-s-no-gm?authuser=0';
 
+// Placeholder for the specific review image requested. 
+// User should replace this URL with the one corresponding to the image provided (Cartoon woman on plane).
 export const REVIEW_IMAGE_URL = 'https://lh3.googleusercontent.com/pw/AP1GczN-20Rl_25uHFSXkszlbrLCBXowweXMKM6gxTaAT5SxEiJzHe6w1RzNl3uS9CDqypFK2VJwzZ0FJTKL2B9BsZwJg4yYjms8Xs6DGU6GvzMZ842bWpb6K9sot2XwqJdManGzs9soffeOFZjMlRm6COE=w991-h991-s-no-gm?authuser=0'; 
 
 export const REVIEW_MESSAGE = "A Planifica Tu Sueño le encantaría recibir tus comentarios. Publica una opinión en nuestro perfil. https://g.page/r/CZJETIPfoLYKEBE/review y no olviden calificar con sus 5 estrellas";
@@ -62,20 +64,35 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 350000,
     durationDays: 2,
-    description: "Dentro del alojamiento 🏨 podrá encontrar todas las comodidades: habitaciones equipadas con línea hotelera, Wifi, Piscina , Jacuzzy, Turco, senderos ecológicos, cascadas de nacimiento y muchas otras actividades que lo convierten en un lugar ideal para visitar y descansar.\n\n• La tarifa incluye cena, desayuno y almuerzo del dia siguiente al ingreso.\n• El check in al hotel es a las 3:00 pm y el check out a la 1:00 pm.\n• La zona húmeda del hotel está en funcionamiento desde las 7:30 am hasta las 8:00 pm.\n• No se permite el ingreso de mascotas.",
+    description: "Dentro del alojamiento 🏨 podrá encontrar todas las comodidades: habitaciones equipadas con línea hotelera, Wifi, Piscina, Jacuzzi, Turco, senderos ecológicos, cascadas de nacimiento y muchas otras actividades. Ideal para visitar y descansar (no se permiten fiestas). Check-in 3:00 pm, Check-out 1:00 pm. Zona húmeda de 7:30 am a 8:00 pm. No se permite el ingreso de bebidas ni comidas externas. No mascotas.",
     images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOmCHDxh7sRuqZdvEr0e7iKg5kfbPzjY6m39DnU=s1360-w1360-h1020-rw", // Note: Using placeholders or nearby related images as fallback if specific ones fail, but using user provided ones for others.
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSynhxjVM1KK7hH4zkxqBFBvYNdvAdRsWqhk1ssR_TdZMUvUggm9a2NsPjmO4II3ESr0zXjFXThJnFJ_qkQIFabX8_bN4exRk9uK0ZQlH5kE5y55CTT0bawNZD2GkKzD8HcgO1nQ=w675-h390-n-k-no" 
+        "https://lh3.googleusercontent.com/p/AF1QipM8Kpo53KGYF6YYW_CeQ9SSqnJfOg6W6DUTXTI0=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipNA4WZ-5zXaTsATL8TYbz_giPQnWLPCLsLuU7gS=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPLC900XKcREcroDsn467WB_7B7kHQrNPmJu-mJ=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOo2GeX5NFRwWsRpI7L_FymO3UDklFjgsL0zFbG=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipN1fmF2nz9khyLu6vTtVi-Z95v1JZmR8qjwrrgy=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOIH0q4ff0iUVFOyIsfGRmDRfuL9zhDC3Qb4nHJ=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipO1XVZztAp58803GhLr7VhSTkw6nvxjls8oudcd=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPA1WfWZcXIzrFsuvuUdY4VkLmOlnrDStxnra4c=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPJuyxBH71GnLpUG6u3hvfsjtZaA4mTRjDTQ5nx=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipO3fmHAOr71qCb2L4qHCfCQWvQYekehOE7n0zea=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipPiiWI8byu-k2v822Eoyj-Yf9XirsYlhzoGiSix=s1360-w1360-h1020-rw"
     ],
-    includes: ["Alojamiento", "Alimentación Completa (Desayuno, Almuerzo, Cena)", "Seguro de accidentes", "Zona Húmeda"],
+    includes: [
+        "Alojamiento",
+        "Alimentación completa: Cena, Desayuno y Almuerzo",
+        "Seguro de accidentes",
+        "Acceso a piscina, jacuzzi y turco",
+        "Senderos ecológicos y cascadas"
+    ],
     isVisible: true,
-    departureDate: "2024-12-01",
-    returnDate: "2024-12-03",
+    departureDate: "2024-11-10",
+    returnDate: "2024-11-12",
     country: "Colombia",
     city: "Eje Cafetero",
     regime: "Pensión Completa",
-    travelerTypes: ["Familias", "Descanso / Relax"],
-    amenities: ["Piscina", "Jacuzzi", "Turco / Baño de vapor", "Restaurante", "Bar / Lounge", "Wifi Gratis"],
+    travelerTypes: ["Descanso / Relax", "Familias", "Parejas"],
+    amenities: ["Wifi Gratis", "Piscina", "Jacuzzi", "Turco / Baño de vapor", "Restaurante", "Bar / Lounge"],
     whatsappCatalogUrl: "https://wa.me/p/8576974672313200/573113653379"
   },
   {
@@ -85,25 +102,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 450000,
     durationDays: 3,
-    description: "Sansiraka Hotel es una propiedad de estilo colonial con amplios jardines ubicada en Santa Marta. A 500 metros del Parque Acuático El Rodadero. Cuenta con 59 habitaciones, piscina, jacuzzi y baño de vapor.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwKFV5JZ1woB0EqhYxDS5yB6Y9AcndBsBlB55Dbi9XZfZTrCNbyQR6WSnlfZbCbzgCbPTK4z7fkAkVf5iy2xZjkrDNcHfyLHlJ79XRRniClszQK8Jbiy-JZDRggZic7BESvwZzghw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx_WELKHeIVXFaKPtGmPEfm5Wdn-Bmd6o_PB7Bm0yMra_inUhoB2DZ2zBY744mE2SnRCZM863B4ByKRB6cLc_i2zpUjCNpZS4ogqTY49WqR1O8_nX7nQBBlqxGziw9VlX0wVd6-=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxAisyBjhaGF7hiibuQnccWHEIBzMoTBT4EA0H8-Rmc8wEWvKNBp5lZOahRMko361C_wt4AZusPbWUfU96Ppre6ueal0gP5if2HnD_c-BypZqyzv-vHiLqQzlY-4ps7h-S_5LLe=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOmCHDxh7sRuqZdvEr0e7iKg5kfbPzjY6m39DnU=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOATJo-O5AoYO7rrv7tk1aS3gKW_kCF1Kt2iNtG=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipO70W9g-24p9VL7hN-hFWKQPoQV1qfcU1_K-Rq0=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Aire acondicionado", "Wifi en zonas comunes"],
+    description: "Propiedad de estilo colonial con amplios jardines en Santa Marta, cerca de El Rodadero. Ofrece una piscina al aire libre, jacuzzi, baño de vapor, restaurante, bar con karaoke y espectáculos nocturnos.",
+    images: ["https://picsum.photos/seed/sansiraka-1/800/600", "https://picsum.photos/seed/sansiraka-2/800/600", "https://picsum.photos/seed/sansiraka-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Acceso a zonas húmedas", "Internet inalámbrico", "Centro de negocios"],
     isVisible: true,
     departureDate: "2024-12-10",
     returnDate: "2024-12-13",
     country: "Colombia",
     city: "Santa Marta",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "Jacuzzi", "Turco / Baño de vapor", "Restaurante", "Bar / Lounge", "Estacionamiento"],
-    whatsappCatalogUrl: "https://wa.me/p/8204033959634780/573113653379"
+    travelerTypes: ["Parejas", "Familias", "Grupos"],
+    amenities: ["Piscina", "Jacuzzi", "Turco / Baño de vapor", "Bar / Lounge", "Restaurante", "Shows Nocturnos / Animación", "Centro de Negocios", "Wifi Gratis", "Estacionamiento", "Aire Acondicionado", "Balcón / Terraza"],
   },
   {
     id: 3,
@@ -112,16 +121,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 550000,
     durationDays: 3,
-    description: "GHL Relax Costa Azul es un hotel de playa en Santa Marta, zona Pozos Colorados. Ofrece diversión para toda la familia, piscina, jacuzzi y sauna. Las habitaciones poseen minibar y balcón.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyhAzxNlQ2voVuEwgDEEevmq5eEhqx8LjzW7ABuRUHFztoSfJ3y3XBljsM2foR_U42t2Ff3nGTSMUQYvYrrCuEhKGkqvu2nh4R__SvWjlZnh8rRZPlOFL41XrfnzshF5xcsKsYzuQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwwNI45b1j2S-al3unUdTJDxWXVhIFl4ZLQ347zRmk_ZYoQRlOTrwcJoqm2bvvp4OlWWhnm7t9kkqluIYEfcT8L6e1LoXhiFstBKFlMQ_l98wTrFy5wIRet89Rp6WLX0LKRriefDA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz9ipo_0v05k0SBMkOSiQmglQDPHIq-TlW101zR4tcbcdW_ZjffrCy8_9pS7s4F0cmOfAxaJZRSsXVvVJygkYpNGMlbSnWm3jYtxf9iLjS626Cy4jw-YedIzggHTh-8P8OXSLsBkA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyV44E7uW2_4HGPUORuFRBQUVv2dTnOOurtGdBJjV7mEoPmc97QvLwFE8VLZsgJg2J141UhgDkDMZvSfdKRHqSo2jvVvKiGGyHS00WlO7fXI1hMt6cYKLk3FCwkL8xKLMJO5hVz=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwMGjfradnVrKgsNySdta2POJ6oTo0EHC1WeR5S_pf1Y7nC4RJTR1xR-DC8Vuy0aJ_RoRKbbDlwXg1-SKA0Z_X7xly5evGguz2QoCJlr4tY1aEznC14K9QbFKC09ugZebP4_3fh-w=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVOJJbyqjtPrzJ6yFRiXuk1PwG_-bA0DymWG-jEAIO4pCRz6yGHE3fojpH1D5edd7oJ-UUcMe0Ug_MzzxaBGEYecKfLAZL635jgsNxAz3JOQ-_BVUW7hkbBUAo7c3PyWsylodo=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Acceso a zonas húmedas", "Internet inalámbrico"],
+    description: "Hotel de playa en la zona residencial de Pozos Colorados, Santa Marta. Ideal para familias, con piscina, piscina para niños, jacuzzi, sauna y restaurante de platos típicos.",
+    images: ["https://picsum.photos/seed/ghl-costa-azul-1/800/600", "https://picsum.photos/seed/ghl-costa-azul-2/800/600", "https://picsum.photos/seed/ghl-costa-azul-3/800/600"],
+    includes: ["Alojamiento en habitación con balcón", "Acceso a piscina, piscina para niños, jacuzzi y sauna", "Internet inalámbrico gratuito", "Bar en la piscina"],
     isVisible: true,
     departureDate: "2025-01-15",
     returnDate: "2025-01-18",
@@ -129,8 +131,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Descanso / Relax"],
-    amenities: ["Piscina", "Piscina para niños", "Jacuzzi", "Sauna", "Wifi Gratis", "Restaurante", "Acceso a la Playa", "Balcón / Terraza"],
-    whatsappCatalogUrl: "https://wa.me/p/25810653308578122/573113653379"
+    amenities: ["Piscina", "Piscina para niños", "Jacuzzi", "Sauna", "Acceso a la Playa", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza", "Vista al Mar", "Bar / Lounge", "Mesa de Tours"],
   },
   {
     id: 4,
@@ -139,25 +140,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 3200000,
     durationDays: 5,
-    description: "Royal Decameron Panamá - All Inclusive es un hotel todo incluido en Playa Blanca. Oferta recreativa, 11 piscinas, toboganes, campo de golf y spa. 8 restaurantes y numerosos bares.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipNcxxLCEKm4eCis6G_qZgCIEGLWYNu_sDxn-EBe=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOuhc4urtufPb92Vel8UZ3h5JPJNzoMISW8qqx9=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNSr-KOO6xvCJ9a-1A2WEstuMspr8ryn3Ak-Dpz=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPPeMb4oZIxGqHwzrs2YUFVfvtfOpVxlllq4ALi=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPFgh9J4KLlyPa-HFf09PrCAQ9NtuwUui6eWWBI=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/KkZJHVEbwhLt_7t3KI6ktgi-muDL8HposfxZ8ppE00a6LC_SeQxh-9eetmkxOFxNclwLtAuxq5hPPhVTF39X_tWqvQXKG60AxDHI7MwgW-S-Xod2uR4nIX8rZHouuZzYtNG3p_tGd0RwM8y2Veqayns8qaNDIMo=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Bebidas ilimitadas", "Deportes acuáticos", "Shows nocturnos"],
+    description: "Complejo todo incluido en Playa Blanca, Farallón. Ofrece una amplia oferta recreativa con 11 piscinas, toboganes, campo de golf de 18 hoyos, spa, 8 restaurantes y club nocturno.",
+    images: ["https://picsum.photos/seed/decameron-panama-1/800/600", "https://picsum.photos/seed/decameron-panama-2/800/600", "https://picsum.photos/seed/decameron-panama-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Comidas y bebidas ilimitadas", "Deportes acuáticos no motorizados", "Entretenimiento nocturno", "Acceso a 11 piscinas y toboganes"],
     isVisible: true,
     departureDate: "2025-02-10",
     returnDate: "2025-02-15",
     country: "Panamá",
     city: "Playa Blanca",
     regime: "Todo Incluido",
-    travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "Toboganes / Parque Acuático", "Campo de Golf", "Spa", "Discoteca / Club Nocturno", "Restaurante", "Bar / Lounge", "Acceso a la Playa"],
-    whatsappCatalogUrl: "https://wa.me/p/7093688827408212/573113653379"
+    travelerTypes: ["Familias", "Grupos", "Parejas"],
+    amenities: ["Piscina", "Toboganes / Parque Acuático", "Campo de Golf", "Spa", "Shows Nocturnos / Animación", "Restaurante", "Bar / Lounge", "Discoteca / Club Nocturno", "Acceso a la Playa", "Aire Acondicionado", "Balcón / Terraza", "Cocineta", "Salón de Eventos / Conferencias", "Mesa de Tours"],
   },
   {
     id: 5,
@@ -166,15 +159,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 480000,
     durationDays: 3,
-    description: "Hotel Marina Suites By Geh Suites tiene una ubicación ideal en Bocagrande, Cartagena, a 2 cuadras del mar. Cuenta con internet inalámbrico, desayuno estilo americano y habitaciones modernas.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOZci1a_i1_jYH3tr8sfmAZ-rv9SOXnM4nl5PI=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipM7g2k57dD8zzk_E2jCAj0KNNFt6Pr5UZDhGCk=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMrsiujEvrDv-wZi9i_XYCwz7htu1ho75ef3-o=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOO9IqdZZMBIisZC3l53BS_0-ZCSveUKOuaxAM=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNLuqtspbgOSuxifyxfPXG_SHkqjD0qpbxMJwY=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Desayuno estilo americano", "Wifi gratis"],
+    description: "Ubicación ideal en el moderno sector de Bocagrande en Cartagena, a 2 cuadras del mar. Ofrece desayuno americano, internet inalámbrico y centro de negocios.",
+    images: ["https://picsum.photos/seed/marina-suites-1/800/600", "https://picsum.photos/seed/marina-suites-2/800/600", "https://picsum.photos/seed/marina-suites-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Desayuno estilo americano", "Internet inalámbrico gratuito", "Centro de negocios"],
     isVisible: true,
     departureDate: "2024-11-20",
     returnDate: "2024-11-23",
@@ -182,37 +169,26 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Con Desayuno Incluido",
     travelerTypes: ["Parejas", "Negocios"],
-    amenities: ["Ubicación privilegiada en Bocagrande", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento"],
-    whatsappCatalogUrl: "https://wa.me/p/7229401933825410/573113653379"
+    amenities: ["Ubicación privilegiada en Bocagrande", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Centro de Negocios", "Mesa de Tours"],
   },
   {
     id: 6,
-    title: "Grand Bávaro Princess",
+    title: "Grand Bávaro Princess All Suites Resort",
     category: "Internacional",
     price: "Consultar Precio",
     priceValue: 4100000,
     durationDays: 6,
-    description: "Grand Bávaro Princess All Suites Resort, Spa & Casino es un hotel todo incluido en Punta Cana. Ofrece actividades deportivas, gimnasio, dos piscinas, spa, casino y suites de lujo.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOa_KOa336ytKWl6LrJF34YopSWdHPegD4jz7cd=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/I5JnoQkQ2n5_2bAv32_5pJWGiqRUnA70EcpGHDfn2vds4qNVGkA6FcWkSJoz7oe6IhQqQCxzLqH5UPV2t8tnbnmgFcOvTkwR-kcLOwqUqecpIjuuoFN_ap8mTX1W_gwSCdHh9kMej_1mWTt0e_sfQVAPN__12v8=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/CQ7ezs4v21RWpkIlTE1id3wzP-GbbMmk3fCk_-sNn62b4ZAmQ99HBu_G49VyO6rHRcRJ_kgaKljSoOFjfhEVQ30exA7SBtXO4qsjbH616JhlXvmdk0gGCafNuYzRMbdpx57Ao8havRzrx5RmQWaMfCK2UzKxI9c=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOBb3Mwxrql6tkJVeVNSeu7ZeaTgrRTXGPvUGhR=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/CXyX0wrCcRyJinis_Q-lvsrAhQXEwNovgV9yXu_nCHK99PHvLVNmSriTGxmzmLQp8CgKIvaiLBYDmsNCtLYFbi_XAfLbbRR7lBetwqX13_RPQASLwOyNiJrxsUt7TWlzOpqIQ9wDbyXq-gNjIqZzCukk5UfJfnE=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/VUfXkgUlTI2I9zhM4yp91hgUmobIR1F_25tjTEWKCegaemeFOz_vROIrbbGwodUg2nwUgl4J2XMeIwytbhQoOKN-K-eE4MsQ0la953nCSqKP5sL0Fy69x2WfWO_5YpJ-gi2997yQxa-dZ1KKkMrsnCQvLvx3lvk=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipP2qj21hFqOaXsHjGQvgfYmHghcvKhGfWtnnIIO=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/h2njmrs7jRyt0QxW4eaAOi2J9OOrgF3MKldbibNEztnvcsk5yedI5_QdQpaCv52twfP9MaXNM-VXTFIHu4ts2eU7JnuzOS7XZPntQyw0AGcvwzjnW8dKphJ-XKFZMe38R4Kymuf8W4pBolVfrI4lQ04osl6iAlw=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Deportes acuáticos", "Club de niños", "Acceso a spa y casino"],
+    description: "Hotel todo incluido en Punta Cana. Disfruta de una gran variedad de actividades deportivas, club de niños, gimnasio, dos piscinas, jacuzzi, sauna y spa.",
+    images: ["https://picsum.photos/seed/bavaro-princess-1/800/600", "https://picsum.photos/seed/bavaro-princess-2/800/600", "https://picsum.photos/seed/bavaro-princess-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Deportes acuáticos", "Clases de baile", "Club de niños", "Acceso a piscinas y zonas húmedas"],
     isVisible: true,
     departureDate: "2025-03-05",
     returnDate: "2025-03-11",
     country: "República Dominicana",
     city: "Punta Cana",
     regime: "Todo Incluido",
-    travelerTypes: ["Familias", "Parejas", "Descanso / Relax"],
-    amenities: ["Piscina", "Jacuzzi", "Spa", "Casino", "Gimnasio", "Club de niños", "Acceso a la Playa", "Restaurante", "Bar / Lounge", "Balcón / Terraza"],
-    whatsappCatalogUrl: "https://wa.me/p/7889385907788367/573113653379"
+    travelerTypes: ["Familias", "Parejas", "Grupos"],
+    amenities: ["Piscina", "Jacuzzi", "Sauna", "Spa", "Gimnasio", "Club de niños", "Acceso a la Playa", "Deportes Acuáticos", "Shows Nocturnos / Animación", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Casino", "Balcón / Terraza", "Minibar / Refrigerador"],
   },
   {
     id: 7,
@@ -221,18 +197,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 2900000,
     durationDays: 5,
-    description: "Este hotel familiar goza de una acertada ubicación a tan sólo 25 minutos en coche del aeropuerto internacional de Cancún. Con magníficas vistas del Mar Caribe, ofrece deportes acuáticos y conexión Wi-Fi de cortesía.",
-    images: [
-        "https://lh3.googleusercontent.com/proxy/nTAZG78kvDj3rUcU4H20xr3fOFR9ppraudl-mlCgdP1wf1p0x9hi3PsQx5XhPgXlDPqoQ98u9Ml4oLzd_9YtBqdrmG4tH2BhPpe-YWXoQEQ6AbeLb_e0enmZYlsYbcC7EquUqLs6YjzcgyrUw3QRr6lQTcVa5Q=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/FpXmJuH9SsXgSGGkGvi9EAaXkVrtkBdZcc5V6HARA1snwmfU7tRtkxqyylkOrtFKTWrlKoVFh3VVMZPALJ8IqczIXGFjZC8NVfeMvls1TIlPbNWC5EggfbNnHHxNQt2qdTm0qIB_wCUYA1mImUcR1B7PgkaP_Q=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMKf8FEgQWRzv-VgJMrmCrWFD5cd0UL1e0H51oR=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/xmjTfraDlx_xGnJNAQPWDCCZSHNxnro3lcAK78YTpw8yDDK9HuV-zjBNv9h2mHzDRv5falJc-_3BRKI3ECKUFLJrNPXeXm8VTs7geCFwabULxaFuThYM6TcWPUs_1tO5gqphvDPfepNJQzfMZGC3RIcYAazTJA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNH_ZoSLZKcWLQaLF5dRCxTC43_xvfcRF4s6eUM=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMckB0Q9WZ6VvDDYiN5IFLynvNmp51Nh3MYuhMO=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNGmiK2PMB4W2n2eUYSmSPN2emtUiy8a8pQWhVq=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPewUHL6yEIdskp4SJf6DaADeV8Afo1t5nzVse7=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Deportes acuáticos", "Wifi gratis"],
+    description: "Hotel familiar todo incluido en Cancún con magníficas vistas al Mar Caribe. Ideal para disfrutar de la playa, deportes acuáticos y un ambiente relajado.",
+    images: ["https://picsum.photos/seed/imperial-perlas-1/800/600", "https://picsum.photos/seed/imperial-perlas-2/800/600", "https://picsum.photos/seed/imperial-perlas-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Comidas y bebidas", "Deportes acuáticos como piragua", "Conexión Wi-Fi"],
     isVisible: true,
     departureDate: "2025-01-20",
     returnDate: "2025-01-25",
@@ -240,8 +207,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cancún",
     regime: "Todo Incluido",
     travelerTypes: ["Familias", "Parejas"],
-    amenities: ["Acceso a la Playa", "Deportes Acuáticos", "Wifi Gratis", "Restaurante", "Bar / Lounge", "Balcón / Terraza"],
-    whatsappCatalogUrl: "https://wa.me/p/6867556923346658/573113653379"
+    amenities: ["Acceso a la Playa", "Deportes Acuáticos", "Wifi Gratis", "Restaurante", "Bar / Lounge"],
   },
   {
     id: 8,
@@ -250,15 +216,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 420000,
     durationDays: 3,
-    description: "Hotel Azuan Suites By Geh Suites está ubicado en Bocagrande. Cuenta con servicio de transporte al aeropuerto y está a solo 4 cuadras de la playa. Habitaciones equipadas con wifi gratis y aire acondicionado.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipMeidwlPLFWcYhYaHXcCMGBD9UYbH-OmfTz9z2J=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNXKb9tgpANVm3dBDErUS-qozVnN9rrZaQucc2U=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMeuhl9qQPqki3ZIwYpJwivGql8e_uddHGu9K7n=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNBTM65FmttjjBiY7b_FMwbjvzIUTwzfnmyaJ6z=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMDNewIHbu7Joyzo2G47rklROBcT5PmtIpl2gs-=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Wifi gratis", "Información turística"],
+    description: "Ubicado en el moderno barrio de Bocagrande, Cartagena. Ofrece wifi gratis, aire acondicionado y está a solo 4 cuadras de la playa.",
+    images: ["https://picsum.photos/seed/azuan-suites-1/800/600", "https://picsum.photos/seed/azuan-suites-2/800/600", "https://picsum.photos/seed/azuan-suites-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Wifi gratis", "Servicio de despertador", "Información turística"],
     isVisible: true,
     departureDate: "2024-11-25",
     returnDate: "2024-11-28",
@@ -267,7 +227,6 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Negocios"],
     amenities: ["Ubicación privilegiada en Bocagrande", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7885221301559377/573113653379"
   },
   {
     id: 9,
@@ -276,16 +235,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 750000,
     durationDays: 4,
-    description: "Hotel Lord Pierre cuenta con piscina y muelle con solárium. Ofrece una mesa de tours y posee dos restaurantes y un bar sobre el muelle.",
-    images: [
-        "https://lh3.googleusercontent.com/proxy/Wa9d0dgkRj93lbbQw1IhN9-lZiNnzTzD4ovnI3e6z_Ujpi-PVpqymueLrs5gzePgaRPUpc4k-WQX_MZG15i-h8P7ADI1jz-h3XKY0tZ-DEmj87kpTv8KQkRRYPy_nKcJWEyihjkQjVUgr9zWhTT3D7DnYNDjUw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/hq2ZLhZcBfYozw-vYyuOWpdExcBpGD9fWFNAmKoMQ7WCvnrxsejBi2sNCdoHLEK90lr2vhh9Mc7-IyfiMiKRMF_wD6DAHk-L489PhGMwEZAJPazTALthrZ-Pi3doYM_c_coqlVPo8aaHraQ_JeJu9anz9ulJCQY=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMRy6XtqJvNlrJTOVhgJBRx8NtuNdPdm2DZZqxk=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipP6UXW_eZcZhj9QJW1KK3DfduQL9KqiwJu4PvQy=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipP2qolWmIf7o4YFZEY-uPaRRGFpT3fkinvypmje=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNsZt54aDUz12_fThvP0HTJO8ywBLFgl33DzjAc=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Acceso a muelle y piscina"],
+    description: "Una propiedad en San Andrés que cuenta con piscina y muelle con solárium. Tiene un área de playa y ofrece tours para actividades acuáticas. Posee dos restaurantes y un bar sobre el muelle.",
+    images: ["https://picsum.photos/seed/lord-pierre-1/800/600", "https://picsum.photos/seed/lord-pierre-2/800/600", "https://picsum.photos/seed/lord-pierre-3/800/600"],
+    includes: ["Alojamiento", "Acceso a piscina y muelle", "Mesa de tours"],
     isVisible: true,
     departureDate: "2025-02-01",
     returnDate: "2025-02-05",
@@ -294,7 +246,6 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Grupos"],
     amenities: ["Piscina", "Acceso a la Playa", "Restaurante", "Bar / Lounge", "Mesa de Tours"],
-    whatsappCatalogUrl: "https://wa.me/p/7112269098876960/573113653379"
   },
   {
     id: 10,
@@ -303,19 +254,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 680000,
     durationDays: 4,
-    description: "On Vacation Caribbean es un hotel cerca de la playa en San Andrés. Ofrece habitaciones con aire acondicionado y cuenta con servicio de internet y restaurante.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwpYGrIK-vSEHZtWEcmV3w3hNhNabgFE-cL4v8euYSjElC8zAUWlmQoMMiE3ToKFkz1NCEXbAWebTrJzLhz0HoelM0Ohw-ASPlRUWN0zlr1oFSKo2q1kzasjCNMSwpsk30CTn6w=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSysUujEX7yfCl-ppFquIHEXjec-toolBqpYROxPX0ZKaIulciY4L1PNLx2mNtrq297YWseHOY09Ldh5dvo8VmFtGko-biqhWKSlhPrtADyDDUAkwrOmsYxhqUzg8fDM-Q2VlladmsEo7A=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPsZJKPgMN1T1nVWUl9-p8kWej6_E3Zxz2rj1bQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOeJ5JVglGKLL0wYPlGm_qhPENHv95qO400Cl2q=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPVBflQT5GsBFJcJatQO3NWqqUMyLALAzaqS34x=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMAIa9uzP7Im6TMqK81l6uN_-2NrkRmSHe7PsTw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvinx8D5-MpiAEF0uQvpnk45W1U0aCxj9qPdyrGcv8DD2MvdFHufCE07H2_vYua80ChSYo5x9VqGIxqW8pL0eYGa4Br7bXulzgN9Pqga0vxCBn-5p8LDEPn65F5ZyDzX8BkF7Yaw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/kTWTvaWFcYG846IEwVL6VMTZny7eoX_VM6e4_lvgHBGbYI3w7k2U1OWfL_lPeVsOWipJVdpotvOGkEN0-iaOadCiC3csGSEZcONq-za4mEvpMNFZHU_eY_6_jOffZZSJwZ_9AqlOAI1YkIi-Wv2bDFCqiZG3MpM=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNNxzmiqlSn9btLiCe3H4e6lK8TGZp5aeOyqQTO=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Aire acondicionado", "Cerca a la playa"],
+    description: "Hotel libre de humo cerca de la playa en San Andrés. Ofrece 66 habitaciones con aire acondicionado, restaurante y resguardo de equipaje.",
+    images: ["https://picsum.photos/seed/on-vacation-caribbean-1/800/600", "https://picsum.photos/seed/on-vacation-caribbean-2/800/600", "https://picsum.photos/seed/on-vacation-caribbean-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Servicio de internet", "Restaurante"],
     isVisible: true,
     departureDate: "2025-01-10",
     returnDate: "2025-01-14",
@@ -324,34 +265,25 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     regime: "Solo Alojamiento",
     travelerTypes: ["Grupos", "Familias"],
     amenities: ["A pocos metros de la playa", "Aire Acondicionado", "Wifi Gratis", "Restaurante"],
-    whatsappCatalogUrl: "https://wa.me/p/25771297959150167/573113653379"
   },
   {
     id: 11,
-    title: "Hotel Amazon",
+    title: "Hotel On Vacation Amazon",
     category: "Aventura",
     price: "Consultar Precio",
     priceValue: 950000,
     durationDays: 4,
-    description: "On Vacation Amazon está ubicado a las afueras de Leticia, rodeado de selva. Ofrece una experiencia única en contacto con la naturaleza, piscina y restaurante.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipP3IAHV9tt5fWxSBRuIUqH2mJIjVvoGEkkbeh7L=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipN4M8v19ZtY9-dgNj07Pd5jGUwokQKRm2_KuRxA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPiRiCg5jwipkWahpaEGgq54aKMRlHJMr5GMPTH=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipO_NsDSKz51XY-XhVjjcR-T5MFry3qYvVsSCS2G=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyl7A0YwI02ubuJc07aog9vvzfbh_AWAXRwdQaRcpW4Qg5-dHlB6jrPP8ZhURbGi2yj8KEiff63YDaToTaqv9go8db0JzPtG_rL-mr9B03JgXqETJixpgXk85x4exJkwstwflt4=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMzfM1L6FJhFJbkmWhdtZkXAUD_mslLeDoU5ylJ=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Alimentación completa", "Piscina"],
+    description: "Ubicado a las afueras de Leticia, en una zona a la que sólo se puede llegar en bote. Rodeado de selva, este hotel ofrece una experiencia única con piscina y restaurante. Nota: las habitaciones ofrecen únicamente agua fría.",
+    images: ["https://picsum.photos/seed/on-vacation-amazon-1/800/600", "https://picsum.photos/seed/on-vacation-amazon-2/800/600", "https://picsum.photos/seed/on-vacation-amazon-3/800/600"],
+    includes: ["Alojamiento con vista a la selva", "Desayuno, almuerzo y cena", "Acceso a la piscina"],
     isVisible: true,
     departureDate: "2025-04-01",
     returnDate: "2025-04-05",
     country: "Colombia",
     city: "Leticia",
     regime: "Pensión Completa",
-    travelerTypes: ["Aventura", "Grupos"],
+    travelerTypes: ["Grupos", "Aventura"],
     amenities: ["Piscina", "Restaurante", "Bar / Lounge", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/8479613988720312/573113653379"
   },
   {
     id: 12,
@@ -360,17 +292,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 620000,
     durationDays: 3,
-    description: "Tamacá Beach Resort Hotel está ubicado frente al mar en El Rodadero. Cuenta con piscina con vista al mar, jacuzzi, acceso a la playa y restaurante de especialidades.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOQUzoCtcPe5Eyiy0ZFxaUDfc0YatTekTLtGrjk=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxh1LGhl73hIQxMKvrH_UYZ6_tBB7Mn8fQXV0gsX1FaoqRJ2BJxyDTpjQ9u44gHrc4LZw8BFKAOHhemZIY3zUNli0irZBgw3bsBX5NgC-YnVAizOTI0T4pxYvgbbs5vYhbVoutbgA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMKVpHlW9hJuqORzPZPfJF67EqxHOI0_fnUI_TW=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMcxYxSk8vkEddyVYKuukssaYq5UhiKHOPW-BDH=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/mppVJ6T-xnyUlrL8Kebmxsp1XSbx8Y2DNjmnavcJem8Pbn9CIADcowTUiqCWQ72TzZ114IGl4xSoc50d7eG-pO6xtm7J4savnnMF213xHQnClqLqa8qE4ygUZvSq6wiU-GeHSrCcjZXrQxF0xdEjroSvJPBbtCM=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMa7uR101PgH9zb1jnH1gDwJY3wrXLRmL-yOEJ-=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipO0GMg3npBAVVl1ejNJtK_-B4z54HCrGYQMzX8U=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento con vista", "Acceso a zonas húmedas", "Wifi"],
+    description: "Ubicado frente al mar en El Rodadero, Santa Marta. Cuenta con piscina con vista al mar, acceso a la playa, jacuzzi, centro de negocios y restaurante de especialidades.",
+    images: ["https://picsum.photos/seed/tamaca-beach-1/800/600", "https://picsum.photos/seed/tamaca-beach-2/800/600", "https://picsum.photos/seed/tamaca-beach-3/800/600"],
+    includes: ["Alojamiento con vista al mar", "Acceso a piscina y jacuzzi", "Internet inalámbrico", "Centro de negocios"],
     isVisible: true,
     departureDate: "2025-02-15",
     returnDate: "2025-02-18",
@@ -378,8 +302,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Familias", "Negocios"],
-    amenities: ["Piscina", "Jacuzzi", "Acceso a la Playa", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Bar / Lounge", "Vista al Mar"],
-    whatsappCatalogUrl: "https://wa.me/p/7509111829143641/573113653379"
+    amenities: ["Piscina", "Jacuzzi", "Acceso a la Playa", "Wifi Gratis", "Aire Acondicionado", "Centro de Negocios", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Vista al Mar", "Minibar / Refrigerador"],
   },
   {
     id: 13,
@@ -388,16 +311,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 3500000,
     durationDays: 5,
-    description: "whala!bávaro es un hotel todo incluido cerca de la playa en Punta Cana. Cuenta con tres piscinas, restaurantes bufet, bares, gimnasio y club infantil.",
-    images: [
-        "https://lh3.googleusercontent.com/proxy/5Y8hB2PMRHgM8n76dcK_L87ZKJG1J5qWW-oSl3MDcvHislfkBO99QPZO-dJSs7oeEDNyIq-ckdFQqLRpLd6k1yt9tt-QKaoeR91YnkpVnefSsbba1tbuNOorHLkofZLQ-zpzCQqoI96oDQNbzKiJU2W81Hd-4i4=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNUZb_usg5UVG3OUE2gP4yNTTybYIHXKt_gyOrR=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMObvf47gLVCjEPOCNrE5ISP5pEtAK05Y2EHR97=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipN4iSOeg3u0sEEVdfWQ-ONreWGhP33H6pNzKbLd=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/5Y8hB2PMRHgM8n76dcK_L87ZKJG1J5qWW-oSl3MDcvHislfkBO99QPZO-dJSs7oeEDNyIq-ckdFQqLRpLd6k1yt9tt-QKaoeR91YnkpVnefSsbba1tbuNOorHLkofZLQ-zpzCQqoI96oDQNbzKiJU2W81Hd-4i4=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPNcHQWOrz8cGt6Ii92txfing4IHWM-ykE85pQQ=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Acceso a piscinas", "Gimnasio"],
+    description: "Hotel todo incluido cerca de la playa en Bávaro, Punta Cana. Cuenta con tres piscinas, dos restaurantes, dos bares, gimnasio, club infantil y un programa completo de actividades.",
+    images: ["https://picsum.photos/seed/whala-bavaro-1/800/600", "https://picsum.photos/seed/whala-bavaro-2/800/600", "https://picsum.photos/seed/whala-bavaro-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Comidas y bebidas", "Acceso a piscinas", "Gimnasio", "Club infantil", "Programa de animación"],
     isVisible: true,
     departureDate: "2025-03-20",
     returnDate: "2025-03-25",
@@ -405,8 +321,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Punta Cana",
     regime: "Todo Incluido",
     travelerTypes: ["Familias", "Parejas"],
-    amenities: ["Piscina", "A pocos metros de la playa", "Gimnasio", "Club de niños", "Restaurante", "Bar / Lounge", "Balcón / Terraza"],
-    whatsappCatalogUrl: "https://wa.me/p/7404863062900597/573113653379"
+    amenities: ["Piscina", "A pocos metros de la playa", "Gimnasio", "Club de niños", "Shows Nocturnos / Animación", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza", "Minibar / Refrigerador"],
   },
   {
     id: 14,
@@ -415,18 +330,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 780000,
     durationDays: 4,
-    description: "Hotel Cartagena Plaza tiene una ubicación privilegiada frente al mar. Su piscina en el piso 18 ofrece vistas panorámicas. Cuenta con club nocturno, salón de juegos y club de niños.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyHBLy3iGtK8aK-ZI1RrdkDKHs-v-0EhKBt3ibMQccu28aMon52tHMuE0PvUqMUYov1hzJxbOmxtCeKQ5jVJ8JOvTYHxLvCR30c_VbBPWhe_63C1qAdqYHRKj3o89ewB6bVJHH7=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/86C0VIObQgwlhQfF0OHiWZ_NEDpGAuUNxe8TMW4tXLRXLsgZhRa0CLnKghJqm4wZs-xnha_KEU0q1Oxe852ZaFLuWrBJy8YFFB2W2PNNIxZu9225PJOTrjatr5IbVZ77d3ddenSmjvrhAFd7AcWOkWRRG8zZlIo=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/vM9FWh2yRAYH2BKSzXQSuXbtOXMzegRn_H7ar5YaSleJSg5cfMbpRxjpy0vYlDn6UgD8cGK6C2TxPdMIYjMKB79b2JNwagiN7AtOhmYsHbVjulXEX7omrnrFImTWLDiEBbpideXwVXdK8yhhNQG7txFtaZ4vVg=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/BoKmdxQF5a5Db13LK7kI1ksywEKj2BxIucf5oYFk_fB1iU_Wu3d4ERIB6KJHMIClIgUZfUW3z_xKKlanxBXE8kV0zPxv1CXRfoblHQHQ8jxl-roh9yFeqOnAkXVMysaT0qfFLJ6m3IQHh-yOecsDUY5j3qv39hQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/3zBqv87VuHBjKiv3I_RASIqhwCfGtYv4EYwsBF8jYUtOadTw5nh36ZRtbCQnGlcRl0YYW9yLuAko5NoxyH8_LHiqLppmGxlNTcAOm1L5tI_D7kmpJFGqYFuKX3IuFR0WDlwk9938V69u6riXiDYrAhB9n7S-OTQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwt3BleYgdPo5w412ItjjKPC2466xenpp7Uak8oRSYNzTHY5Uy3sQeMNne9EXq0DbF08YtAtAYo6FsRITnnjd_1lE6R7BZoaqtc3u8zPFRHL7aqxxE3EmGDYqBidKAFHabBP067=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/XyOaaVriAYhuxf-khjGjOLMlqUO4TjN7FgxOVn7JmdaxqFHVW-VQEw0H1x5LnUiR8Kxh561N8bTkeVg81iX1caOppAkZFIqQwTmiV3Zsq1APEzLqcAn7WgZEJfKoQbXyi43ANsxyRW-6lZa4dzaRq4C96N7tYas=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOwV9qs9_3cDthjtvqNWOU9w_8_EQJVhXDIbQoU=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Acceso a piscina panorámica", "Entretenimiento"],
+    description: "Ubicación privilegiada frente al mar en Cartagena. Piscina en el piso 18 con vistas panorámicas, club nocturno, club de niños, centro de negocios y dos restaurantes.",
+    images: ["https://picsum.photos/seed/cartagena-plaza-1/800/600", "https://picsum.photos/seed/cartagena-plaza-2/800/600", "https://picsum.photos/seed/cartagena-plaza-3/800/600"],
+    includes: ["Alojamiento con vista al mar", "Acceso a piscina panorámica", "Club de niños", "Club nocturno", "Internet inalámbrico"],
     isVisible: true,
     departureDate: "2025-04-10",
     returnDate: "2025-04-14",
@@ -434,8 +340,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Parejas", "Grupos"],
-    amenities: ["Piscina", "Acceso a la Playa", "Shows Nocturnos / Animación", "Discoteca / Club Nocturno", "Club de niños", "Restaurante", "Bar / Lounge", "Vista al Mar"],
-    whatsappCatalogUrl: "https://wa.me/p/7724857634239573/573113653379"
+    amenities: ["Piscina", "Acceso a la Playa", "Shows Nocturnos / Animación", "Discoteca / Club Nocturno", "Club de niños", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Bar / Lounge", "Centro de Negocios", "Salón de Eventos / Conferencias", "Hotel accesible", "Vista al Mar"],
   },
   {
     id: 15,
@@ -444,17 +349,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 3300000,
     durationDays: 4,
-    description: "Playa Blanca Beach Resort es un hotel familiar de playa todo incluido en Panamá. Cuenta con la piscina de agua salada más grande de Centroamérica, toboganes y deportes acuáticos.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOKDruDbqPdSTJkwFwuXi5hTxuD7jML2LRb-SGn=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwuUtGPpngublZzNLAAMazBfgjujin-WnV529Tn1nnMERBeggWpwj4HrHrgdY1f36fsG7ctYsqIx62KdeQX2lptJ_d3UkcZf3YB0uUSa3GSOIbCzDjbqfmqxdjC55OjAP4Wk1LO=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/vOdPjIzdOVM3t2O1qN0BH85RGsJde2J611qJoXJgjPZh0nVZ1UDv9G8Pw7OpZEmtjuPFxPbCO8DT4WaDO7vPdmazARQeST_QsObX1H4ANY7uSUJsD82xDI33A_GHPxpVHSQDBvhtWY2ZT5BoAqAWz8mHwEDYZQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPnoGrTgO6EhqbmD6gXM-MPoEgTNVj7PfWP13sr=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/uLS1ibzE-JtvP5ziLrsoosLx1aMUqXlFkIRz0MknvPTjTCeckJbwqrB6kYpArdDzrJ096al0bDiRWL-hfV7grjWfbAjn9oEC9gLpufbSTp2Iu4n9y4aZZl7691gFTmDVIKRuymQoF6CYtRfN0_8SUkuQOUE26Q=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMPzAx_LWYPmLFXhRATIKDC9e1rtOU2KMJ8Zqso=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/XUnteuCKC0qgyYAuSrGEIlsbWFeEvtHIOfBEZu1ZXa4v8KILahllzfuF6ygkm4JfvghD7413_mGbYDsQvSzONPFgf110QNyZ2CZCKquLlSilSp_FmmmZrIbRsHK5OnV5e3E7Qt79eOUQ195OAkBGS0hc1J-BzA=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Piscina gigante de agua salada", "Toboganes"],
+    description: "Hotel familiar todo incluido en Playa Blanca, Panamá. Cuenta con la piscina de agua salada más grande de Centroamérica, toboganes, spa, casino y club nocturno.",
+    images: ["https://picsum.photos/seed/playa-blanca-panama-1/800/600", "https://picsum.photos/seed/playa-blanca-panama-2/800/600", "https://picsum.photos/seed/playa-blanca-panama-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Acceso a piscina gigante de agua salada", "Toboganes", "Deportes acuáticos", "Club de niños", "Espectáculos nocturnos"],
     isVisible: true,
     departureDate: "2025-05-01",
     returnDate: "2025-05-05",
@@ -462,8 +359,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Playa Blanca",
     regime: "Todo Incluido",
     travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "Toboganes / Parque Acuático", "Acceso a la Playa", "Spa", "Casino", "Club de niños", "Restaurante", "Bar / Lounge", "Deportes Acuáticos"],
-    whatsappCatalogUrl: "https://wa.me/p/7887350717983893/573113653379"
+    amenities: ["Piscina", "Toboganes / Parque Acuático", "Acceso a la Playa", "Spa", "Casino", "Discoteca / Club Nocturno", "Shows Nocturnos / Animación", "Club de niños", "Restaurante", "Bar / Lounge", "Balcón / Terraza", "Cocineta", "Deportes Acuáticos", "Salón de Eventos / Conferencias", "Mesa de Tours"],
   },
   {
     id: 16,
@@ -472,23 +368,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 820000,
     durationDays: 4,
-    description: "Samawi Hotel se encuentra en el sector Punta Hansa en San Andrés. Ofrece piscina al aire libre con vista al mar, wifi gratuito y restaurante.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipNMrFh_FHRO5eeqqodalDMgrOZQZtO-REH1CVa2=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPoTNx43EKowlVq2NUvICseFUhU-h_TSbbEOZ4r=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipODoKxlz52hKkkGL9fwFdRxZPZuuJwH4qFHcL8k=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOvRH6KS8rXWfkFrw9Q6fh1Drfy8Pcecbl9zY-a=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Acceso a piscina", "Wifi gratis"],
+    description: "Ubicado en el sector Punta Hansa en San Andrés. Ofrece piscina al aire libre con vista al mar, wifi gratuito, salones para eventos y restaurante. Acepta mascotas.",
+    images: ["https://picsum.photos/seed/samawi-1/800/600", "https://picsum.photos/seed/samawi-2/800/600", "https://picsum.photos/seed/samawi-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Acceso a piscina con vista al mar", "Wifi gratuito"],
     isVisible: true,
     departureDate: "2025-02-20",
     returnDate: "2025-02-24",
     country: "Colombia",
     city: "San Andrés",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Parejas", "Familias"],
-    amenities: ["Piscina", "Vista al Mar", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7422326524528538/573113653379"
+    travelerTypes: ["Parejas", "Familias", "Negocios"],
+    amenities: ["Piscina", "A pocos metros de la playa", "Wifi Gratis", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Se admiten mascotas", "Vista al Mar", "Minibar / Refrigerador"],
   },
   {
     id: 17,
@@ -497,14 +387,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 790000,
     durationDays: 4,
-    description: "Hotel Calypso San Andrés cuenta con una piscina en la terraza con vista al mar Caribe. Habitaciones con aire acondicionado y minibar.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxGJeFwlTQL1SC9ukbuU9fReCBVfuO2xgiW4rpgZbQErVGG5DWycbTUertaS6fy6X-Ywvm0npjrGJbCsHaLr5kSWN61RjJnLAwshTcpghi2fx4Wr-UmeZi45Tva6LTpWJy_OHgn7H9KSYg=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSylHXx4Q9aIEsP-MRS_P-QkWt2YdKu2CW4T7_hykfNu4Fab-Bk7GND6mfxTrQDK1gLT-Pc424VxrbaFdr_Ag80iBgxGWCINfnXWLWEHrsLumNIEIzrqzBnReuhj0Cq1r9bTLPhEGA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz-ErEzZ995d5hok2mpheVYUvz4RzOlvIXuC8LZ1kadcbwPvv8lGjoolGqhrxK2R3j_0EmKgcLKT7Tzr56kC2xQ54T4161LoaKWBiHXvSXp4EeedGoqFcwRG6JXVo4FXmsgk_jYUA0QtTH6=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMEqdiMKcPma_MT0IElBhNEUU4kdN_6zN_ht187=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Piscina en terraza"],
+    description: "Hotel en San Andrés con una terraza en el noveno piso que alberga una piscina exterior, solárium y un restaurante con vistas al mar Caribe.",
+    images: ["https://picsum.photos/seed/calypso-1/800/600", "https://picsum.photos/seed/calypso-2/800/600", "https://picsum.photos/seed/calypso-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado y minibar", "Acceso a piscina en la terraza"],
     isVisible: true,
     departureDate: "2025-03-10",
     returnDate: "2025-03-14",
@@ -512,24 +397,18 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Descanso / Relax"],
-    amenities: ["Piscina", "Vista al Mar", "Restaurante", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/5924097514380724/573113653379"
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Vista al Mar", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 18,
-    title: "Hotel Ataraxy",
+    title: "Hotel Ataraxy Boutique",
     category: "Caribeño",
     price: "Consultar Precio",
     priceValue: 700000,
     durationDays: 3,
-    description: "Ataraxy Hotel Boutique ofrece un concepto contemporáneo. Dispone de wifi gratis, restaurante y terraza. Ubicado en North End.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipN5imMZ_6842nX_sYWRJHSbGZrsAtCK0dnPeAyJ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/ZERIgvFmOdEokJ2L8SkzzUd4x6baITrb1Y_rGnX4S6D4hU-aeypHpVZR1qBhOMzZP-AJ5AJ8RY8o9qYqFgWHQtN_VVLKWYmawSQtCR3pTvDJTEQD1PUQZS07CDIxCGLvqim2SfDPnHlrVLC3WtkqTRg7lCtldwU=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMgjRCM1nBoImTOqgzyiPxJK5O-YHz8tZOB-MUc=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/vc6kOPttMkljxryIt4kfDp2sTDOb-QovtmLVxmTOvVVEMvNVFoQaI8WAPVGOcoSsmMlmmvvkRTsM-bKpDjbTXPwxcYY4AG2KjvZLtlBiKLEfsU0m2emx6evWnqqVrIEv_TYjUXdABj8ATrraQFdNcyrileAwOw=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Wifi gratis"],
+    description: "Concepto contemporáneo que combina arte y calor de hogar en San Andrés. Ofrece wifi gratis y un trato personalizado. Nota: el hotel no cuenta con servicio de agua caliente.",
+    images: ["https://picsum.photos/seed/ataraxy-1/800/600", "https://picsum.photos/seed/ataraxy-2/800/600", "https://picsum.photos/seed/ataraxy-3/800/600"],
+    includes: ["Alojamiento climatizado", "Wifi gratis", "Amenidades para el aseo personal"],
     isVisible: true,
     departureDate: "2024-12-05",
     returnDate: "2024-12-08",
@@ -537,35 +416,26 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Cultural"],
-    amenities: ["Wifi Gratis", "Restaurante", "Aire Acondicionado", "Balcón / Terraza"],
-    whatsappCatalogUrl: "https://wa.me/p/7513996138681010/573113653379"
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Balcón / Terraza", "Minibar / Refrigerador"],
   },
   {
     id: 19,
-    title: "Hotel Blue Cove",
+    title: "Hotel On Vacation Blue Cove",
     category: "Caribeño",
     price: "Consultar Precio",
     priceValue: 900000,
     durationDays: 4,
-    description: "On Vacation Blue Cove tiene piscina panorámica, jacuzzis, río lento y tobogán directo al mar. Ideal para familias con su zona Cove Kids.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipN15dmY4yI2iXGp6oS-xyd4-JQmmP5oMNmHsxQT=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOBBNydr5jiJiqabHfrcIz6G-A7qda8py0ypbZ3=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMrqkJ4mHWTV5yYpLlCYWOmAXqeJz77iBsBlKjh=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyiIlgCqkGHDcMo_CHc1INZAlMFHLUhbrfgAnmigRxhY27ajsQtTKDiUNU0IvqxR3e-7N2-zuyJktbOU9-aQwFyySafrU-iXrLZFMw3t-eEC2qBjunb8hpCYdJWY0-TAezI0yfDjw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNcKKQoYJXmgLfPQ__OAbf1QLYtBVk34wm_UX_W=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/ENbH9uVsLpVO7eOFuq9SIRKYKBMXsZHvtytegQjR7O6aZuJT134sJfdLhoks16Ydmm7eVQdugBKgguEYoIhLU8qMrEEc56UdttedwrK-I5xwKh8CvXBKV3HeIWh7hNyeGFAonBoK2JMblTa0Hmhf52tRI3eWA8I=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Acceso a parque acuático y río lento"],
+    description: "Hotel en San Andrés con piscina panorámica, tres jacuzzis y río lento. Ideal para familias con zona Cove Kids exclusiva. Nota: baño privado con agua fría.",
+    images: ["https://picsum.photos/seed/blue-cove-1/800/600", "https://picsum.photos/seed/blue-cove-2/800/600", "https://picsum.photos/seed/blue-cove-3/800/600"],
+    includes: ["Alojamiento", "Acceso a piscina, jacuzzis y río lento", "Internet en áreas comunes", "Zona Cove Kids"],
     isVisible: true,
     departureDate: "2025-04-15",
     returnDate: "2025-04-19",
     country: "Colombia",
     city: "San Andrés",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Familias", "Aventura"],
-    amenities: ["Piscina", "Toboganes / Parque Acuático", "Jacuzzi", "Club de niños", "Restaurante", "Bar / Lounge", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7606321736127095/573113653379"
+    travelerTypes: ["Familias", "Parejas"],
+    amenities: ["Piscina", "Piscina para niños", "Jacuzzi", "Río Lento", "Bar / Lounge", "Restaurante", "Wifi Gratis", "Aire Acondicionado", "Club de niños"],
   },
   {
     id: 20,
@@ -574,15 +444,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 720000,
     durationDays: 4,
-    description: "Hotel Portofino Caribe se ubica en el centro de San Andrés, a una cuadra de la playa. Cuenta con piscina, restaurante y bar.",
-    images: [
-        "https://lh3.googleusercontent.com/proxy/ouztaSk14Eemp0NiLt9aaAdnGGPR-qisdiaS8fGh_Tya_JkKElmWe6mgGqu831bXSKImvTvvKTOJd2psLq2m0g-Rkb6-9VkVhL0QQLj0SnLS1WQVyY2WB0z8vC7GAQDMwFNavegO08H5HavHNQxSGsI9h7agvA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy9rm05F_E9QGCfL3iAl48gEpsL5Qgb4eEseLR4gd97IOhir7e6gMbiKdBvF8ZctqeSJhl5K8o7voWO5-cvbT2uGjEs9IF_aBpCSeI--XprmjgO39EuXhuthq4SVRO0W6ov4xdCRQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/9cV7xX3NWpNQ6X9fdScrf0ZQjOWabKcdLVXJhJlhQmtLvsTuBR8OdLyDS0IEpc4r9hbjqcfG1McVsmpiofSSD7ogocDjmZfWTw31T8bDUPkDJQhJVL32DzAqmXQAIhErQYB2RUZz7uXudjJVwAtVpGTmPuKDW0s=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyR2m_rmSDC33_Dfy-eZdA2KA4o9qPfYPXuiUWgedmKdXY6RCeVyFJO8Ccue_wvQrx8vB-_iSPsSpjp4W_4CJk0peHzUipH3Q9PizACLLifiCIC5vxS71-74BwIRB_QcFulXvb9=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx7UUrup2iQD1fE3M8q7mt_Q3OMahzvLkd5Qx2I5q_FPCd3FHekOwy4TiuPC70nKrfreCY9sGdU_DOBAGX6YXx3ZBFZy9JgMgDPF-Pr8EJzhlme2Hq_P1Luzp6QY1Rg0bscD8Q-=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Piscina"],
+    description: "Ubicado a una cuadra de la playa en San Andrés. Cuenta con piscina al aire libre, restaurante, bar y salón de eventos.",
+    images: ["https://picsum.photos/seed/portofino-caribe-1/800/600", "https://picsum.photos/seed/portofino-caribe-2/800/600", "https://picsum.photos/seed/portofino-caribe-3/800/600"],
+    includes: ["Alojamiento", "Acceso a piscina", "Internet inalámbrico"],
     isVisible: true,
     departureDate: "2025-05-10",
     returnDate: "2025-05-14",
@@ -590,34 +454,26 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Familias"],
-    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7460126897390406/573113653379"
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza"],
   },
   {
     id: 21,
-    title: "Hotel Dorado Plaza",
+    title: "Hotel Dorado Plaza Bocagrande",
     category: "Sol y Playa",
     price: "Consultar Precio",
     priceValue: 980000,
     durationDays: 4,
-    description: "El Hotel Dorado Plaza Bocagrande Todo Incluido ofrece diversión, shows en vivo, deportes acuáticos y una ubicación privilegiada frente a la playa.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipPr2i4VNdaR5n_R_qveeBBL0EZ-Vmd4W8UIbseQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/WQNzK1DQEWqddjjxSgTrpUVIhE45FU_3x3emRggOCH2rHiDVWBHyP6VJ_C9Q6Glv4bvn9vjV2wU97iiybfE8lXve8FwGOkXtqTdbLOCT1zutiDoPpSrqkCc5iDc3AH2imaBtxULFhwhaqej6EUXEQoZW0D_14g=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyQXHPuq9SSVcGhpsqO6n9y9Yqj7GnzXNVJLYzhz7J-nDQxRRR39J8NsTo6R0fUEuXiMsNwINf6ivrslmxG07hTnlDE8CcYdy3jKZWIMMSor0Kvv8JPNwes2KHpXZLuMGfMcURH4Q=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/_JB7RyBxW1DzunqVZu_mZ0O303N-8wvxi-1MDNN_x_fn7sDQ2YdBYq07NmWX9a78gLooAITt5dMbUjvci7XiXuf3VzD30ZWttAb3hFgr7ylPg4zJpjNU3XcVZ5jC_HWpUfJwB3EC2-gG_9BVr6Dd7R7y6kJbVg=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNV4NGf0K8VM6vI7tiLaCDAGFTXNxpwZSJSZKhW=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Shows y entretenimiento", "Deportes acuáticos"],
+    description: "Disfruta de un plan todo incluido a pocos pasos de la playa en Cartagena. Ofrece una amplia oferta gastronómica, bar en la piscina, animación en vivo, deportes acuáticos y espectáculos nocturnos.",
+    images: ["https://picsum.photos/seed/dorado-plaza-1/800/600", "https://picsum.photos/seed/dorado-plaza-2/800/600", "https://picsum.photos/seed/dorado-plaza-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Comidas y bebidas", "Deportes acuáticos", "Entretenimiento y shows nocturnos"],
     isVisible: true,
     departureDate: "2025-06-01",
     returnDate: "2025-06-05",
     country: "Colombia",
     city: "Cartagena",
     regime: "Todo Incluido",
-    travelerTypes: ["Grupos", "Familias"],
-    amenities: ["Piscina", "Acceso a la Playa", "Shows Nocturnos / Animación", "Restaurante", "Bar / Lounge", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7383694981697874/573113653379"
+    travelerTypes: ["Grupos", "Familias", "Parejas"],
+    amenities: ["Piscina", "Ubicación privilegiada en Bocagrande", "Shows Nocturnos / Animación", "Deportes Acuáticos", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Hotel accesible"],
   },
   {
     id: 22,
@@ -626,16 +482,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 510000,
     durationDays: 3,
-    description: "Hotel Cartagena Dubai en Bocagrande cuenta con piscina panorámica con vista al mar. Habitaciones modernas y ubicación céntrica.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOrGEY61cFw7l1mKjv0DXUqfSokxG3TUEd3Z24j=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/A0AOxET08VR6BRA1BPtLGIi6mGunnwMRT-NKURpylmSyjySBCfc0IrARm-qsdnoy8Q35dK2tacnDZXEA845QDJdkI-kpTvwalxbr8tAq0lM2xogIgBB_CNkOwZP-pVqwNuVXDdcWUKRyXVNkpaEok2gz8FEI7g=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/4gUBwnzqTWZI89lwX-VQvxRryrrRluCCFP2FtcZRbX3Y95i4--fxnSe_88GGBM20f-N1Ci5YNggw0y8OnlIPLSSSrZjrzgT9BkTwgigeEOvXg2w_Pq2G6iQD_7Sur1I3Y55maYFeddBu2nBwKbKeINcjLlMhLw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzidr5WuBRog20w2dBPDkvhHc6ylJzLhqEsjNDWR7LO4NrfvvYipTnIZotmuGGeNrhAkUE09DTd4q47oAfdsOihHESYe5bySp851Vq3QsXW85rPYrtFQtH8tlcUmOQyeBnTBemy=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx0dXezzJHpkwj55l1y4YxQRxRd6SDE2TWUGzTW0RC7gvA0L4HIs_NMTbaM6g6WzkGTF-Mkm48NfcGTuy8PtLnVwVgbDG9c4S0WjggU-I-YGew7COR4rh1ER19zNrvztOIfAuyP=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNEbHIit5EnncqHFpv3QPyfvEWYJn_kbc6pxh4y=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Piscina panorámica"],
+    description: "Ubicado en el sector de Bocagrande, frente a las playas Costa del Sol. Cuenta con una piscina panorámica con vista al mar y wifi en toda la propiedad.",
+    images: ["https://picsum.photos/seed/cartagena-dubai-1/800/600", "https://picsum.photos/seed/cartagena-dubai-2/800/600", "https://picsum.photos/seed/cartagena-dubai-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Acceso a piscina panorámica", "Internet inalámbrico"],
     isVisible: true,
     departureDate: "2024-12-15",
     returnDate: "2024-12-18",
@@ -643,26 +492,18 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Descanso / Relax"],
-    amenities: ["Piscina", "Vista al Mar", "Aire Acondicionado", "Wifi Gratis"],
-    whatsappCatalogUrl: "https://wa.me/p/7455937991119942/573113653379"
+    amenities: ["Piscina", "Acceso a la Playa", "Vista al Mar", "Wifi Gratis", "Aire Acondicionado"],
   },
   {
     id: 23,
-    title: "Hotel Yuldama Rodadero",
+    title: "Hotel Yuldama Rodadero Inn",
     category: "Sol y Playa",
     price: "Consultar Precio",
     priceValue: 400000,
     durationDays: 3,
-    description: "Hotel Yuldama Rodadero Inn está a 300 metros de la playa. Cuenta con piscina, estacionamiento y restaurante.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOqffil9xHLGp3dFVA5IXurTv0WyCIWqPH4mC_U=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipN6WGaeUeplmOSkd8n7qy76DKkEaToVXB5ZzlTy=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipME0nhSVaCfqMhfNRyKDjO8GbO6nk8QgtUEje8K=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPGVHmrmX7DCmuJiVsB9_9_PIF4o9gvM1LEdJW2=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPqDjC3PHyCs5YrcmfPHwH-CCU-7KHxnm9tVdRB=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxTDCJHAzIfRkFG8rWBBv1sW0QGhc4F3Yl3twmCHoWy22Mm84fFsMRIOSYUuqupnut-xbmsSinb4nRXieJStwy5Z03_0CJGmoTQY_wTleLAdkR4r4YSiJJLsc7C_fc_5sL8woCK=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Piscina"],
+    description: "Ubicado a 300 metros de la playa El Rodadero en Santa Marta. Dispone de piscina, chapoteadero, estacionamiento y restaurante de especialidades caribeñas. Habitaciones con agua caliente.",
+    images: ["https://picsum.photos/seed/yuldama-rodadero-1/800/600", "https://picsum.photos/seed/yuldama-rodadero-2/800/600", "https://picsum.photos/seed/yuldama-rodadero-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Acceso a piscina", "Estacionamiento privado"],
     isVisible: true,
     departureDate: "2025-01-22",
     returnDate: "2025-01-25",
@@ -670,8 +511,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "Estacionamiento", "Restaurante", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/25581331951480823/573113653379"
+    amenities: ["Piscina", "Piscina para niños", "A pocos metros de la playa", "Estacionamiento", "Restaurante", "Aire Acondicionado", "Minibar / Refrigerador", "Agua Caliente", "Salón de Eventos / Conferencias"],
   },
   {
     id: 24,
@@ -680,50 +520,36 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 380000,
     durationDays: 3,
-    description: "Hotel Tucuraca by DOT Tradition se encuentra en Santa Marta, a 50 metros de la playa de El Rodadero. Ofrece desayuno y wifi gratis.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwKuaHlxuRLr168Dxol6wRDqa0p30l8nIG9dPOA5OsHrWzdSCBlMzid0O67zD1XLFptjDT-6DTdJ5WWCxrwtj29jXv8qNRfLEKVwhDdNYkBPH9uuUS95SZ-c0SmK4vP6i6frKE=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNpmowp14iWwXuVJ2o9R0jnBaCK6XaI41F6lBLY=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNHlkR8fYThRNWuRgJRq58OEDUjrKTazLeJO0Lz=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipN4plqySmSO_KVl5_TlSnW2CoXhzZFtR1mobBaa=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOWcjdw4iOpaA3i4hHhYoDK__LSljvegvsWeLaa=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Desayuno"],
+    description: "A 50 metros de la playa de El Rodadero en Santa Marta. Ofrece conexión Wi-Fi gratuita, servicio de desayuno y experiencias turísticas. Ideal para familias y parejas.",
+    images: ["https://picsum.photos/seed/tucuraca-1/800/600", "https://picsum.photos/seed/tucuraca-2/800/600", "https://picsum.photos/seed/tucuraca-3/800/600"],
+    includes: ["Alojamiento", "Conexión Wi-Fi gratuita", "Servicio de desayuno"],
     isVisible: true,
     departureDate: "2025-02-25",
     returnDate: "2025-02-28",
     country: "Colombia",
     city: "Santa Marta",
     regime: "Con Desayuno Incluido",
-    travelerTypes: ["Parejas", "Familias"],
-    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/8139862502696823/573113653379"
+    travelerTypes: ["Familias", "Parejas"],
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Mesa de Tours"],
   },
   {
     id: 25,
-    title: "Hotel Wayira Beach",
+    title: "Hotel On Vacation Wayira Beach",
     category: "Cultural",
     price: "Consultar Precio",
     priceValue: 650000,
     durationDays: 3,
-    description: "On Vacation Wayira Beach es ideal para contacto con la naturaleza y cultura Wayúu. Ubicado frente a la playa en Riohacha.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwo4yeX2u22w8pX-BZGtGTrlONmsg2lFRF4gjU8BVyQ1utsknDFUH0POu4vXThlJGRtKtX9xq3WbC_0amsk1FcmXRIx8gJ101V-2fMTL8vTB2KV3GqfhGKGw0kMm-L1kfFI5S45CA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx_A-1gROoOrlinRntR1M9144tzj1ionl0WHI3QIR1Y6B0sMF6m8gBT19g5G3HBgCgF7-yLgjTApf_Hx_laT5XJunYiA_ioFym2RXRwMiSn7e24I7Sou7DIWXcadAQmpx4qfWz9=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/sCYGmgbiP1jnVSB3Fg5kTl3nOTKTgJKELA0EJ4EyJZOIrzWv0d_B2IFC_KUY0kgs4QZj5_lDYg1cEB2VCdEY1nDJWZgpBv3q4OVDfes-ePolErsYIhR4Rd_vVxtiEJpbzjWgWbabmhg220lV77vwdw-N8nMJXQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPyFTeILNYQSRLFR-my04gwcgT3IoSUS9sqNhdZ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipP5KwZTJMcuIKp0sPMsgSSfeoyMCn5zOu6z7-uQ=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Acceso a playa"],
+    description: "Una opción tranquila en Riohacha para estar en contacto con la naturaleza. Esta propiedad a pie de playa incorpora elementos de la cultura Wayúu en su decoración.",
+    images: ["https://picsum.photos/seed/wayira-beach-1/800/600", "https://picsum.photos/seed/wayira-beach-2/800/600", "https://picsum.photos/seed/wayira-beach-3/800/600"],
+    includes: ["Alojamiento con balcón", "Restaurante y bar", "Organización de tours (costo adicional)"],
     isVisible: true,
     departureDate: "2025-03-15",
     returnDate: "2025-03-18",
     country: "Colombia",
     city: "Riohacha",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Cultural", "Descanso / Relax"],
-    amenities: ["Acceso a la Playa", "Restaurante", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7858083464225006/573113653379"
+    travelerTypes: ["Cultural", "Descanso / Relax", "Parejas"],
+    amenities: ["Acceso a la Playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Balcón / Terraza", "Mesa de Tours"],
   },
   {
     id: 26,
@@ -732,24 +558,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 680000,
     durationDays: 3,
-    description: "ZiOne Luxury Hotel Cartagena se localiza en Bocagrande. Destaca su terraza con piscina y bar.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyukA028hNF_Yt_FpIHqgtxTlr6K9o2eS0njQXiNqdJjPamMH6qQ7Il7WhVvYzYevydRcbMkxwlpSNiAell70KwYdva4GiTQhj0emGka-oY4bymmgTJaw96H17cb98g3rcK3Lv0s8ky_Z0a=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNmWqmwXtuz5Dgp8QkKd48F0X1GGO3KgwkCV9CU=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzTgu43pJG91WFdL4wADbA8UbNkganCeE7DE9Cvd5OHK9n04SDUDxZxdJ713vE_0iaodYft-5Si7nNKUUkIg9IsNh9o4WOZzm2-Xm7yQ6BVYnnk-Hlz64vuxgtMDTLtn2g_BVJjPPYR7zIx=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipN5ArVqD6Ymz4QneBWDu3C79PoRGJKAb7TMh8jr=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNLL0KaE-DBGJZqFj7rGCVBThMa1x_n9YxpmdzZ=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento de lujo", "Piscina en terraza"],
+    description: "En el sector de Bocagrande en Cartagena, a solo 100 metros de la playa. Se destaca su terraza con piscina y bar, además de salón de eventos y restaurante.",
+    images: ["https://picsum.photos/seed/zione-luxury-1/800/600", "https://picsum.photos/seed/zione-luxury-2/800/600", "https://picsum.photos/seed/zione-luxury-3/800/600"],
+    includes: ["Alojamiento de lujo", "Acceso a piscina en la terraza", "Wifi gratuito", "Estacionamiento"],
     isVisible: true,
     departureDate: "2025-04-20",
     returnDate: "2025-04-23",
     country: "Colombia",
     city: "Cartagena",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Parejas", "Negocios"],
-    amenities: ["Piscina", "Bar / Lounge", "Restaurante", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/8088118457883772/573113653379"
+    travelerTypes: ["Parejas", "Negocios", "Descanso / Relax"],
+    amenities: ["Piscina", "Ubicación privilegiada en Bocagrande", "Restaurante", "Bar / Lounge", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Minibar / Refrigerador"],
   },
   {
     id: 27,
@@ -758,14 +577,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 430000,
     durationDays: 3,
-    description: "Hotel BE La Sierra en El Rodadero ofrece salones de eventos y wifi gratuito. Restaurante con mariscos.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOsYAa3UtvuNDvTQow0e-Zp1LvNSTAevJivzW7W=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOn0ysAlj64liSEwpKXLbM6PnsC2OZZJm066NVL=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipM1LmvmP9EWV3rolooFkw0Ax6gDDbokXJHbgi6f=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNgXkd5GU7ZbZHdha9NjTsZbUIC62fjtoQ9ACRY=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Wifi gratis"],
+    description: "Cerca de la playa El Rodadero en Santa Marta. Ofrece centro de negocios, salones de eventos, y restaurante de mariscos y comida internacional. Habitaciones con agua caliente.",
+    images: ["https://picsum.photos/seed/be-la-sierra-1/800/600", "https://picsum.photos/seed/be-la-sierra-2/800/600", "https://picsum.photos/seed/be-la-sierra-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Centro de negocios", "Internet inalámbrico gratuito"],
     isVisible: true,
     departureDate: "2025-05-15",
     returnDate: "2025-05-18",
@@ -773,34 +587,26 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Negocios", "Grupos"],
-    amenities: ["Restaurante", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7273466886035287/573113653379"
+    amenities: ["A pocos metros de la playa", "Centro de Negocios", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Restaurante", "Minibar / Refrigerador", "Agua Caliente", "Mesa de Tours"],
   },
   {
     id: 28,
-    title: "Hotel Blue by Tamaca",
+    title: "Hotel Blu by Tamaca",
     category: "Sol y Playa",
     price: "Consultar Precio",
     priceValue: 500000,
     durationDays: 3,
-    description: "Blu Hotel by Tamaca en El Rodadero ofrece acceso a las instalaciones del Tamacá Beach Resort (piscina, playa).",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzoSePqgp-ucMHaOLAr5ky5qzdoRELvnbXl87a7zllukdr5BgqABkfGomi0khLMtyB_HwnoBfZrGYACc1UvjE3XNjLXcdTA69d1WSjxRrmxaH7B888sKHGz-Pdxk1owOFT7euaf=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/RJHbGztgW-us_5c3Slr347vXdm8P75clGOczvRLpoc19-hHBmdiVC7yonUxd-zNxQdy29761eZmJ_KidLmd9NosaWt9Kypjxrt-KgCBjt-UhSN_uvYIWcDeH5JhueoO3vaNrbFwxCynNEbJ5psrFPcFLCW-_eeg=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/UddZcEHOUI4_91xpTg661X8MOUw4HZGN5-lI5QS3kRgowVc7KMqDH4OZBRIeEwMcVI3nSvAE7WepaWEgSnEFi1co90vWcHhc-tY4U33pAW9H-j8hmqz0vnLb6QT-1G86PTVLiZHRoZ1tiQEk04EvDPISLXPXF-E=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybZjFz2drKVNtYm3lO_Y8RhntfPULOK2VxM6TbCk2mzIULN-NdBgO_EZri-hSpmik0qC48550-xs2d1xgV20jEJnfiqxFRT29APH7bFGEZ4SXsOUxboiwHdMEegY3vInIGSGiR=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzMlMeJFgZKCMqh72lOHQzsZKThrBakYy6dpmHobtvYXs6v6d3n5ryZ9EuERSEPgKlCK6g7nVj77tm67_WylTwuruM4zNRX5qtJn9V-lshEY0_N3j0cVvTza8YP4qvDyLODGrLO=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Acceso a Tamacá Beach Resort"],
+    description: "En El Rodadero, Santa Marta. Ofrece acceso a las instalaciones del Tamacá Beach Resort (a 80m), que incluyen acceso a playa, piscina, jacuzzi, gimnasio y salones de eventos.",
+    images: ["https://picsum.photos/seed/blu-tamaca-1/800/600", "https://picsum.photos/seed/blu-tamaca-2/800/600", "https://picsum.photos/seed/blu-tamaca-3/800/600"],
+    includes: ["Alojamiento", "Acceso a instalaciones de Tamacá Beach Resort", "Internet inalámbrico", "Estacionamiento"],
     isVisible: true,
     departureDate: "2025-06-10",
     returnDate: "2025-06-13",
     country: "Colombia",
     city: "Santa Marta",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Familias", "Parejas"],
-    amenities: ["Piscina", "Acceso a la Playa", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7544537598968512/573113653379"
+    travelerTypes: ["Parejas", "Familias"],
+    amenities: ["Piscina", "Jacuzzi", "Acceso a la Playa", "Gimnasio", "Salón de Eventos / Conferencias", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Minibar / Refrigerador", "Mesa de Tours"],
   },
   {
     id: 29,
@@ -809,22 +615,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 460000,
     durationDays: 3,
-    description: "Hotel La Riviera en El Rodadero ofrece habitaciones cómodas a pasos de la playa.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipO9HIZos_sj_h4Q-ZvfapCq560-E0Wld6ANaOSV=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPIzLnqXgJovwE_5yOw7T1RqxtCoWf0xi2vmzZh=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipORKt6Crg8i6hb6k_Jy54gAqNeHpZYVJpcWBLgt=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Wifi gratis"],
+    description: "En la fantástica zona de El Rodadero en Santa Marta, a pasos de la playa. Ofrece habitaciones con aire acondicionado, minibar y wifi gratis. Cuenta con centro de negocios.",
+    images: ["https://picsum.photos/seed/la-riviera-1/800/600", "https://picsum.photos/seed/la-riviera-2/800/600", "https://picsum.photos/seed/la-riviera-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Conexión a Internet wifi gratis", "Centro de negocios"],
     isVisible: true,
     departureDate: "2025-01-30",
     returnDate: "2025-02-02",
     country: "Colombia",
     city: "Santa Marta",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Negocios", "Grupos"],
-    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/25189981793981403/573113653379"
+    travelerTypes: ["Grupos", "Negocios"],
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador", "Centro de Negocios"],
   },
   {
     id: 30,
@@ -833,14 +634,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 670000,
     durationDays: 4,
-    description: "Hotel Verde Mar en San Andrés con piscina exterior y bar. A 200 metros de la playa.",
-    images: [
-        "https://lh3.googleusercontent.com/proxy/ft6XNY47wPiTHBRVsG-TG_O8ZvLV4tYsXiVNgfzvGwWB-ff--mJNh7zs2iEVtcOWjKZueAyCyOfxUyu8dkSBORGXj9uOsICRR0jq8O2LILNWk1Xf7l27lls3WtKi5_9Wx8ZfgMs_RmMsKS4vZi7mr3gPlhawxQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPDkh8RPaFnrJeevsyatT7vcmMJUhSFW1-Q-kU6=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/gSXW4v5VIxkiwPQic0Fw1Hn97JrL-a_HVwd2-3BOAnVbOfXLshvwyneScC1kVjjwkouKtyQnUKqqlXazdcg3e0_LZM5OIYXCA_vcyDdh4JvRBzZ3p3B17qduLq0vp_HYACKnRsLUjSVWEw6mlHVmC4PL-FDE18Y=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipM9u4PEZ5NB-ejFygyXcPJvzBAfbA_QFaUPGKXE=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Piscina"],
+    description: "Ubicado en San Andrés, a 200 metros de la playa. Disfruta de la piscina exterior con servicio de bar, restaurante tipo bufet y la opción de rentar carros de golf.",
+    images: ["https://picsum.photos/seed/verde-mar-1/800/600", "https://picsum.photos/seed/verde-mar-2/800/600", "https://picsum.photos/seed/verde-mar-3/800/600"],
+    includes: ["Alojamiento", "Acceso a piscina", "Restaurante bufet"],
     isVisible: true,
     departureDate: "2025-03-28",
     returnDate: "2025-04-01",
@@ -848,8 +644,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7609488855776186/573113653379"
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Minibar / Refrigerador", "Mesa de Tours"],
   },
   {
     id: 31,
@@ -858,24 +653,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 850000,
     durationDays: 4,
-    description: "Hotel Almirante Cartagena en Bocagrande. Piscina, gimnasio, restaurantes y casino. Lujo frente a la playa.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipP8bN7nQ32DPiskihHCb9gSnO_2ZVRuMoerAyz6=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPqrx2aUT_UedWHdQzbHfCZS_tGqrmeg52AuhU-=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOe3yyAmbDee7DmRudkmkJvzog5whZikNMgCxbs=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMYhwIruKpVeW5TQWSGL2W7OcaEJ3eC_ifPqTdV=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/Wa11fO__XGCdnt_rmYwHr8a6Yq2BqyQGbQXo-eBSNjTJJ4DJVWybMuU_xDQsSlWSfDJ7S3Ms9UD30vMWn4cgo8PAGXcQvEJa_jXLSw8MJXFy3DU5GSZoGS97KzeMXbmPxrL4ngOVavkdKihsd3qKNZ9qTwlxNQ=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento de lujo", "Piscina y gimnasio"],
+    description: "Moderno hotel a pasos de la playa de Bocagrande, Cartagena. Ofrece piscina, gimnasio con sauna, tres restaurantes, casino, y club de niños.",
+    images: ["https://picsum.photos/seed/almirante-1/800/600", "https://picsum.photos/seed/almirante-2/800/600", "https://picsum.photos/seed/almirante-3/800/600"],
+    includes: ["Alojamiento de lujo", "Acceso a piscina y gimnasio con sauna", "Club de niños", "Internet inalámbrico"],
     isVisible: true,
     departureDate: "2025-05-20",
     returnDate: "2025-05-24",
     country: "Colombia",
     city: "Cartagena",
     regime: "Solo Alojamiento",
-    travelerTypes: ["Negocios", "Parejas", "Familias"],
-    amenities: ["Piscina", "Gimnasio", "Casino", "Spa", "Restaurante", "Bar / Lounge", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7404742192906978/573113653379"
+    travelerTypes: ["Familias", "Negocios", "Parejas"],
+    amenities: ["Piscina", "Piscina para niños", "Acceso a la Playa", "Gimnasio", "Sauna", "Spa", "Club de niños", "Casino", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Aire Acondicionado", "Estacionamiento", "Centro de Negocios", "Salón de Eventos / Conferencias"],
   },
   {
     id: 32,
@@ -884,14 +672,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 650000,
     durationDays: 4,
-    description: "Hotel Americas San Andres Islas a 2 cuadras de la playa. Piscina, restaurante y bar.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipPMWkC0LmCycxA-zt88PUMTVCQ2xV9QvBnO_oOf=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/HCnpYbLV_MOQRNwZUawv0N8jseVp5xNzm2vwia6IpW0JIbunOUAc8yRqnF6XvaWsn4-WlqHHiCHeO_yqu8trcMAlw7GexcU-g8MUVLKZaSheOsb_vV9bkxuiC5nzjqwkhPRuIsJCqdaQo9B9j2lAlLUzEcruQQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNS1YWwr2AbrbZZFQYqhj_p0KMY4n8D2jussBWQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMykLMzrkdD4uBeTEagFysDkacF8YUmbvD5_BES=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Piscina"],
+    description: "A solo 2 cuadras de la playa principal de San Andrés. Ideal para familias o amigos, con piscina, restaurante y bar. Nota: las habitaciones no disponen de agua caliente.",
+    images: ["https://picsum.photos/seed/americas-sai-1/800/600", "https://picsum.photos/seed/americas-sai-2/800/600", "https://picsum.photos/seed/americas-sai-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Acceso a piscina", "Restaurante y bar"],
     isVisible: true,
     departureDate: "2025-06-15",
     returnDate: "2025-06-19",
@@ -899,8 +682,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "San Andrés",
     regime: "Solo Alojamiento",
     travelerTypes: ["Familias", "Grupos"],
-    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7419745838072516/573113653379"
+    amenities: ["Piscina", "A pocos metros de la playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 33,
@@ -909,14 +691,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 580000,
     durationDays: 3,
-    description: "Hotel Cartagena Premium en Bocagrande. Piscina exterior y jacuzzi con vista panorámica en el piso 20.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipOrM3KZFXd-8MAz9oHUyvEF77JGColTy7ZrDRmz=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPbKBLLtcWb_ydhc_PUnJjZBE2wifPsV3JPEPQe=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzWiyLgUd4XakPLYxil_kFieSAnqh8rjRl7LQ88G9PPO5H8jR3yVuAV4rE5p8Lwf8v1gbOoNCoCBRIFBZM1Xz4AUbVuHJgX8NfXklwzsRMWqobx8FKUM9o4lrTnLBlLvSrlpwgI=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybDfNbeITC7di-N-_1ZsEk36Wr6ccvEdGlhcXNy5YWxygODn8ThbxBX0K-GtPLF2IvYusicaE1kcbl2AwsVhtrLVZtL4-ruNkn6EgoRSo3kDH9byQE1k_uWN7vhyVq13RtG6x3UA=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento con vista", "Acceso a piscina piso 20"],
+    description: "En la zona de Bocagrande, a 250 metros de la playa. Ofrece piscina exterior y jacuzzi en el piso 20 con vista panorámica, bar y restaurante.",
+    images: ["https://picsum.photos/seed/cartagena-premium-1/800/600", "https://picsum.photos/seed/cartagena-premium-2/800/600", "https://picsum.photos/seed/cartagena-premium-3/800/600"],
+    includes: ["Alojamiento con vista", "Acceso a piscina y jacuzzi en el piso 20", "Internet inalámbrico en recepción"],
     isVisible: true,
     departureDate: "2025-02-05",
     returnDate: "2025-02-08",
@@ -924,8 +701,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Cartagena",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Descanso / Relax"],
-    amenities: ["Piscina", "Jacuzzi", "Vista al Mar", "Restaurante", "Bar / Lounge", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7411013042347135/573113653379"
+    amenities: ["Piscina", "Jacuzzi", "Ubicación privilegiada en Bocagrande", "Vista al Mar", "Bar / Lounge", "Restaurante", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 34,
@@ -934,26 +710,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 3100000,
     durationDays: 5,
-    description: "Ocean View Cancún Arenas, hotel todo incluido con tres piscinas y actividades. Ideal para familias y negocios.",
-    images: [
-        "https://lh3.googleusercontent.com/proxy/pJHoHnCfjAx6muYqUQr-m1kcj179ISjQz0w2bvMzaNBlCpdM_nEafJqidBDvAWsKWV_rTlpzhF_AF3G5VndrWwDIiEnJEt0qFp95sSmf_eDCOU4LgloHd7RETTgHQX-FA_sRKnGyku5uHerztzbetdEg0ivtLw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/Lzbn-teCysw7MPKrnEuUlsEXoGw5jpA1qvyvfOwfNbyd6AYF2dFwstZ9NfHBULppk4Vjteql3rpjN5gGedJup8qAZf9Zyn2_RkweT6D9NQlmyzTcjrJ3wXxevHxXRRXTw6IDJm4OrOKEER1G6ATm_cBA-lptng=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/bX7n5NpQnljz4eC3ujua2C87KRpdAx02FQhYJMuN-SNL2WgGygFEo6R4MWc8RyQRiseapFG49-5yjolzlzTBi3czpEoLOR4BptIccSE4QGXRJwOwdFfZ189_Jcy7nh03ILOyO0nMO5DdvFE-oevE0_KivpvpSQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/r9rLQ8m5P9I5XBZLZIIWj5HUihANxl2CgKg5oDMxSdPzwU38Cv0atOp8XVO34IRMNHhdoo3UdlbfNyrPe1_X_RDdP6rYpO7DooLJ-TSoRUfHBB8MSMwZAD61iwml1lbX-SzHBpqo3lI_3mUnobafgbooZD3vhA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwSYBtFOFy9AxJ2z_LQDuoe9Ra4Xouu0t7RtUgyB5OzEK97urxlxArUn-XSS658ysGS3AN1gs1C93kHBnL9zRltpapkfl09qPk4R3Cw23L_od4KOq_K6cwhumx5PM8q1Xg_huqY=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/4hNXP-32UV8EHWf3j1NRilhHKExH7px1nhz4akiPoCqkf7PeVbMlwJHNKnL5Sadu7Q0qaYKDnqByGm_VUQ8QvKd_WC_SZwnmr5s-acbLLwpZ0UJah0tarouRavbdETZfjqHjFs1zNiviWP2w5Tm1066InqtJJw=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPfvU5JOMgqzwl49t8LJSGryDkSP-UL7yNMAhzF=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Actividades y deportes"],
+    description: "Hotel de playa todo incluido en la Zona Hotelera de Cancún. Ideal para familias y viajeros de negocios, con tres piscinas, piscina para niños, y restaurante frente al mar.",
+    images: ["https://picsum.photos/seed/ocean-view-cancun-1/800/600", "https://picsum.photos/seed/ocean-view-cancun-2/800/600", "https://picsum.photos/seed/ocean-view-cancun-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Comidas y bebidas", "Acceso a piscinas", "Actividades diurnas", "Wifi de alta velocidad gratis"],
     isVisible: true,
     departureDate: "2025-04-25",
     returnDate: "2025-04-30",
     country: "México",
     city: "Cancún",
     regime: "Todo Incluido",
-    travelerTypes: ["Familias", "Negocios"],
-    amenities: ["Piscina", "Acceso a la Playa", "Centro de Negocios", "Restaurante", "Bar / Lounge"],
-    whatsappCatalogUrl: "https://wa.me/p/7387565741330864/573113653379"
+    travelerTypes: ["Familias", "Negocios", "Parejas"],
+    amenities: ["Piscina", "Piscina para niños", "Acceso a la Playa", "Shows Nocturnos / Animación", "Restaurante", "Bar / Lounge", "Wifi Gratis", "Centro de Negocios", "Balcón / Terraza", "Cocineta"],
   },
   {
     id: 35,
@@ -962,15 +729,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 390000,
     durationDays: 3,
-    description: "Hotel Marco Polo Rodadero en Santa Marta, a 2 cuadras de la playa. Habitaciones modernas.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipPlIwnVxJq4NZEHYR8NcaKJotYCWWCPQvh8cYyu=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMLn5uS0p9K0zyI8I-SOH4lAael_qXVRfJG4g8A=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOUvHdkKYGT3t3gBJ39tr-i35u-pmQYvZRvq24W=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPiUE5JHYx_fogRS7i9_mL73Vab3EPwN2ptmNhD=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipNVaXPJlXxOPzQH3CcwEAbQXTLG0647vIRUXyIO=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Wifi gratis"],
+    description: "En la zona turística de Rodadero, Santa Marta, a solo 2 cuadras de la playa. Sus habitaciones tienen un estilo moderno, aire acondicionado, TV y wifi.",
+    images: ["https://picsum.photos/seed/marco-polo-rodadero-1/800/600", "https://picsum.photos/seed/marco-polo-rodadero-2/800/600", "https://picsum.photos/seed/marco-polo-rodadero-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Wifi gratuito", "Balcón en algunas habitaciones"],
     isVisible: true,
     departureDate: "2025-03-01",
     returnDate: "2025-03-04",
@@ -978,8 +739,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Grupos"],
-    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7919680358045211/573113653379"
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Balcón / Terraza"],
   },
   {
     id: 36,
@@ -988,25 +748,17 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 3800000,
     durationDays: 5,
-    description: "Occidental Caribe es un todo incluido frente al mar en Playa Arena Gorda, Punta Cana. Diversión y lujo.",
-    images: [
-        "https://lh3.googleusercontent.com/p/AF1QipMZDa8NSVKKGnSYEuqPzZfIa3hkQwdN-wZEtLFa=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/VO5MwteaEWI7RCK-3EfOdNvSjzS44rcPYWTUJUCZPbwU_Nrk2OclB7FrZq_20-KZjK1IslGf6Yqema7OJiI0_NVUmvHALgFZwnfgKN0kzyvc7dUDe96_7hpV7h2Fcwi4WJPmb6C7RO609_Q9wWwuZ5LNGi8A1jU=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/Xt-Ki9uhYiEYhgzEh9UMEqcYPmG1_9e0t351G7due55DqeZ8wIBILzNP7erUeouhh-ozw0kX-TsrNnyvEgk9q-nD3qm_vf0jIeWYv482TuoVCQx8_nTsmDjp15f-rQuTCTGWkUOXTe98bDoE1klVwwccs7exSM0=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPKacri8mY8lKyFadpMYlRnUDSSGLvjEesmJ4cd=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/m9KbgbDlkBQ2plqZYisRaJPnUWPEPONiUYekMB4rP8D-zArFCO4o5Oq38oHFUPv2uiL9sgE_T4ADbPH8MsCfBfXzFG5B1mh6sRhm35F5kgro10FrCnHRqcpasIigXlia40l2UPMow3mKj0fwa7Tsfu95zxKZqQ=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/1b08VLEfHtofaiQY6cFO-_abuJyUItDnOSZbx0Wq8XgA11IT4YbxEA0Y_8O0JWDoLJHIEtQvlrE1hdWkXOPVuor4aTje7eqFBFx314DaVKV0lk5bXeDxjVtdUA37NBp3tZ0CsO2CrMPqoqfp16JFKtKWW4yUfg=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Todo Incluido", "Deportes acuáticos"],
+    description: "Hotel todo incluido frente a la playa Arena Gorda en Bávaro, Punta Cana. Ofrece 798 habitaciones y suites, múltiples restaurantes, bares, piscinas y actividades.",
+    images: ["https://picsum.photos/seed/occidental-caribe-1/800/600", "https://picsum.photos/seed/occidental-caribe-2/800/600", "https://picsum.photos/seed/occidental-caribe-3/800/600"],
+    includes: ["Alojamiento todo incluido", "Comidas y bebidas", "Actividades diurnas y nocturnas", "Deportes acuáticos"],
     isVisible: true,
     departureDate: "2025-05-25",
     returnDate: "2025-05-30",
     country: "República Dominicana",
     city: "Punta Cana",
     regime: "Todo Incluido",
-    travelerTypes: ["Familias", "Parejas"],
-    amenities: ["Piscina", "Acceso a la Playa", "Restaurante", "Bar / Lounge", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/7688559004497896/573113653379"
+    travelerTypes: ["Familias", "Parejas", "Grupos"],
+    amenities: ["Piscina", "Acceso a la Playa", "Shows Nocturnos / Animación", "Deportes Acuáticos", "Restaurante", "Bar / Lounge", "Aire Acondicionado", "Balcón / Terraza", "Minibar / Refrigerador", "Hotel accesible"],
   },
   {
     id: 37,
@@ -1015,16 +767,9 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 410000,
     durationDays: 3,
-    description: "Portobahia Hotel en Santa Marta, a metros de El Rodadero. Habitaciones equipadas y wifi.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwg6JQk-0CkWUPH4RjeQfdRlIK7BC2xMifBq7e45dDfxTMszGuBipQi4yw2NeX6QMYCt7IGERXbDXQ2X9gP1B4ksFru-5NjqTgPNUxJuy_fJfMX_MSBD_fJCajdRXhggtix9JbxZHlKxN4Z=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/proxy/uXJxN_SR2pmS4vlp0zPJFiHugL58FbTwBYhLl9VF0oPAU95JGxadAiiRsG5ISePtdv2ZKSTO0M6pIsCWyD6HJClwVH6agjFhqKeTb4jl-AX1WEGyRLs_SVgSOCRtYizzTTF-x-hCxkeZ5com9o4Hc-sKg51QDA=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipN5Ad2k8BUcb02fraZHb8wU-sTgObOL6zUbsAi5=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipOMoL8h6rsNf8deZdBLUGMLj1WDbxLsVp6jqAJ6=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipMpTwRWA0aVo3tQeTDb6qW-IRFfI8kinoysiRlk=s1360-w1360-h1020-rw",
-        "https://lh3.googleusercontent.com/p/AF1QipPKW1tHx-hZgZjHsW7yZOX91y4phl1I-2U8PKt1=s1360-w1360-h1020-rw"
-    ],
-    includes: ["Alojamiento", "Wifi gratis"],
+    description: "Ubicado en Santa Marta, a unos metros de la playa El Rodadero. Las habitaciones están equipadas con TV por cable, wifi, minibar y aire acondicionado.",
+    images: ["https://picsum.photos/seed/portobahia-1/800/600", "https://picsum.photos/seed/portobahia-2/800/600", "https://picsum.photos/seed/portobahia-3/800/600"],
+    includes: ["Alojamiento con aire acondicionado", "Acceso a internet inalámbrico", "Caja de seguridad"],
     isVisible: true,
     departureDate: "2025-06-20",
     returnDate: "2025-06-23",
@@ -1032,8 +777,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     city: "Santa Marta",
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Grupos"],
-    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado"],
-    whatsappCatalogUrl: "https://wa.me/p/25358410607106462/573113653379"
+    amenities: ["A pocos metros de la playa", "Wifi Gratis", "Aire Acondicionado", "Minibar / Refrigerador"],
   },
   {
     id: 38,
@@ -1042,18 +786,8 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "$2,899,000 COP",
     priceValue: 2899000,
     durationDays: 5,
-    description: "🕌CANCUN🕌 Cancún es una ciudad de México ubicada en la península de Yucatán que limita con el mar Caribe y que es conocida por sus playas, los numerosos centros turísticos y la vida nocturna🏝️",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSztBDLIVFJS2aqq5feJbKtM1b7_b9MHophOONjU-kg6XnGRcQ8zf68gBbFTxpeyg-fE6ivuWzsd3ruErECTGcEl1vdwwEpMwDzsDVunCmtqvucJ0-n3Tn33-hSqDEVdYwF74yUA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS2WztQ85paHU1jsQnui8QKrFCb7jvjzx6JwhHlADS42GPxFUQTpRFCspflAB00Np4TFf-AJ0P39Hbl2X06jioy4eg1&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS-WZjHb-mVyFsnekpAiEPBradpBx69wWa1FyWrXY0eLEUiztzcmFIGae4BAdrSdfoUV4fkBGpQ3ToRF9vjLpW5ess&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyIOFeo7p40r1cIEeJyh1Zpv-Nv5zsBl2a-myzsgZr8PlpfH2f861nSplEobZa9u0x5mkypi4e79hgpVFhMC2rMZMs84GcRJWftdXpsoa1_YcWA3AJs0FisRPiMiGG0KXoiYtc3=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzbvCwKoHiTwXH4IFhDXRku0zBjHKfUEs3q6F78OL4CJiboTV1bXVzHSxA03BxGN6qJW5FtpQoRP7DLyagj9zs9cd-Fnm-7A7B97r4n7hW95aoBqamK5ZyHH5QrE6uPJtl-v4vu=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRMALTgarXo9GJ-xdhXoC1LRvwxucO8ZpkB-rfEs7ktFd2D0pdWmKTEwEMnmTxmNUE7UftkUIoG7zl7zQ89nmv-vI6G&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSDJbca9IMU4MGYCUsFjanoJSVq1tAEwQJOIezUsdzOsvrUVrSr-hKmng6KYqlQA7mYUB3SsQuM-9MtSsKXRBehqsi9&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzX77c6Gw60-Ccciw4_ZyZSc9RkCTobtVSz-oSnwZ5XxXfEIq_XQY81AtQZyCOCOPToyWFtZDKROTwcxDShnuAWuYLU2j1EKVKSUX8vmPAJBGpSrtIoomNinnuQuDRmTPzrXntV=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz2WG0y2HV-iMbZqQIciY0Qdijlc6T0B1A0sYTZa9J8dBUY_nHn0WT91-fR8wOiRn1V7RsvxDOlwezGpTDGOrDkNSKpa1ky0rNB_syV0fXeRoXOjTQQsCapS3bQays5DX5x6gw=w675-h390-n-k-no"
-    ],
+    description: "Cancún es una ciudad de México ubicada en la península de Yucatán que limita con el mar Caribe y que es conocida por sus playas, los numerosos centros turísticos y la vida nocturna.",
+    images: ["https://picsum.photos/seed/promo-cancun-1/800/600", "https://picsum.photos/seed/promo-cancun-2/800/600", "https://picsum.photos/seed/promo-cancun-3/800/600"],
     includes: ["Tiquetes aéreos", "Alojamiento", "Tours básicos", "Vida nocturna"],
     isVisible: true,
     departureDate: "2025-04-05",
@@ -1063,7 +797,6 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     regime: "Paquete Promocional",
     travelerTypes: ["Grupos", "Parejas"],
     amenities: ["Acceso a la Playa", "Shows Nocturnos / Animación", "Discoteca / Club Nocturno"],
-    whatsappCatalogUrl: "https://wa.me/p/24034135376171829/573113653379"
   },
   {
     id: 39,
@@ -1072,18 +805,8 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "$899,000 COP",
     priceValue: 899000,
     durationDays: 4,
-    description: "☀️CARTAGENA☀️ Cartagena es una ciudad que está ubicada a orillas del Mar Caribe. Sus calles coloridas llenas de encanto la hacen la puerta de entrada a Suramérica.🕌",
-    images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS3MSAPvnQXTEV1zKo2vRkKHHNp5LlB95pm8eNmRVLS2RhWBEI9MpwWz0JbFIKjA3bgzBxddLEIQuHWjnbOybRIhok&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQdItM4cf0JCQvUu4T6PpWEtC5iYeNJO_h-4NfBTINcrDHiWbWIePdMlfVIPimIUOlzUhYQrt88eKxvgjHQheSyeJ8&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQc5c4xN5NfC-ExEHnrFwiBOPMA-AB-v7dInxwyOZSy0gvkfOTy-1_hlUj3tldCZaeeXsLZbUMuipOB_RK16F01zQ4&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzLSKyxBOWSx3XPfVFsvWIA_aNDnsboOeqr6jtmVZIw4oSfqHWFNtW13TdyJuHReSUNNhe8ewWe0pK1dxQ0MgPPp0U7APN_V4UbBC_HN0m4zoh5G8lOiZCtzVSjfh1aXyabvLtyBQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwowOR-Mdb9Es71SkxfpHy6cbAotjGMqqVcPCSQhB3LmANwRbJVfEd7WvJzEK-vbyt_pXdy4-qpUJAxWU_A9PS7IvYbnp4UGYfiInZYwc3mY9oYcaKjCpisujya56JAR8okLGdeaA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQrINn2TqVM-XheKfhHCRa7HcbZJCS03pC3orXVpnO-KeCfn7RzEOOOIyHOfbwWYdB71VTcZMhHZfL1tSadTER7Wd0&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz-iJ8qBgrebZiYqr07sDUHgP7oEZCY051VLiWHfKA0m61-AhLNZRgp8up8v242r7kljGZyd-aQYLLqLUS10EQPz3m8JZ_a34Wxp9O_qhtYddj4QrXR7r4e7SCpXBuIpryuhGNzig=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxokkjszcbdA-LrK6ct55DwnPSVCrvKVH-F1mFy5-w0A3qSiLbBlIAVBiqKdiQGTxKK1Xi8BdYLp0fdt5MaiyryUe6bv9VbmYq9Ar__wAb_v6cxTi2h6NMCWhopKAP-tuuKpOi-=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwjuUqCyJ3XOBg76Wra5ircT6nVmrZethSsA7KWgJHiuDIuoCrTXskweXpjUVWan8sp4DhSc44QhyT5t7lz-FcCn4188lwjLGPJHI3NGUlguBQmCzAyg6TzOo5G3ruYfx6x5lQ=w675-h390-n-k-no"
-    ],
+    description: "Cartagena es una ciudad que está ubicada a orillas del Mar Caribe. Sus calles coloridas llenas de encanto la hacen la puerta de entrada a Suramérica.",
+    images: ["https://picsum.photos/seed/promo-cartagena-1/800/600", "https://picsum.photos/seed/promo-cartagena-2/800/600", "https://picsum.photos/seed/promo-cartagena-3/800/600"],
     includes: ["Transporte terrestre", "Alojamiento", "Desayunos", "Tour por la ciudad"],
     isVisible: true,
     departureDate: "2024-11-15",
@@ -1093,7 +816,6 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     regime: "Paquete Promocional",
     travelerTypes: ["Familias", "Cultural", "Parejas"],
     amenities: ["A pocos metros de la playa", "Cultural"],
-    whatsappCatalogUrl: "https://wa.me/p/6832493100122403/573113653379"
   },
   {
     id: 40,
@@ -1102,19 +824,8 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "$799,000 COP",
     priceValue: 799000,
     durationDays: 4,
-    description: "🌈SANTA MARTA🌈 Su principal característica es su territorio: paisajes inolvidables en los que el verde de su vegetación, sus montañas, el azul de sus mares, el amarillo del sol y el contraste de las playas con el blanco de la Sierra Nevada, hacen de este paraíso un destino obligado. Es una ciudad que cautiva.☀️",
-    images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTKZOVcReCrEJ0vrUkqTkZNpj4a4iHUwxgqNQloE68m3oKHYpSNnOgnTPUxz8c3N4gbzbwgUO_-UBntbx0p7uohog8&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcT2fjWAzpan3XMHEsrxqofGZfwzNgp_wBIJpBXvK_XfczKTFZBgEPRXbTIyYb0vtlReriYgRhRHFplkAIaXBPpsdMg&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwVH07F_etyRzJBbKGvb53MZPdg67g3E45NKTNwJTrDeiGq-i1C4LIN_IoCe1lLXLr76U_9jN-lcN55yNOaFbjXzgP4FiW07_Me_lDpyxoVvQgOK6fJAcX77oZhJUi5_vdWqLiO=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz-SfaQfd0px2o-qfeC_ax39S1rECtwrQkbxNmrHQlMiUyo1dc-2yiDIP5x95CtAsAUNlh0kL_mop76MltKbDh20OnYpyrsA-TP5MzpWOwdO2BbleafTjuAPXfLT3NmGrA91mbc=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTnTd4_G3nwu1QI2h8Bi256ECvJA_3NFStdSWYdsX5U8WqmY_Ml53cxRHXuZiydmPNZMk0kLLvVkZmhoU85T9BoogN7&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcR2SdTL2K-aKOsbxaP2EIVDTL7A8gGvHz5XFPZruSZQwS2mbUphE0uI0Ko6lBWKtxxWPty8P2ujkXa9gEW2eLL32x9t&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwmShtdFzgn2zUwTF7Nu9baNAroDrhGIyZYfPJVowAcRqES0SZgSdSQxMit3_f_5LXmtoo-C_STCL88RPm_DWpmUP0d_cJ7Lo2bX3WpDugVlG4lYnJ3kkRbiyqBLR4eXtdLLA=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy-7kj5gOFZ5f6h1s8uFM3MkWfn2rEhLUWpduqNQ3M4UnniA7pXP5R-VoM7TDXuisVCMh40FeBVMC8Rtz6CoQ4j9vFCla7PapV2AgitJXkm-0HTbEnLdANMhnTGJUhQouVc2dQUiQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwSR8KOc5gYE19YPKeKVisgmKqiHAx6hD8_MhX_4Y_0C8cTJDCJ1AW-RAuBAFY1pWGY3kcTCtrgeOccbcR0o-HfjKcIFrzZwPbOUTRSiLhwnaCAID_FEGQbeeuGLWL7bfLHcUJA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRspauFC8QnkIwWNVezyhOOl6ouIA7B3Slb07Eo57Tg5iDHKJ"
-    ],
+    description: "Paisajes inolvidables donde el verde de su vegetación, sus montañas, el azul de sus mares y el contraste de las playas con el blanco de la Sierra Nevada, hacen de este paraíso un destino obligado.",
+    images: ["https://picsum.photos/seed/promo-santa-marta-1/800/600", "https://picsum.photos/seed/promo-santa-marta-2/800/600", "https://picsum.photos/seed/promo-santa-marta-3/800/600"],
     includes: ["Transporte terrestre", "Alojamiento", "Desayunos", "Visita a playa"],
     isVisible: true,
     departureDate: "2024-10-25",
@@ -1124,8 +835,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     regime: "Paquete Promocional",
     travelerTypes: ["Familias", "Descanso / Relax"],
     amenities: ["A pocos metros de la playa", "Montaña"],
-    whatsappCatalogUrl: "https://wa.me/p/6840570726002961/573113653379"
-  }
+  },
 ];
 
 export const DEFAULT_DESTINATIONS: Destination[] = [
@@ -1133,179 +843,86 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
     id: 1,
     name: "San Andrés Isla",
     description: "Conocida por su mar de siete colores, es el destino perfecto para el buceo, el snorkel y relajarse en playas de arena blanca. Un paraíso en el Caribe colombiano.",
-    images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTIiSxeewtn35vOo9zt6goz9ED1XkbVVmxSeaqfHExjKdvpqVMCI21ZEblyD0iGDghSnYbAwBkfrTUIAY7_ElFRUfg&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSwCCUpJCp3fI6tOISpgcVfqfihIOtvT16hR0MKvn192-vEQixmX8L6nmay9JD8OaklkFp-y0pXbOWfiYjrQbdwlXg&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxGVWK40EA_k7RGua_pRxLB1asExdlroqHgJeZmQbmhxYzts3jrb848IfoxQSkQJzTx6jwk39VSbxEgD684qQWTzxwscGyWppGKBLjOV-yOb03XXpSCW5cAh50EeCTjTsk-FbkAEONjGfa2=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxJdqeAS2oxm1IM1Hxh7GPz_1gEVySk-Ro6VZIGGhsPsywgGhHcjZhnzVMHj1Wq7jEAC8Q1NdmNXAVN75GDea8NoRb4Eua2EAvifExziER6yMur6u1ssS3RQaFwazFpr9UekNU=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSQV3qf6TMTDASh_QiLKxg2FxU11crW_odJurT7TBB29LJ1fdXEirXRPfGJwjVHqY9ej6sL1ayV4MGp5g3sPOlCPvw&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQu-Rab6f37P4t5W3BRwTXBBJ4ARohzoIRZ9DkHWhjg7zlEQDzVD4xoi4x-9vIArtqVN848yiU1TboIfQ-4x2ccOZQ&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw34ebCi6cHdo8B9Qn_ooZ6LG2CD7dnI0v8NbVBZdHuFMq-AIAtmfgk6Fn24zFPFm48s_yNQ_UHowcAKNr9alulPEhRvylVmJ4sP3fr5o5ix-66i8cfZNuDV3FUqwW4gqS8qPG1=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzAgG7gP0F_-9ymZEXLAqLzbn_anDTpZ8yjmZsRZgkaRfbtuOAGEGpgcHcnFMOajI0DvBEroKTMJApBCbc2lNxVkSMzbJd86XWA5peT3QyJl-gpc7FICiahZUiliLg8ghiJYTCqOw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSws8dLgv3oQWcSCStVkK5k-_cH6SB5tTJKtOCdKZ17cC9dVvqE8-7KtFapnySsX3N0x8Nc4fVT6O1HOK_Lj7FLFMdaDhW3iiP5y-gANOauXH92OZbXKC1HXO-TkufDGy2zqdjbiiA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQbggdIgQa1tYbumnrYsSSEkT585zTjiW_0vfuY02kfnh27K0QH5ZpWSba5KUuzTwVrQyJhH2npaX5KMYS2WmZq6zs&s=19"
-    ],
+    image: "https://picsum.photos/seed/dest-sanandres/600/400",
   },
   {
     id: 2,
     name: "Santa Marta",
     description: "La magia de tenerlo todo. Disfruta de playas paradisíacas, la imponente Sierra Nevada y un centro histórico lleno de vida y color. La perla del Caribe te espera.",
-    images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTKZOVcReCrEJ0vrUkqTkZNpj4a4iHUwxgqNQloE68m3oKHYpSNnOgnTPUxz8c3N4gbzbwgUO_-UBntbx0p7uohog8&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcT2fjWAzpan3XMHEsrxqofGZfwzNgp_wBIJpBXvK_XfczKTFZBgEPRXbTIyYb0vtlReriYgRhRHFplkAIaXBPpsdMg&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwVH07F_etyRzJBbKGvb53MZPdg67g3E45NKTNwJTrDeiGq-i1C4LIN_IoCe1lLXLr76U_9jN-lcN55yNOaFbjXzgP4FiW07_Me_lDpyxoVvQgOK6fJAcX77oZhJUi5_vdWqLiO=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz-SfaQfd0px2o-qfeC_ax39S1rECtwrQkbxNmrHQlMiUyo1dc-2yiDIP5x95CtAsAUNlh0kL_mop76MltKbDh20OnYpyrsA-TP5MzpWOwdO2BbleafTjuAPXfLT3NmGrA91mbc=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTnTd4_G3nwu1QI2h8Bi256ECvJA_3NFStdSWYdsX5U8WqmY_Ml53cxRHXuZiydmPNZMk0kLLvVkZmhoU85T9BoogN7&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcR2SdTL2K-aKOsbxaP2EIVDTL7A8gGvHz5XFPZruSZQwS2mbUphE0uI0Ko6lBWKtxxWPty8P2ujkXa9gEW2eLL32x9t&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwmShtdFzgn2zUwTF7Nu9baNAroDrhGIyZYfPJVowAcRqES0SZgSdSQxMit3_f_5LXmtoo-C_STCL88RPm_DWpmUP0d_cJ7Lo2bX3WpDugVlG4lYnJ3kkRbiyqBLR4eXtdLLA=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy-7kj5gOFZ5f6h1s8uFM3MkWfn2rEhLUWpduqNQ3M4UnniA7pXP5R-VoM7TDXuisVCMh40FeBVMC8Rtz6CoQ4j9vFCla7PapV2AgitJXkm-0HTbEnLdANMhnTGJUhQouVc2dQUiQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwSR8KOc5gYE19YPKeKVisgmKqiHAx6hD8_MhX_4Y_0C8cTJDCJ1AW-RAuBAFY1pWGY3kcTCtrgeOccbcR0o-HfjKcIFrzZwPbOUTRSiLhwnaCAID_FEGQbeeuGLWL7bfLHcUJA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRspauFC8QnkIwWNVezyhOOl6ouIA7B3Slb07Eo57Tg5iDHKJL1VPkItKz6VxUst4Z7Pb3VFQDHTA8FO4mgGlKEvLI&s=19"
-    ],
+    image: "https://picsum.photos/seed/dest-santamarta/600/400",
   },
   {
     id: 3,
     name: "Cartagena",
     description: "Sumérgete en el encanto de la ciudad amurallada, con sus calles coloniales, balcones floridos e historia vibrante. Un destino que enamora a cada paso.",
-    images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQdItM4cf0JCQvUu4T6PpWEtC5iYeNJO_h-4NfBTINcrDHiWbWIePdMlfVIPimIUOlzUhYQrt88eKxvgjHQheSyeJ8&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQc5c4xN5NfC-ExEHnrFwiBOPMA-AB-v7dInxwyOZSy0gvkfOTy-1_hlUj3tldCZaeeXsLZbUMuipOB_RK16F01zQ4&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzLSKyxBOWSx3XPfVFsvWIA_aNDnsboOeqr6jtmVZIw4oSfqHWFNtW13TdyJuHReSUNNhe8ewWe0pK1dxQ0MgPPp0U7APN_V4UbBC_HN0m4zoh5G8lOiZCtzVSjfh1aXyabvLtyBQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwowOR-Mdb9Es71SkxfpHy6cbAotjGMqqVcPCSQhB3LmANwRbJVfEd7WvJzEK-vbyt_pXdy4-qpUJAxWU_A9PS7IvYbnp4UGYfiInZYwc3mY9oYcaKjCpisujya56JAR8okLGdeaA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQrINn2TqVM-XheKfhHCRa7HcbZJCS03pC3orXVpnO-KeCfn7RzEOOOIyHOfbwWYdB71VTcZMhHZfL1tSadTER7Wd0&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQkU3uTvR0ihRboDBw8U3Cfa-S5GmNIB8zwYqLGmYUd5WqDAxFHTeU1HBQ62L5j-gMru9gF0SLRzEQ0EiMN1aWnKrrb&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz-iJ8qBgrebZiYqr07sDUHgP7oEZCY051VLiWHfKA0m61-AhLNZRgp8up8v242r7kljGZyd-aQYLLqLUS10EQPz3m8JZ_a34Wxp9O_qhtYddj4QrXR7r4e7SCpXBuIpryuhGNzig=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxokkjszcbdA-LrK6ct55DwnPSVCrvKVH-F1mFy5-w0A3qSiLbBlIAVBiqKdiQGTxKK1Xi8BdYLp0fdt5MaiyryUe6bv9VbmYq9Ar__wAb_v6cxTi2h6NMCWhopKAP-tuuKpOi-=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwjuUqCyJ3XOBg76Wra5ircT6nVmrZethSsA7KWgJHiuDIuoCrTXskweXpjUVWan8sp4DhSc44QhyT5t7lz-FcCn4188lwjLGPJHI3NGUlguBQmCzAyg6TzOo5G3ruYfx6x5lQ=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS3MSAPvnQXTEV1zKo2vRkKHHNp5LlB95pm8eNmRVLS2RhWBEI9MpwWz0JbFIKjA3bgzBxddLEIQuHWjnbOybRIhok&s=19"
-    ],
+    image: "https://picsum.photos/seed/dest-cartagena/600/400",
   },
   {
     id: 4,
     name: "Eje Cafetero",
     description: "El corazón de la cultura cafetera de Colombia. Paisajes montañosos, pueblos coloridos y el aroma del mejor café del mundo te esperan en esta región única.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSynhxjVM1KK7hH4zkxqBFBvYNdvAdRsWqhk1ssR_TdZMUvUggm9a2NsPjmO4II3ESr0zXjFXThJnFJ_qkQIFabX8_bN4exRk9uK0ZQlH5kE5y55CTT0bawNZD2GkKzD8HcgO1nQ=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwK-VAOOkSLFS4fz-vTQ07HMTi50ezYGw_4vDaXePJNNtJ4Npc2uTj8m800zlBTmV_Z6NN-vaQXy0ZIUW9Ww96YnwfyDsMZcn8vboj5ggEN-JILPGpFo5zU6OZiSm2f1QEo_qwA=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybSnfy_Ak4T2BI3viy7H0XweSsjRYM851CaZsBK7ajRKbkZ8Fo_g7-D4THtfQkw-FUXZKfYaebIX8X_26digcSNTO7OW3seLLnG2wkXOqqhDL0zj1ggVtr_TTBHFj3DUY6z_NAVw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw3gFB1nvX9RGJVZlYEZ_K06NBTPW9Hc1VG1CJuU0FD54tBeoklhysmGrgjdKIvKm0BW6JFnc1bBNDpBDoT4hDM4aQ2iExQ2MDc8LK-7XsHSJ4TC3orFkwwSqa5av9I8qOONdRciQ=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQr_88F56x7RxNCW8nzg8mnAvFrqxUFZx6dZWu4NOstzTzIILUqgEQytjFabtFEU12x9pEXy43JGWGd0xP4I_vySg8&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTcjC86DfnG0-ZPc5AYKIjfp6tH8nzr8K5FxO0hg0E19kLER36fCg20W_mirwOr-mebwePVAlovN08gkED9ZMRfDB4&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy7RCc3sxTlCbY4byClmMrWgecu0GK-WyanpaqstoRvTSe4aX3Was135Ckt9cJFsTKSAlsS5NbMF40iL8JAggjnf7awgm2xrnOfQDfK2hv-lS42AJYOubDZZCO6J-UVxs1yaNPyuw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzsbYI-H-vwPQqsyWIUCg-7HBVcJjDV07an3yHyFxxhVeqro2R6DjSZ3OnmsQVYwqiHcyd5ZBtMvb2Ogkliz_9A5t4WlXRBXUYANxHyxNvWDEnZ-XczcipgKgZZKzh0iARdcWfp=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyYGoQZTV-GDv51tPX2MYs6TgyE2FNg1NDAHbFUWKK1IhHJ2LRzD4HT5d7Iqgk7SjvRfsWq7kXApxsXLZc5IE4twNbyWG-9dfTSnw-t7upc9MpUMWYOpr7mPdaOAjbjaSyos0hR9Ht6NiY=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSu-mh9PoNoNbN3799Ud0WYiJ1nd2v58HGN6Gm39EfgtLo1fiGDUjSzmrSXWAE4q_TRl05C8qDRecnwfXck7bIBl5U&s=19"
-    ],
+    image: "https://picsum.photos/seed/dest-eje/600/400",
   },
   {
     id: 5,
     name: "Cancún y Punta Cana",
     description: "Vive el lujo del Caribe en su máxima expresión. Resorts todo incluido, playas de arena blanca, aguas turquesas y una infinidad de actividades para unas vacaciones perfectas.",
-    images: [
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS-WZjHb-mVyFsnekpAiEPBradpBx69wWa1FyWrXY0eLEUiztzcmFIGae4BAdrSdfoUV4fkBGpQ3ToRF9vjLpW5ess&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyIOFeo7p40r1cIEeJyh1Zpv-Nv5zsBl2a-myzsgZr8PlpfH2f861nSplEobZa9u0x5mkypi4e79hgpVFhMC2rMZMs84GcRJWftdXpsoa1_YcWA3AJs0FisRPiMiGG0KXoiYtc3=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzbvCwKoHiTwXH4IFhDXRku0zBjHKfUEs3q6F78OL4CJiboTV1bXVzHSxA03BxGN6qJW5FtpQoRP7DLyagj9zs9cd-Fnm-7A7B97r4n7hW95aoBqamK5ZyHH5QrE6uPJtl-v4vu=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRMALTgarXo9GJ-xdhXoC1LRvwxucO8ZpkB-rfEs7ktFd2D0pdWmKTEwEMnmTxmNUE7UftkUIoG7zl7zQ89nmv-vI6G&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSDJbca9IMU4MGYCUsFjanoJSVq1tAEwQJOIezUsdzOsvrUVrSr-hKmng6KYqlQA7mYUB3SsQuM-9MtSsKXRBehqsi9&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzX77c6Gw60-Ccciw4_ZyZSc9RkCTobtVSz-oSnwZ5XxXfEIq_XQY81AtQZyCOCOPToyWFtZDKROTwcxDShnuAWuYLU2j1EKVKSUX8vmPAJBGpSrtIoomNinnuQuDRmTPzrXntV=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz2WG0y2HV-iMbZqQIciY0Qdijlc6T0B1A0sYTZa9J8dBUY_nHn0WT91-fR8wOiRn1V7RsvxDOlwezGpTDGOrDkNSKpa1ky0rNB_syV0fXeRoXOjTQQsCapS3bQays5DX5x6gw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSztBDLIVFJS2aqq5feJbKtM1b7_b9MHophOONjU-kg6XnGRcQ8zf68gBbFTxpeyg-fE6ivuWzsd3ruErECTGcEl1vdwwEpMwDzsDVunCmtqvucJ0-n3Tn33-hSqDEVdYwF74yUA=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS2WztQ85paHU1jsQnui8QKrFCb7jvjzx6JwhHlADS42GPxFUQTpRFCspflAB00Np4TFf-AJ0P39Hbl2X06jioy4eg1&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRAIkOYtLlYnanDPxYxedhwNhhNY2wntus2kxfqjdxTCQoczkpqPezs7WxV4jbEsiNF8_Vno4wT36pClwSdKVHFWkg&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSbYQYdWM0eQKHvZ2Pf2JTB4uk9GzNf21yPCuo7TLoADkYqRdnWEeqdfGZqnVXAD7txxDSk28Gzl-1CVc_XnpgNass&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwoUdQKrSY0scLicOGckd1YJkbVDQkJAFTxnGFt9xEMe0xeDX4zRIXO4XwQo9i0w623OFuv6I-L_75AMq96EtZcDpJwhUwJdz5LrcBk3A1vFM-PoU1ec9tuKxnoru1LnL5ja531=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzrk4XszDWsoHqObxopmH9smWD6jLsKCn3y7sOvJ35sU4kdnxrG1TVhge5R1Z0hJhZ3UAacqrHUH8IZUycuoU8V1HcuO0EUxfaofFBRhUETVnI9p71uVWHL4q76XcrNoqeC4K70=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcS4P79t1-eNdD8KIzQdd3GRLr1Ww1p7efJ6v9PcYfmaLCEXaQXzvXUKC6leZb00CVGxFrb-c2FeF_Xd_2RhjIEEdkc&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSKmlm06gB7KmIyiFSQCZL6lBRAlQ2Y8BJKv6F988F8kXeME2IWUdGelp9SUXF2yqxPjtKMMtOpbiAb4-KD-Y4-mLX6&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw3eFETV4YLMH0go6f9NvPx-_5ZUmqKUEiXzB2tEKGmQ-qr7w2363x6Wef23ih5db2Y4JQ-02uZkLr2A9Ey0O3zXv-o5Gt7CYMlnIMd51kvc_MdhIeBU_ezaTnsNYVa-AtJdHh2Ow=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxHT7GVauXLW4HrxhZs3ZWUl2asxFDOyRORBTP5c_TtbxAfUH8YoiGteJzGDGxvT4113qKFIhLBvhROcxxoF03CVF3kISXLw2-puMUKvI1NPOVeDDLTZ8D75OAIfljd0ZoiRfaw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwF9yEIGj7tbO-GM5Pv6LyamdkjTVIWC5rQH2YbobhFCv2Fi7kxK9nF8NHFvGrojqXU_j0K5gCGHm-16xzGl6L4Gdh9orh0AozC8aPWiklRSXVsnN2posGmDybyiD3TOYBP5Ltm=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRjmm4k-kqm5v55EWDD83qeWv0XO6mLlaLtXyf2GDUtehNLL_Lwfwzdoi9c40g4_mDJBQo6RquvYFhZA858nvt6aWs&s=19"
-    ],
+    image: "https://picsum.photos/seed/dest-internacional/600/400",
   },
   {
     id: 6,
     name: "Panamá",
     description: "Un destino de contrastes. Desde la modernidad de su capital y el icónico canal, hasta las playas vírgenes de sus costas. Panamá te sorprenderá.",
-    images: [
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyQF7n12BTodERQgisLudHoJgIbo2CmrTvzrP-8PsPyLIetvNe2SyllRmcawGN_Z00o1Q51rJIYBvdwaQwDgwBlTU9xrs4UFnI3XJwKFAoFEk4P3F6qyHnM1rR3l2OfFm70_DeT=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQTcrqyp-APhgBoEG3VZAWmfuK3p8T_uKYqY_EX3CmZgeA8KdTqHZ0xD5gdtYpxoq3XWFJ_syci41ocEQ9DojrUHoo&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz3MAGCD4tsmHxZvQwn197HZMuYclBqHYgJnjStKxuc9Tr-f5qtxFgNKzv77vCa5aSWnfi5oDIcAlM2JbrKMRCqer_fY1Fv5FCNVi9ApLpOFVzcx17Am6Dxib2FlMAXyGb6CN5xZw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxFmZJgD0jdoNeaeWNwz-hUwYuPeOsr5e9hQP1LaPMoAJma1iwBGZ6nub8w7wMaKKdzf5G2hnqnPMZcqMVXxtk1rofzFAhW45K9J7tbb_U2Xkw3xsb2mtQA37a9xn3B5FVStEzdYQ=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQ6fmmvLTfQ2oLtJBF9F03yVP1Y0H6tEb0yCxunZt87lCD2VT0-H-s4lXvUUo3QteijPiwhNgl5wugaCBGLtQnzuJ4&s=19",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTxytf4DNqwuKD_gDZS8t-XXpq4WvZLdccMrqciCdBKCiuIqKip5KhRR78dJn2dL2OK3tFvjvkt7zBsc9bty9baIeE&s=19",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyXsfOTpxqXesGCaA1VWzTj5h_9AkWg9ydqFUMqijd0IaD4Sl9FgaodDnPEsPxXNuBtK-JQAsa6m5fOU4YCwo-WQfjydGY0sIqWAUjZzbOE7UqAzhiAphbfiZaRM7DbvYazkooeUw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxVnc-cfIyu1zDIfQmlmqS7mDoVdyrmMGjunmu2e69jyhEWcboSX71MRPqjCYhUSiy-jHa9SHegGyIctoZ_L21J8tzdpzlYlbgPjpm_sYJz5XYR9H18sJ0S54QGvI2CI1ZxGDkIIw=w675-h390-n-k-no",
-        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSySbWYLvBh-ogb4TzrOBxaaxGhUL2cJuO02qW4uPQ7HwHXEBqj6jDvGY92YCVTe7mi6VWFchvug7Scc4IfbSDiVjfV6r9JAXf0xZzD-D_gMg9YofuO8pf0SFPIw0ZkHQbNT5KEY=w675-h390-n-k-no",
-        "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRm0CsLj92u3kisGyLoRaK5vWDzNmzO3h2FszW8KUzGRMuA56uqxeHjORukGtN1XmKaWXgVcPVzKce4u3g2lMrrl_o&s=19"
-    ],
+    image: "https://picsum.photos/seed/dest-panama/600/400",
   },
 ];
 
+
 export const DEFAULT_TESTIMONIALS: Testimonial[] = [
-  {
-    id: 1,
-    author: "María González",
-    text: "La experiencia con Planifica Tu Sueño fue increíble. Todo salió perfecto en nuestro viaje a San Andrés.",
-    rating: 5
-  },
-  {
-    id: 2,
-    author: "Carlos Pérez",
-    text: "Excelente servicio y atención personalizada. Recomiendo totalmente sus planes a Cancún.",
-    rating: 5
-  },
-  {
-    id: 3,
-    author: "Luisa Fernanda",
-    text: "Gracias a ellos pude tener las vacaciones que siempre soñé en Santa Marta. ¡Volveré a viajar con ustedes!",
-    rating: 5
-  }
+    { id: 1, author: "Ana Pérez", text: "¡El viaje a San Andrés fue increíble! Todo estuvo perfectamente organizado. Gracias a Planifica Tu Sueño por hacer nuestras vacaciones inolvidables.", rating: 5 },
+    { id: 2, author: "Carlos Gómez", text: "Excelente servicio y atención al detalle. Nos ayudaron a personalizar nuestro tour por el Eje Cafetero y superó todas nuestras expectativas.", rating: 5 },
+    { id: 3, author: "Lucía Fernández", text: "La mejor agencia de viajes. Son profesionales, amables y siempre están dispuestos a ayudar. ¡Recomendadísimos!", rating: 4 },
 ];
 
 export const DEFAULT_ABOUT_US_CONTENT: AboutUsContent = {
-  mission: "Ofrecer servicios turísticos de alta calidad, superando las expectativas de nuestros clientes y promoviendo el turismo sostenible.",
-  vision: "Ser la agencia de viajes líder en el mercado, reconocida por nuestra excelencia, innovación y compromiso con la satisfacción del cliente.",
-  foundations: [
-    "Compromiso con la calidad",
-    "Atención personalizada",
-    "Innovación constante",
-    "Responsabilidad social"
-  ],
-  principles: [
-    { title: "Calidad", text: "Buscamos la excelencia en cada detalle." },
-    { title: "Integridad", text: "Actuamos con transparencia y honestidad." }
-  ],
-  values: [
-    { title: "Respeto", text: "Valoramos a nuestros clientes, empleados y socios." },
-    { title: "Pasión", text: "Amamos lo que hacemos y se refleja en nuestro trabajo." },
-    { title: "Confianza", text: "Construimos relaciones duraderas basadas en la confianza." },
-    { title: "Trabajo en equipo", text: "Juntos logramos más." }
-  ]
+    mission: "Ser el portal profesional de salida (gateway) que facilita la materialización de los sueños de escape vacacional y ocio de la población en el Occidente de Caldas, ofreciendo una gestión de viajes organizada, vibrante y confiable.",
+    vision: "Consolidar el liderazgo de reputación en nuestro mercado regional, manteniendo el alto nivel de satisfacción del cliente demostrado por nuestra calificación promedio de 4.9 estrellas sobre 5.0, y proyectar una imagen de marca dinámica, accesible y profesional.",
+    foundations: [
+        "Adherencia al régimen de responsabilidad establecido por la Ley 300/96 y normativas relacionadas.",
+        "Operar como una Agencia de Viajes y Turismo clasificada como Prestadora de Servicios Turísticos (PST), con RNT 181495.",
+        "El alto Capital Reputacional (4.9/5.0) y la integración en la economía social local.",
+        "La identidad de 'Organización de Sueños' proyectada a través de una estética vibrante y soñadora."
+    ],
+    principles: [
+        { title: "Legalidad", text: "El tratamiento debe sujetarse a la ley y las disposiciones que la desarrollen." },
+        { title: "Finalidad", text: "El tratamiento debe obedecer a una finalidad legítima de acuerdo con la Constitución y la Ley." },
+        { title: "Libertad", text: "El tratamiento solo puede ejercerse con el consentimiento previo, expreso e informado del titular." },
+        { title: "Veracidad o Calidad", text: "La información debe ser veraz, completa, exacta, actualizada, comprobable y comprensible." },
+        { title: "Transparencia", text: "Se debe garantizar el derecho del titular a obtener información acerca de la existencia de datos que le conciernan." },
+        { title: "Acceso y Circulación Restringida", text: "El tratamiento se sujeta a los límites derivados de la naturaleza de los datos y solo podrá hacerse por personas autorizadas." },
+        { title: "Seguridad", text: "La información se deberá manejar con las medidas necesarias para evitar su adulteración, pérdida, consulta o acceso no autorizado." },
+        { title: "Confidencialidad", text: "Las personas que intervengan en el tratamiento de datos no públicos están obligadas a garantizar la reserva de la información." }
+    ],
+    values: [
+        { title: "Confianza y Amabilidad", text: "Generada por nuestra alta reputación online y una atención cercana." },
+        { title: "Profesionalismo y Seriedad", text: "Reflejado en nuestro conocimiento y atención al detalle." },
+        { title: "Dinamismo y Entusiasmo", text: "Transmitido por nuestra energía y la pasión por lo que hacemos." },
+        { title: "Organización", text: "Implícito en nuestro nombre, garantizando atención al detalle en la planificación." },
+        { title: "Conocimiento Global", text: "Representando nuestra capacidad de ofrecer una amplia variedad de viajes." }
+    ]
 };
 
 export const DEFAULT_LEGAL_CONTENT: LegalContent = {
-  generalPolicy: "Planifica Tu Sueño se compromete a prestar servicios turísticos conforme a la legislación vigente. Nos reservamos el derecho de modificar itinerarios por fuerza mayor.",
-  privacyPolicy: "Sus datos personales serán tratados conforme a la Ley de Protección de Datos Personales. Garantizamos la confidencialidad y seguridad de su información."
+    generalPolicy: `Planifica tu sueño está sujeta al régimen de responsabilidad que establece la ley 300/96, D.R. 1075/97, Decreto 2438 de 2010 y las normas que los modifiquen, adicionen o reformen. La responsabilidad del organizador del plan o paquete turístico se limita a los términos y condiciones del programa en relación con la prestación y calidad de los servicios. La agencia no asume ninguna responsabilidad frente al usuario por el servicio de transporte aéreo, salvo que se trate de vuelo fletado y de acuerdo con las condiciones del contrato de transporte. Las políticas de reembolso de los servicios no prestados en razón a situaciones de fuerza mayor o caso fortuito, acción u omisión de terceros o del pasajero, no atribuibles a la agencia de viajes, antes o durante el viaje, que puedan ser objeto de devolución, serán definidas por cada operador y las mismas serán confirmadas al usuario una vez se reserven y expidan los documentos de viaje, así como los porcentajes de penalidades o deducciones a que hubiere lugar. En caso de fuerza mayor o caso fortuito antes o durante el viaje (accidentes, huelgas, asonadas, terremotos, factores climáticos, condiciones de seguridad, etc.), o para garantizar el éxito del plan, el operador y/o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos, hoteles, servicios opcionales, lo cual es desde ahora aceptado por el pasajero al momento de adquirir los servicios. El pasajero será el exclusivo responsable de la custodia de su equipaje y documentos de viaje.`,
+    privacyPolicy: `Conscientes de la importancia que tiene la protección y el buen manejo de la información personal suministrada, LA AGENCIA DE VIAJES PLANIFICA TU SUEÑO ha diseñado la presente política para hacer un uso adecuado de sus datos personales, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013. Su objetivo es garantizar la reserva de la información y la seguridad sobre el tratamiento que se le dará a la misma a todos los clientes, proveedores, empleados y terceros. El tratamiento de datos personales debe realizarse respetando las normas generales y especiales sobre la materia. Usted tiene derecho a conocer, actualizar, rectificar, consultar sus datos personales, solicitar prueba de la autorización otorgada, ser informado sobre el uso de sus datos, presentar quejas ante la Superintendencia de Industria y Comercio, revocar la autorización y/o solicitar la supresión de algún dato, y acceder en forma gratuita a sus datos personales.`
 };
 
 export const DEFAULT_FAQS: FAQItem[] = [
-  {
-    id: 1,
-    question: "¿Cómo puedo reservar un plan?",
-    answer: "Puedes reservar contactándonos directamente por WhatsApp o a través de nuestro formulario de contacto.",
-    category: "Reservas"
-  },
-  {
-    id: 2,
-    question: "¿Cuáles son los métodos de pago?",
-    answer: "Aceptamos transferencias bancarias, tarjetas de crédito y pagos en efectivo en nuestra oficina.",
-    category: "Pagos"
-  },
-  {
-    id: 3,
-    question: "¿Qué sucede si necesito cancelar mi viaje?",
-    answer: "Las políticas de cancelación varían según el plan. Por favor, consulta los términos y condiciones específicos de tu reserva.",
-    category: "Cancelaciones"
-  }
+    { id: 1, category: "Legal y Operacional", question: "¿Cuál es la ubicación física y el teléfono de contacto?", answer: "Nuestra oficina está en el Centro Comercial La Colmena, Carrera 4 #13-32, Anserma, Caldas. Nuestro teléfono es 311 3653379." },
+    { id: 2, category: "Legal y Operacional", question: "¿Cuál es el número del Registro Nacional de Turismo (RNT)?", answer: "Nuestro RNT es el 181495. Estamos clasificados como una Agencia de Viajes y Turismo (PST)." },
+    { id: 3, category: "Políticas de Viaje", question: "¿Qué sucede si mi viaje se cancela por fuerza mayor?", answer: "En casos de fuerza mayor (clima, huelgas, etc.), para garantizar el éxito del plan, el operador o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos y hoteles. Estas condiciones son aceptadas al adquirir los servicios." },
+    { id: 4, category: "Políticas de Viaje", question: "¿En cuánto tiempo se procesan los reembolsos?", answer: "Los reembolsos, si aplican, se realizarán dentro de los 30 días calendario siguientes a la solicitud. El monto dependerá de las condiciones del proveedor y los gastos de administración." },
+    { id: 5, category: "Políticas de Viaje", question: "¿La agencia se encarga del trámite de visas?", answer: "Brindamos la asesoría necesaria, pero el trámite, costos y la decisión final son de exclusiva autonomía de la autoridad consular. En caso de negativa de visa, no habrá lugar a reembolso." },
+    { id: 6, category: "Datos Personales", question: "¿Cuáles son mis derechos sobre mis datos personales?", answer: "Usted tiene derecho a conocer, actualizar, rectificar, consultar y solicitar la supresión de sus datos personales, así como revocar la autorización para su tratamiento." },
+    { id: 7, category: "Datos Personales", question: "¿Cómo puedo hacer una consulta o reclamo sobre mis datos?", answer: "Puede enviar sus solicitudes al correo electrónico planificatusueno12@gmail.com. Las consultas se atienden en máximo 10 días hábiles y los reclamos en 15 días hábiles." },
 ];
