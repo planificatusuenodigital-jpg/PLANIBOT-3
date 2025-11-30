@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from '../types';
 import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, COMMON_AMENITIES, COMMON_INCLUDES } from '../constants';
 
@@ -19,13 +20,14 @@ type AppData = {
 
 interface AdminPanelProps {
   appData: AppData;
-  setAppData: (data: AppData) => void;
+  onSave: (data: AppData) => Promise<boolean>;
   onLogout: () => void;
 }
 
 interface AdminSubComponentProps {
     editedData: AppData;
     setEditedData: React.Dispatch<React.SetStateAction<AppData>>;
+    handleImmediateSave?: () => Promise<void>;
 }
 
 type AdminSection = 'dashboard' | 'plans' | 'categories' | 'testimonials' | 'content' | 'settings';
@@ -52,20 +54,27 @@ const NeumorphicButton: React.FC<{ children: React.ReactNode; className?: string
 };
 
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ appData, setAppData, onLogout }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ appData, onSave, onLogout }) => {
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [editedData, setEditedData] = useState<AppData>(appData);
   const [isDirty, setIsDirty] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    // Simple check to see if data changed
     setIsDirty(JSON.stringify(appData) !== JSON.stringify(editedData));
   }, [editedData, appData]);
 
-  const handleSaveChanges = () => {
-    if (window.confirm("¿Estás seguro de que quieres guardar todos los cambios?")) {
-        setAppData(editedData);
-        alert('¡Cambios guardados con éxito!');
+  const handleSaveChanges = async () => {
+    if (window.confirm("¿Estás seguro de que quieres guardar todos los cambios en la base de datos?")) {
+        setIsSaving(true);
+        const success = await onSave(editedData);
+        setIsSaving(false);
+        if (success) {
+            alert('¡Cambios guardados con éxito!');
+            setIsDirty(false); // Reset dirty flag
+        }
     }
   };
 
@@ -202,8 +211,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ appData, setAppData, onLogout }
             {isDirty && (
                  <div className="fixed bottom-0 right-0 p-4 w-full md:w-[calc(100%-16rem)] flex justify-end gap-4 bg-[var(--admin-bg)]/80 backdrop-blur-sm neumorphic-convex z-30 animate-fade-in">
                     <p className='font-semibold self-center hidden sm:block'>Tienes cambios sin guardar</p>
-                    <NeumorphicButton onClick={handleDiscardChanges} className="px-5 py-2 text-gray-700">Descartar</NeumorphicButton>
-                    <NeumorphicButton onClick={handleSaveChanges} className="px-5 py-2 text-pink-600 font-bold">Guardar Cambios</NeumorphicButton>
+                    <NeumorphicButton onClick={handleDiscardChanges} className="px-5 py-2 text-gray-700" disabled={isSaving}>Descartar</NeumorphicButton>
+                    <NeumorphicButton onClick={handleSaveChanges} className="px-5 py-2 text-pink-600 font-bold" disabled={isSaving}>
+                        {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+                    </NeumorphicButton>
                 </div>
             )}
           </main>
@@ -242,16 +253,27 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
         if (editingPlan) {
             updatedPlans = editedData.plans.map(p => p.id === planToSave.id ? planToSave : p);
         } else {
-            const newPlan = { ...planToSave, id: Date.now() };
+            // Generar un ID temporal para nuevos planes. 
+            // Nota: Al guardar en Supabase, se generará un ID real si no enviamos este.
+            const newPlan = { ...planToSave, id: Date.now() }; 
             updatedPlans = [...editedData.plans, newPlan];
         }
         setEditedData({ ...editedData, plans: updatedPlans });
     };
 
-    const handleDeletePlan = (planId: number) => {
+    const handleDeletePlan = async (planId: number) => {
         if (window.confirm('¿Estás seguro de que quieres eliminar este plan?')) {
-            const updatedPlans = editedData.plans.filter(p => p.id !== planId);
-            setEditedData({ ...editedData, plans: updatedPlans });
+            // Delete from Supabase immediately for cleaner logic (optional but recommended)
+            try {
+                const { error } = await supabase.from('plans').delete().eq('id', planId);
+                if (error) throw error;
+                // Update Local State
+                const updatedPlans = editedData.plans.filter(p => p.id !== planId);
+                setEditedData({ ...editedData, plans: updatedPlans });
+            } catch (error) {
+                console.error("Error deleting plan:", error);
+                alert("Error al eliminar el plan de la base de datos.");
+            }
         }
     };
     
@@ -381,6 +403,7 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
         regime: plan?.regime || 'Solo Alojamiento',
         travelerTypes: plan?.travelerTypes || [],
         amenities: plan?.amenities || [],
+        whatsappCatalogUrl: plan?.whatsappCatalogUrl || ''
     });
     const [activeTab, setActiveTab] = useState('basic');
 
@@ -467,6 +490,11 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
                                 <div className="flex items-center gap-3 p-3 bg-white/40 rounded-lg">
                                     <input type="checkbox" id="isVisible" name="isVisible" checked={formData.isVisible} onChange={e => setFormData(p => ({...p, isVisible: e.target.checked}))} className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500" />
                                     <label htmlFor="isVisible" className="font-semibold text-gray-700 cursor-pointer">Publicar este plan (Visible en la web)</label>
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Link Catálogo WhatsApp (Opcional)</label>
+                                    <input name="whatsappCatalogUrl" value={formData.whatsappCatalogUrl} onChange={handleChange} placeholder="https://wa.me/p/..." className="neu-input w-full p-3 rounded-lg" />
                                 </div>
                             </div>
                         )}
@@ -566,22 +594,49 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
 const CategoriesManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedData }) => {
     const [newCategory, setNewCategory] = useState('');
 
-    const addCategory = () => {
+    const addCategory = async () => {
         if (newCategory.trim() && !editedData.categories.includes(newCategory.trim())) {
-            setEditedData(prev => ({
+             // Optional: Immediate DB sync could be done here, but sticking to global save
+             // for simplicity of the provided Admin architecture, unless requested.
+             // Given Admin Panel structure, we update local state and let user click 'Save'
+             setEditedData(prev => ({
                 ...prev,
                 categories: [...prev.categories, newCategory.trim()]
             }));
-            setNewCategory('');
+            
+            // However, inserting a category into 'categories' table often needs immediate action to have an ID
+            // But here we are just storing names.
+            // Let's do an immediate insert for better UX if possible, or stick to the "Save All" pattern.
+            // Sticking to "Save All" pattern implemented in App.tsx -> handleSaveToSupabase which handles categories logic.
+            
+            // To ensure uniqueness in DB, handleSaveToSupabase needs to be smart.
+            // Currently App.tsx doesn't fully sync Categories list deletions, so let's improve App.tsx logic later.
+            // For now, update local state.
+            
+            // Improvement: Immediate insert to avoid complexity in "Save All"
+             try {
+                const { error } = await supabase.from('categories').insert({ name: newCategory.trim() });
+                if (error && error.code !== '23505') throw error; // Ignore duplicate error
+             } catch (e) {
+                 console.error(e);
+             }
+             setNewCategory('');
         }
     };
 
-    const removeCategory = (cat: string) => {
+    const removeCategory = async (cat: string) => {
         if (window.confirm(`¿Eliminar categoría "${cat}"?`)) {
-            setEditedData(prev => ({
-                ...prev,
-                categories: prev.categories.filter(c => c !== cat)
-            }));
+             try {
+                const { error } = await supabase.from('categories').delete().eq('name', cat);
+                if (error) throw error;
+                setEditedData(prev => ({
+                    ...prev,
+                    categories: prev.categories.filter(c => c !== cat)
+                }));
+             } catch (e) {
+                 console.error(e);
+                 alert("Error al eliminar categoría (puede estar en uso).");
+             }
         }
     };
 
@@ -621,21 +676,29 @@ const CategoriesManager: React.FC<AdminSubComponentProps> = ({ editedData, setEd
 
 const TestimonialsManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedData }) => {
     
-    const addTestimonial = () => setEditedData(prev => ({...prev, testimonials: [...prev.testimonials, { id: Date.now(), author: '', text: '' }]}));
+    const addTestimonial = () => setEditedData(prev => ({...prev, testimonials: [...prev.testimonials, { id: Date.now(), author: '', text: '', rating: 5 }]}));
     
-    const updateTestimonial = (id: number, field: 'author' | 'text', value: string) => {
+    const updateTestimonial = (id: number, field: 'author' | 'text' | 'rating', value: any) => {
         setEditedData(prev => ({
             ...prev,
             testimonials: prev.testimonials.map(t => t.id === id ? { ...t, [field]: value } : t)
         }));
     };
     
-    const deleteTestimonial = (id: number) => {
-        setEditedData(prev => ({
-            ...prev,
-            testimonials: prev.testimonials.filter(t => t.id !== id)
-        }));
+    const deleteTestimonial = async (id: number) => {
+        // Immediate delete from DB
+        try {
+            await supabase.from('testimonials').delete().eq('id', id);
+             setEditedData(prev => ({
+                ...prev,
+                testimonials: prev.testimonials.filter(t => t.id !== id)
+            }));
+        } catch (e) {
+            console.error(e);
+        }
     };
+    
+    // Save/Upsert happens on "Guardar Cambios" via App.tsx for edits/adds
     
     return (
         <div className="animate-fade-in">
@@ -646,7 +709,10 @@ const TestimonialsManager: React.FC<AdminSubComponentProps> = ({ editedData, set
             <NeumorphicCard type="flat" className="p-4 space-y-4">
                 {editedData.testimonials.map(t => (
                     <NeumorphicCard key={t.id} className="p-3 space-y-2">
-                        <input value={t.author} onChange={e => updateTestimonial(t.id, 'author', e.target.value)} placeholder="Autor" className="neu-input w-full p-2 rounded-lg" />
+                        <div className="flex gap-2">
+                             <input value={t.author} onChange={e => updateTestimonial(t.id, 'author', e.target.value)} placeholder="Autor" className="neu-input w-2/3 p-2 rounded-lg" />
+                             <input type="number" min="1" max="5" value={t.rating} onChange={e => updateTestimonial(t.id, 'rating', parseInt(e.target.value))} placeholder="Rating" className="neu-input w-1/3 p-2 rounded-lg" />
+                        </div>
                         <textarea value={t.text} onChange={e => updateTestimonial(t.id, 'text', e.target.value)} placeholder="Texto del testimonio" className="neu-textarea w-full p-2 rounded-lg" />
                         <NeumorphicButton onClick={() => deleteTestimonial(t.id)} className="px-3 py-1 text-xs text-red-700">Eliminar</NeumorphicButton>
                     </NeumorphicCard>

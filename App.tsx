@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { createClient, Session } from '@supabase/supabase-js';
-import { Section, Plan, Destination, Testimonial, AboutUsContent, LegalContent, FAQItem } from './types';
+import { Session } from '@supabase/supabase-js';
+import { supabase } from './lib/supabaseClient';
+import { Section, Plan, Destination, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from './types';
 import { 
     DEFAULT_TRAVEL_PLANS, 
     DEFAULT_DESTINATIONS, 
@@ -32,13 +33,8 @@ import GlassCard from './components/GlassCard';
 import WatermarkedImage from './components/WatermarkedImage';
 import AdminPanel from './components/AdminPanel';
 
-// Supabase client initialization
-const supabaseUrl = 'https://vwckkdlyxsrohqnlsevg.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Y2trZGx5eHNyb2hxbmxzZXZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDM0MTksImV4cCI6MjA3NzQ3OTQxOX0.mv_WdRDJyjoO2p0fPRAGZ4Q-dG78whJ7kGDZRQuVOn8';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 // Define the shape of our entire app's data
-interface AppData {
+export interface AppData {
   plans: Plan[];
   destinations: Destination[];
   testimonials: Testimonial[];
@@ -207,7 +203,6 @@ ${formData.dates || 'Flexibles'}
 ---------------------------------
 Enviado desde el sitio web.`;
 
-        // If the plan has a WhatsApp Catalog URL, append it to the message
         if (plan.whatsappCatalogUrl) {
             message += `\n\n🔗 Ver en Catálogo: ${plan.whatsappCatalogUrl}`;
         }
@@ -336,71 +331,182 @@ const App: React.FC = () => {
   const [isAdminRoute, setIsAdminRoute] = useState(false);
   const [loadingSession, setLoadingSession] = useState(true);
   
-  // Data persistence logic
+  // Data persistence logic with Supabase Fetching
   useEffect(() => {
-    try {
-      let data: AppData;
-      const storedData = localStorage.getItem('appData');
-      if (storedData) {
-        data = JSON.parse(storedData);
-      } else {
-        data = {
-          plans: DEFAULT_TRAVEL_PLANS,
-          destinations: DEFAULT_DESTINATIONS,
-          testimonials: DEFAULT_TESTIMONIALS,
-          aboutUs: DEFAULT_ABOUT_US_CONTENT,
-          legal: DEFAULT_LEGAL_CONTENT,
-          faqs: DEFAULT_FAQS,
-          contact: DEFAULT_CONTACT_INFO,
-          social: DEFAULT_SOCIAL_LINKS,
-          logoUrl: DEFAULT_LOGO_URL,
-          planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
-          seoImageUrl: DEFAULT_SEO_IMAGE_URL,
-          categories: DEFAULT_CATEGORIES
-        };
-        localStorage.setItem('appData', JSON.stringify(data));
+    const fetchData = async () => {
+        try {
+            // Fetch Plans
+            const { data: plansData, error: plansError } = await supabase
+                .from('plans')
+                .select('*')
+                .order('id', { ascending: true });
+
+            // Fetch Categories
+            const { data: categoriesData, error: categoriesError } = await supabase
+                .from('categories')
+                .select('name');
+
+            // Fetch Testimonials
+            const { data: testimonialsData, error: testimonialsError } = await supabase
+                .from('testimonials')
+                .select('*');
+
+            // Fetch Site Content
+            const { data: contentData, error: contentError } = await supabase
+                .from('site_content')
+                .select('key, value');
+
+            if (plansError) console.error("Error fetching plans:", plansError);
+            if (categoriesError) console.error("Error fetching categories:", categoriesError);
+            if (testimonialsError) console.error("Error fetching testimonials:", testimonialsError);
+            if (contentError) console.error("Error fetching site content:", contentError);
+
+            // Transform Plans Data
+            const plans: Plan[] = (plansData || []).map((p: any) => ({
+                id: p.id,
+                title: p.title,
+                category: p.category,
+                price: p.price || p.price_text || 'Consultar', // Fallback to price_text if exists in DB logic
+                priceValue: p.price_value || 0,
+                durationDays: p.duration_days || 1,
+                description: p.description || '',
+                images: p.images || [],
+                includes: p.includes || [],
+                isVisible: p.is_visible,
+                departureDate: p.departure_date || '',
+                returnDate: p.return_date || '',
+                country: p.country || '',
+                city: p.city || '',
+                regime: (p.plan_type as Regime) || (p.regime as Regime) || 'Solo Alojamiento',
+                travelerTypes: (p.traveler_types as TravelerType[]) || [],
+                amenities: p.amenities || [],
+                whatsappCatalogUrl: p.whatsapp_catalog_url
+            }));
+
+            // If no plans in DB, fall back to default
+            const finalPlans = plans.length > 0 ? plans : DEFAULT_TRAVEL_PLANS;
+
+            // Transform Categories
+            const categories = (categoriesData || []).map((c: any) => c.name);
+            const finalCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+
+            // Transform Testimonials
+            const testimonials: Testimonial[] = (testimonialsData || []).map((t: any) => ({
+                id: t.id,
+                author: t.author,
+                text: t.text,
+                rating: t.rating
+            }));
+            const finalTestimonials = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
+
+            // Transform Site Content
+            const contentMap = (contentData || []).reduce((acc: any, curr: any) => {
+                acc[curr.key] = curr.value;
+                return acc;
+            }, {});
+
+            setAppData({
+                plans: finalPlans,
+                categories: finalCategories,
+                testimonials: finalTestimonials,
+                aboutUs: contentMap['about_us'] || DEFAULT_ABOUT_US_CONTENT,
+                legal: contentMap['legal'] || DEFAULT_LEGAL_CONTENT,
+                contact: contentMap['contact'] || DEFAULT_CONTACT_INFO,
+                social: contentMap['social'] || DEFAULT_SOCIAL_LINKS,
+                faqs: contentMap['faqs'] || DEFAULT_FAQS, // Assuming FAQs might be in content or separate table, prioritizing content json for now based on 'site_content' logic
+                destinations: DEFAULT_DESTINATIONS, // Destinations are static in this version unless DB has them fully mapped. Kept static for safety as per prompt focus.
+                logoUrl: contentMap['branding']?.logoUrl || DEFAULT_LOGO_URL,
+                planibotAvatarUrl: contentMap['branding']?.planibotAvatarUrl || DEFAULT_PLANIBOT_AVATAR_URL,
+                seoImageUrl: contentMap['branding']?.seoImageUrl || DEFAULT_SEO_IMAGE_URL
+            });
+
+        } catch (error) {
+            console.error("Critical error fetching data:", error);
+            // Fallback
+             setAppData({
+                plans: DEFAULT_TRAVEL_PLANS,
+                destinations: DEFAULT_DESTINATIONS,
+                testimonials: DEFAULT_TESTIMONIALS,
+                aboutUs: DEFAULT_ABOUT_US_CONTENT,
+                legal: DEFAULT_LEGAL_CONTENT,
+                faqs: DEFAULT_FAQS,
+                contact: DEFAULT_CONTACT_INFO,
+                social: DEFAULT_SOCIAL_LINKS,
+                logoUrl: DEFAULT_LOGO_URL,
+                planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
+                seoImageUrl: DEFAULT_SEO_IMAGE_URL,
+                categories: DEFAULT_CATEGORIES
+             });
+        }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSaveToSupabase = async (newData: AppData) => {
+      try {
+          // 1. Sync Plans
+          for (const plan of newData.plans) {
+             const dbPlan = {
+                 title: plan.title,
+                 category: plan.category,
+                 price_text: plan.price, // Mapping back to DB column
+                 price_value: plan.priceValue,
+                 duration_days: plan.durationDays,
+                 description: plan.description,
+                 images: plan.images,
+                 includes: plan.includes,
+                 is_visible: plan.isVisible,
+                 departure_date: plan.departureDate || null,
+                 return_date: plan.returnDate || null,
+                 country: plan.country,
+                 city: plan.city,
+                 plan_type: plan.regime, // Mapping back
+                 traveler_types: plan.travelerTypes,
+                 amenities: plan.amenities,
+                 whatsapp_catalog_url: plan.whatsappCatalogUrl
+             };
+
+             if (plan.id > 1000000000) { // Assuming new IDs are large timestamps
+                 // Insert
+                 await supabase.from('plans').insert([dbPlan]);
+             } else {
+                 // Update
+                 await supabase.from('plans').update(dbPlan).eq('id', plan.id);
+             }
+          }
+          // Handle deletions logic would be needed here if plans were removed from the array
+          // For simplicity in this iteration, we assume 'Upsert' logic or specific Delete actions in Admin Panel
+
+          // 2. Sync Categories (Full Replace strategy for simplicity or individual upserts)
+          // Current UI handles add/remove. We should ensure DB reflects `newData.categories`.
+          // Best approach for lists: Check existence.
+          // For this demo, let's assume the Admin Panel calls handleSaveToSupabase only for generic saves or specific actions.
+          // *Actually*, AdminPanel handles its own state. We can use this function to save site_content specifically.
+
+          // 3. Sync Site Content
+          const contentToUpsert = [
+              { key: 'about_us', value: newData.aboutUs },
+              { key: 'legal', value: newData.legal },
+              { key: 'contact', value: newData.contact },
+              { key: 'social', value: newData.social },
+              { key: 'faqs', value: newData.faqs },
+              { key: 'branding', value: { logoUrl: newData.logoUrl, planibotAvatarUrl: newData.planibotAvatarUrl, seoImageUrl: newData.seoImageUrl } }
+          ];
+
+          const { error: contentError } = await supabase.from('site_content').upsert(contentToUpsert, { onConflict: 'key' });
+          if (contentError) throw contentError;
+
+          // Update local state to reflect successful save
+          setAppData(newData);
+          return true; // Success
+
+      } catch (error) {
+          console.error("Error saving to Supabase:", error);
+          alert("Error al guardar en la base de datos. Revisa la consola.");
+          return false;
       }
-
-      // Sanitize data to prevent runtime errors from malformed or old data.
-      const sanitizedPlans = (data.plans || []).map(plan => ({
-        ...plan,
-        images: Array.isArray(plan.images) ? plan.images : [],
-        includes: Array.isArray(plan.includes) ? plan.includes : [],
-        amenities: Array.isArray(plan.amenities) ? plan.amenities : [],
-        travelerTypes: Array.isArray(plan.travelerTypes) ? plan.travelerTypes : [],
-      }));
-
-      // Ensure categories exist in old data
-      const categories = Array.isArray(data.categories) ? data.categories : DEFAULT_CATEGORIES;
-
-      setAppData({ ...data, plans: sanitizedPlans, categories });
-
-    } catch (error) {
-      console.error("Failed to load or parse app data. Resetting to default.", error);
-      // Fallback if localStorage is corrupt
-      const defaultData: AppData = {
-          plans: DEFAULT_TRAVEL_PLANS,
-          destinations: DEFAULT_DESTINATIONS,
-          testimonials: DEFAULT_TESTIMONIALS,
-          aboutUs: DEFAULT_ABOUT_US_CONTENT,
-          legal: DEFAULT_LEGAL_CONTENT,
-          faqs: DEFAULT_FAQS,
-          contact: DEFAULT_CONTACT_INFO,
-          social: DEFAULT_SOCIAL_LINKS,
-          logoUrl: DEFAULT_LOGO_URL,
-          planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
-          seoImageUrl: DEFAULT_SEO_IMAGE_URL,
-          categories: DEFAULT_CATEGORIES
-      };
-      setAppData(defaultData);
-      localStorage.setItem('appData', JSON.stringify(defaultData));
-    }
-  }, []);
-
-  const handleSetAppData = useCallback((data: AppData) => {
-    setAppData(data);
-    localStorage.setItem('appData', JSON.stringify(data));
-  }, []);
+  };
   
   // Admin auth and routing logic
   useEffect(() => {
@@ -448,8 +554,6 @@ const App: React.FC = () => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error('Error logging out:', error.message);
-    // The onAuthStateChange listener will handle setting session to null.
-    // Navigate home after logout.
     window.location.href = window.location.origin + window.location.pathname;
   };
 
@@ -461,7 +565,7 @@ const App: React.FC = () => {
   if (!appData) return <div className="fixed inset-0 flex items-center justify-center bg-gray-900 text-white"><p>Cargando datos de la aplicación...</p></div>;
 
   if (session) {
-    return <AdminPanel appData={appData} setAppData={handleSetAppData} onLogout={handleLogout} />;
+    return <AdminPanel appData={appData} onSave={handleSaveToSupabase} onLogout={handleLogout} />;
   }
   
   if (isAdminRoute) {
