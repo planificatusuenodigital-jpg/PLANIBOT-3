@@ -62,7 +62,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 350000,
     durationDays: 2,
-    description: "Dentro del alojamiento 🏨 podrá encontrar todas las comodidades: habitaciones equipadas con línea hotelera, Wifi, Piscina , Jacuzzy, Turco, senderos ecológicos, cascadas de nacimiento y muchas otras actividades que lo convierten en un lugar ideal para visitar y descansar. Nuestra tarifa incluye cena, desayuno y almuerzo del dia siguiente al ingreso.",
+    description: "Dentro del alojamiento 🏨 podrá encontrar todas las comodidades: habitaciones equipadas con línea hotelera, Wifi, Piscina , Jacuzzy, Turco, senderos ecológicos, cascadas de nacimiento y muchas otras actividades que lo convierten en un lugar ideal para visitar y descansar.",
     images: [
         "https://lh3.googleusercontent.com/p/AF1QipM8Kpo53KGYF6YYW_CeQ9SSqnJfOg6W6DUTXTI0=s1360-w1360-h1020-rw",
         "https://lh3.googleusercontent.com/p/AF1QipNA4WZ-5zXaTsATL8TYbz_giPQnWLPCLsLuU7gS=s1360-w1360-h1020-rw",
@@ -1213,4 +1213,53 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
         "https://lh3.googleusercontent.com/proxy/KkZJHVEbwhLt_7t3KI6ktgi-muDL8HposfxZ8ppE00a6LC_SeQxh-9eetmkxOFxNclwLtAuxq5hPPhVTF39X_tWqvQXKG60AxDHI7MwgW-S-Xod2uR4nIX8rZHouuZzYtNG3p_tGd0RwM8y2Veqayns8qaNDIMo=s1360-w1360-h1020-rw"
     ],
   },
+];
+
+export const DEFAULT_TESTIMONIALS: Testimonial[] = [
+    { id: 1, author: "Ana Pérez", text: "¡El viaje a San Andrés fue increíble! Todo estuvo perfectamente organizado. Gracias a Planifica Tu Sueño por hacer nuestras vacaciones inolvidables.", rating: 5 },
+    { id: 2, author: "Carlos Gómez", text: "Excelente servicio y atención al detalle. Nos ayudaron a personalizar nuestro tour por el Eje Cafetero y superó todas nuestras expectativas.", rating: 5 },
+    { id: 3, author: "Lucía Fernández", text: "La mejor agencia de viajes. Son profesionales, amables y siempre están dispuestos a ayudar. ¡Recomendadísimos!", rating: 4 },
+];
+
+export const DEFAULT_ABOUT_US_CONTENT: AboutUsContent = {
+    mission: "Ser el portal profesional de salida (gateway) que facilita la materialización de los sueños de escape vacacional y ocio de la población en el Occidente de Caldas, ofreciendo una gestión de viajes organizada, vibrante y confiable.",
+    vision: "Consolidar el liderazgo de reputación en nuestro mercado regional, manteniendo el alto nivel de satisfacción del cliente demostrado por nuestra calificación promedio de 4.9 estrellas sobre 5.0, y proyectar una imagen de marca dinámica, accesible y profesional.",
+    foundations: [
+        "Adherencia al régimen de responsabilidad establecido por la Ley 300/96 y normativas relacionadas.",
+        "Operar como una Agencia de Viajes y Turismo clasificada como Prestadora de Servicios Turísticos (PST), con RNT 181495.",
+        "El alto Capital Reputacional (4.9/5.0) y la integración en la economía social local.",
+        "La identidad de 'Organización de Sueños' proyectada a través de una estética vibrante y soñadora."
+    ],
+    principles: [
+        { title: "Legalidad", text: "El tratamiento debe sujetarse a la ley y las disposiciones que la desarrollen." },
+        { title: "Finalidad", text: "El tratamiento debe obedecer a una finalidad legítima de acuerdo con la Constitución y la Ley." },
+        { title: "Libertad", text: "El tratamiento solo puede ejercerse con el consentimiento previo, expreso e informado del titular." },
+        { title: "Veracidad o Calidad", text: "La información debe ser veraz, completa, exacta, actualizada, comprobable y comprensible." },
+        { title: "Transparencia", text: "Se debe garantizar el derecho del titular a obtener información acerca de la existencia de datos que le conciernan." },
+        { title: "Acceso y Circulación Restringida", text: "El tratamiento se sujeta a los límites derivados de la naturaleza de los datos y solo podrá hacerse por personas autorizadas." },
+        { title: "Seguridad", text: "La información se deberá manejar con las medidas necesarias para evitar su adulteración, pérdida, consulta o acceso no autorizado." },
+        { title: "Confidencialidad", text: "Las personas que intervengan en el tratamiento de datos no públicos están obligadas a garantizar la reserva de la información." }
+    ],
+    values: [
+        { title: "Confianza y Amabilidad", text: "Generada por nuestra alta reputación online y una atención cercana." },
+        { title: "Profesionalismo y Seriedad", text: "Reflejado en nuestro conocimiento y atención al detalle." },
+        { title: "Dinamismo y Entusiasmo", text: "Transmitido por nuestra energía y la pasión por lo que hacemos." },
+        { title: "Organización", text: "Implícito en nuestro nombre, garantizando atención al detalle en la planificación." },
+        { title: "Conocimiento Global", text: "Representando nuestra capacidad de ofrecer una amplia variedad de viajes." }
+    ]
+};
+
+export const DEFAULT_LEGAL_CONTENT: LegalContent = {
+    generalPolicy: `Planifica tu sueño está sujeta al régimen de responsabilidad que establece la ley 300/96, D.R. 1075/97, Decreto 2438 de 2010 y las normas que los modifiquen, adicionen o reformen. La responsabilidad del organizador del plan o paquete turístico se limita a los términos y condiciones del programa en relación con la prestación y calidad de los servicios. La agencia no asume ninguna responsabilidad frente al usuario por el servicio de transporte aéreo, salvo que se trate de vuelo fletado y de acuerdo con las condiciones del contrato de transporte. Las políticas de reembolso de los servicios no prestados en razón a situaciones de fuerza mayor o caso fortuito, acción u omisión de terceros o del pasajero, no atribuibles a la agencia de viajes, antes o durante el viaje, que puedan ser objeto de devolución, serán definidas por cada operador y las mismas serán confirmadas al usuario una vez se reserven y expidan los documentos de viaje, así como los porcentajes de penalidades o deducciones a que hubiere lugar. En caso de fuerza mayor o caso fortuito antes o durante el viaje (accidentes, huelgas, asonadas, terremotos, factores climáticos, condiciones de seguridad, etc.), o para garantizar el éxito del plan, el operador y/o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos, hoteles, servicios opcionales, lo cual es desde ahora aceptado por el pasajero al momento de adquirir los servicios. El pasajero será el exclusivo responsable de la custodia de su equipaje y documentos de viaje.`,
+    privacyPolicy: `Conscientes de la importancia que tiene la protección y el buen manejo de la información personal suministrada, LA AGENCIA DE VIAJES PLANIFICA TU SUEÑO ha diseñado la presente política para hacer un uso adecuado de sus datos personales, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013. Su objetivo es garantizar la reserva de la información y la seguridad sobre el tratamiento que se le dará a la misma a todos los clientes, proveedores, empleados y terceros. El tratamiento de datos personales debe realizarse respetando las normas generales y especiales sobre la materia. Usted tiene derecho a conocer, actualizar, rectificar, consultar sus datos personales, solicitar prueba de la autorización otorgada, ser informado sobre el uso de sus datos, presentar quejas ante la Superintendencia de Industria y Comercio, revocar la autorización y/o solicitar la supresión de algún dato, y acceder en forma gratuita a sus datos personales.`
+};
+
+export const DEFAULT_FAQS: FAQItem[] = [
+    { id: 1, category: "Legal y Operacional", question: "¿Cuál es la ubicación física y el teléfono de contacto?", answer: "Nuestra oficina está en el Centro Comercial La Colmena, Carrera 4 #13-32, Anserma, Caldas. Nuestro teléfono es 311 3653379." },
+    { id: 2, category: "Legal y Operacional", question: "¿Cuál es el número del Registro Nacional de Turismo (RNT)?", answer: "Nuestro RNT es el 181495. Estamos clasificados como una Agencia de Viajes y Turismo (PST)." },
+    { id: 3, category: "Políticas de Viaje", question: "¿Qué sucede si mi viaje se cancela por fuerza mayor?", answer: "En casos de fuerza mayor (clima, huelgas, etc.), para garantizar el éxito del plan, el operador o la agencia podrán modificar, reemplazar o cancelar itinerarios, fechas, vuelos y hoteles. Estas condiciones son aceptadas al adquirir los servicios." },
+    { id: 4, category: "Políticas de Viaje", question: "¿En cuánto tiempo se procesan los reembolsos?", answer: "Los reembolsos, si aplican, se realizarán dentro de los 30 días calendario siguientes a la solicitud. El monto dependerá de las condiciones del proveedor y los gastos de administración." },
+    { id: 5, category: "Políticas de Viaje", question: "¿La agencia se encarga del trámite de visas?", answer: "Brindamos la asesoría necesaria, pero el trámite, costos y la decisión final son de exclusiva autonomía de la autoridad consular. En caso de negativa de visa, no habrá lugar a reembolso." },
+    { id: 6, category: "Datos Personales", question: "¿Cuáles son mis derechos sobre mis datos personales?", answer: "Usted tiene derecho a conocer, actualizar, rectificar, consultar y solicitar la supresión de sus datos personales, así como revocar la autorización para su tratamiento." },
+    { id: 7, category: "Datos Personales", question: "¿Cómo puedo hacer una consulta o reclamo sobre mis datos?", answer: "Puede enviar sus solicitudes al correo electrónico planificatusueno12@gmail.com. Las consultas se atienden en máximo 10 días hábiles y los reclamos en 15 días hábiles." },
 ];
