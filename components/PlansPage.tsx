@@ -1,6 +1,8 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import GlassCard from './GlassCard';
 import WatermarkedImage from './WatermarkedImage';
+import TextToSpeechButton from './TextToSpeechButton';
 import { Plan, Regime, TravelerType } from '../types';
 
 interface PlansPageProps {
@@ -43,6 +45,12 @@ const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }
 
     return (
         <div className="absolute top-2 right-2 flex gap-2 z-10">
+            <TextToSpeechButton 
+                title={plan.title} 
+                description={plan.description} 
+                includes={plan.includes} 
+                mini={true} 
+            />
             <button onClick={() => setQrModalPlan(plan)} className="w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Generar Código QR">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 5h3v3H5V5zm0 7h3v3H5v-3zM12 5h3v3h-3V5zm0 7h3v3h-3v-3z"/><path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm1 1h10v10H4V4z" clipRule="evenodd"/></svg>
             </button>

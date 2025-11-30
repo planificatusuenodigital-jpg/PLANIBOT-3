@@ -12,7 +12,7 @@ import {
     DEFAULT_FAQS, 
     DEFAULT_CONTACT_INFO, 
     DEFAULT_SOCIAL_LINKS, 
-    DEFAULT_LOGO_URL,
+    DEFAULT_LOGO_URL, 
     DEFAULT_PLANIBOT_AVATAR_URL,
     DEFAULT_SEO_IMAGE_URL,
     DEFAULT_CATEGORIES
@@ -32,6 +32,7 @@ import SocialProof from './components/SocialProof';
 import GlassCard from './components/GlassCard';
 import WatermarkedImage from './components/WatermarkedImage';
 import AdminPanel from './components/AdminPanel';
+import TextToSpeechButton from './components/TextToSpeechButton';
 
 // Define the shape of our entire app's data
 export interface AppData {
@@ -48,6 +49,20 @@ export interface AppData {
   seoImageUrl: string;
   categories: string[];
 }
+
+// Helper Component for Inputs with Icons (Defined OUTSIDE to prevent re-render bugs)
+// Updated for better mobile responsiveness (smaller padding/text on mobile)
+const InputWithIcon = ({ icon, className, ...props }: any) => (
+    <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/60">
+            {React.cloneElement(icon, { className: "h-4 w-4 sm:h-5 sm:w-5" })}
+        </div>
+        <input 
+            {...props} 
+            className={`w-full bg-white/10 border border-white/10 text-white placeholder-white/50 rounded-xl py-2.5 sm:py-3 pl-9 sm:pl-10 pr-3 sm:pr-4 text-sm sm:text-base focus:ring-2 focus:ring-pink-400 focus:outline-none focus:bg-white/20 transition-all ${className || ''}`}
+        />
+    </div>
+);
 
 const QRCodeModal: React.FC<{ plan: Plan; onClose: () => void }> = ({ plan, onClose }) => {
   const planUrl = `${window.location.origin}${window.location.pathname}?plan=${plan.id}`;
@@ -136,9 +151,16 @@ const PlanDetailModal: React.FC<{ plan: Plan; onClose: () => void; logoUrl: stri
                     )}
                 </div>
                 <div className="p-6 flex-grow overflow-y-auto text-white">
-                    <span className="text-sm font-semibold text-pink-300">{plan.category}</span>
-                    <h2 className="text-3xl font-bold text-white mt-1">{plan.title}</h2>
-                    <p className="text-pink-200 font-semibold text-xl mt-1">{plan.price}</p>
+                    <div className="flex justify-between items-start mb-2">
+                        <div>
+                            <span className="text-sm font-semibold text-pink-300">{plan.category}</span>
+                            <h2 className="text-3xl font-bold text-white mt-1">{plan.title}</h2>
+                            <p className="text-pink-200 font-semibold text-xl mt-1">{plan.price}</p>
+                        </div>
+                        <TextToSpeechButton title={plan.title} description={plan.description} includes={plan.includes} className="hidden sm:flex" />
+                        <TextToSpeechButton title={plan.title} description={plan.description} includes={plan.includes} mini={true} className="sm:hidden" />
+                    </div>
+                    
                     <p className="mt-4 text-white/80 text-base">{plan.description}</p>
                     <div className="mt-4 border-t border-white/20 pt-4">
                         <h4 className="font-semibold text-white text-lg">Incluye:</h4>
@@ -176,30 +198,62 @@ const PlanDetailModal: React.FC<{ plan: Plan; onClose: () => void; logoUrl: stri
 
 const QuoteRequestModal: React.FC<{ plan: Plan; contactInfo: typeof DEFAULT_CONTACT_INFO; onClose: () => void }> = ({ plan, contactInfo, onClose }) => {
     const [formData, setFormData] = useState({
-        name: '', email: '', phone: '', city: '', adults: '1', children: '0', dates: ''
+        name: '', email: '', phone: '', city: '', adults: 1, children: 0, dates: ''
     });
+    
+    // Lista de intereses/tags para que el usuario seleccione
+    const INTEREST_TAGS = [
+        "Playa 🏖️", "Aventura 🧗", "Relax 🧘", "Romántico ❤️", 
+        "Gastronomía 🍽️", "Cultura 🏛️", "Fiesta 🎉", "Naturaleza 🌿", 
+        "Compras 🛍️", "Todo Incluido 🍹"
+    ];
+    const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
+    const toggleInterest = (tag: string) => {
+        setSelectedInterests(prev => 
+            prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+        );
+    };
+
+    const adjustCount = (field: 'adults' | 'children', increment: boolean) => {
+        setFormData(prev => {
+            const currentVal = prev[field];
+            const newVal = increment ? currentVal + 1 : currentVal - 1;
+            // Adults min 1, Children min 0
+            if (field === 'adults' && newVal < 1) return prev;
+            if (field === 'children' && newVal < 0) return prev;
+            return { ...prev, [field]: newVal };
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        let interestsString = selectedInterests.length > 0 
+            ? selectedInterests.join(', ') 
+            : "No especificado";
+
         let message = `✨ Solicitud de Cotización ✨
 ---------------------------------
 *Plan de Interés:* ${plan.title}
 
-*Nombre:* ${formData.name}
-*Email:* ${formData.email}
-*Teléfono:* ${formData.phone}
-*Ciudad de Origen:* ${formData.city}
+*Datos Personales:*
+👤 Nombre: ${formData.name}
+📧 Email: ${formData.email}
+📱 Teléfono: ${formData.phone}
+📍 Ciudad: ${formData.city}
 
 *Viajeros:*
-- Adultos: ${formData.adults}
-- Niños: ${formData.children}
+👨👩 Adultos: ${formData.adults}
+👶 Niños: ${formData.children}
 
-*Fechas Deseadas:*
-${formData.dates || 'Flexibles'}
+*Preferencias:*
+🏷️ Intereses: ${interestsString}
+📅 Fechas / Detalles: ${formData.dates || 'No especificado'}
 ---------------------------------
 Enviado desde el sitio web.`;
 
@@ -213,26 +267,121 @@ Enviado desde el sitio web.`;
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-            <GlassCard className="w-full max-w-lg p-6 animate-fade-in" onClick={e => e.stopPropagation()}>
-                <h2 className="text-2xl font-bold text-white mb-1">Cotizar: {plan.title}</h2>
-                <p className="text-white/70 text-sm mb-4">Completa el formulario y te contactaremos a la brevedad.</p>
-                <form onSubmit={handleSubmit} className="space-y-3 max-h-[70vh] overflow-y-auto pr-2">
-                    <input name="name" onChange={handleChange} placeholder="Nombre Completo" required className="w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <input name="email" type="email" onChange={handleChange} placeholder="Correo Electrónico" required className="w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
-                        <input name="phone" type="tel" onChange={handleChange} placeholder="Teléfono / WhatsApp" required className="w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in" onClick={onClose}>
+            {/* Added max-h constraints and adjusted padding for mobile responsiveness */}
+            <GlassCard className="w-full max-w-lg p-0 overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh]" onClick={e => e.stopPropagation()}>
+                {/* Header: Reduced padding and font size for mobile */}
+                <div className="p-4 sm:p-6 bg-gradient-to-r from-purple-600/50 to-pink-600/50 border-b border-white/10 flex-shrink-0">
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Cotizar Experiencia</h2>
+                    <p className="text-pink-200 text-xs sm:text-sm font-medium line-clamp-1">{plan.title}</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-3 sm:space-y-5 overflow-y-auto custom-scrollbar flex-grow">
+                    
+                    {/* Datos Básicos: Tighter spacing on mobile */}
+                    <div className="space-y-3 sm:space-y-4">
+                        <InputWithIcon 
+                            name="name" 
+                            onChange={handleChange} 
+                            placeholder="Nombre Completo" 
+                            required 
+                            icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>}
+                        />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <InputWithIcon 
+                                name="email" 
+                                type="email" 
+                                onChange={handleChange} 
+                                placeholder="Correo Electrónico" 
+                                required 
+                                icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 2.5l7.997 3.384A2 2 0 0019 7.58V15a2 2 0 01-2 2H3a2 2 0 01-2-2V7.58a2 2 0 00.997-1.696zM10 8.5L2 5.116V15h16V5.117L10 8.5z" /></svg>}
+                            />
+                            <InputWithIcon 
+                                name="phone" 
+                                type="tel" 
+                                onChange={handleChange} 
+                                placeholder="Teléfono" 
+                                required 
+                                icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>}
+                            />
+                        </div>
+                        <InputWithIcon 
+                            name="city" 
+                            onChange={handleChange} 
+                            placeholder="Ciudad de Origen" 
+                            required 
+                            icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" /></svg>}
+                        />
                     </div>
-                     <input name="city" onChange={handleChange} placeholder="Ciudad de Origen" required className="w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                         <input name="adults" type="number" min="1" onChange={handleChange} value={formData.adults} placeholder="Nº Adultos" required className="w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
-                         <input name="children" type="number" min="0" onChange={handleChange} value={formData.children} placeholder="Nº Niños" required className="w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none" />
+
+                    {/* Contadores de Viajeros: Smaller padding and elements on mobile */}
+                    <div className="bg-white/5 rounded-xl p-3 sm:p-4 border border-white/10">
+                        <label className="block text-white/80 text-xs sm:text-sm font-semibold mb-2 sm:mb-3">¿Quiénes viajan?</label>
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                            {/* Adultos */}
+                            <div className="flex flex-col items-center bg-white/10 rounded-lg p-1.5 sm:p-2">
+                                <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2 text-white/90">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" /></svg>
+                                    <span className="text-xs sm:text-sm">Adultos</span>
+                                </div>
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                    <button type="button" onClick={() => adjustCount('adults', false)} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors font-bold text-sm sm:text-base">-</button>
+                                    <span className="text-lg sm:text-xl font-bold text-white w-5 sm:w-6 text-center">{formData.adults}</span>
+                                    <button type="button" onClick={() => adjustCount('adults', true)} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-pink-500 hover:bg-pink-600 text-white flex items-center justify-center transition-colors font-bold shadow-lg text-sm sm:text-base">+</button>
+                                </div>
+                            </div>
+                            {/* Niños */}
+                            <div className="flex flex-col items-center bg-white/10 rounded-lg p-1.5 sm:p-2">
+                                <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2 text-white/90">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>
+                                    <span className="text-xs sm:text-sm">Niños</span>
+                                </div>
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                    <button type="button" onClick={() => adjustCount('children', false)} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors font-bold text-sm sm:text-base">-</button>
+                                    <span className="text-lg sm:text-xl font-bold text-white w-5 sm:w-6 text-center">{formData.children}</span>
+                                    <button type="button" onClick={() => adjustCount('children', true)} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-pink-500 hover:bg-pink-600 text-white flex items-center justify-center transition-colors font-bold shadow-lg text-sm sm:text-base">+</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <textarea name="dates" onChange={handleChange} placeholder="¿Qué fechas te interesan? (Ej: Octubre, primera quincena de Diciembre)" className="w-full h-20 bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none"></textarea>
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                         <button type="button" onClick={onClose} className="w-full sm:w-1/3 bg-white/20 text-white font-bold py-2.5 rounded-lg hover:bg-white/30 transition-colors">Cancelar</button>
-                        <button type="submit" className="w-full sm:w-2/3 bg-green-500 text-white font-bold py-2.5 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2">
-                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.586-1.45L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.267.651 4.383 1.905 6.166l-1.138 4.155 4.274-1.11z" /></svg>
+
+                    {/* Preferencias / Tags: Smaller tags for mobile */}
+                    <div>
+                        <label className="block text-white/80 text-xs sm:text-sm font-semibold mb-2 sm:mb-3">¿Qué buscas en este viaje? (Selecciona)</label>
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                            {INTEREST_TAGS.map(tag => (
+                                <button 
+                                    key={tag}
+                                    type="button"
+                                    onClick={() => toggleInterest(tag)}
+                                    className={`px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-medium transition-all border ${
+                                        selectedInterests.includes(tag) 
+                                            ? 'bg-pink-500 text-white border-pink-500 shadow-md transform scale-105' 
+                                            : 'bg-white/5 text-white/70 border-white/20 hover:bg-white/10 hover:border-white/40'
+                                    }`}
+                                >
+                                    {tag}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Descripción Adicional: Reduced height */}
+                    <div>
+                        <label className="block text-white/80 text-xs sm:text-sm font-semibold mb-1 sm:mb-2">Detalles Adicionales</label>
+                        <textarea 
+                            name="dates" 
+                            onChange={handleChange} 
+                            placeholder="Cuéntanos más: fechas tentativas, ocasiones especiales, o requerimientos específicos..." 
+                            className="w-full h-20 sm:h-24 bg-white/10 border border-white/10 text-white placeholder-white/50 rounded-xl p-2.5 sm:p-3 focus:ring-2 focus:ring-pink-400 focus:outline-none focus:bg-white/20 transition-all text-sm resize-none"
+                        ></textarea>
+                    </div>
+
+                    {/* Footer Buttons: Reduced height */}
+                    <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2 flex-shrink-0">
+                         <button type="button" onClick={onClose} className="flex-1 bg-white/10 text-white font-bold py-2.5 sm:py-3 rounded-xl hover:bg-white/20 transition-colors border border-white/10 text-sm sm:text-base">Cancelar</button>
+                        <button type="submit" className="flex-[2] bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-2.5 sm:py-3 rounded-xl hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5 text-sm sm:text-base">
+                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.586-1.45L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.267.651 4.383 1.905 6.166l-1.138 4.155 4.274-1.11z" /></svg>
                             Enviar a WhatsApp
                         </button>
                     </div>
@@ -639,6 +788,16 @@ const App: React.FC = () => {
             );
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(236, 72, 153, 0.5); /* Pink-500/50 */
+            border-radius: 20px;
         }
       `}</style>
 
