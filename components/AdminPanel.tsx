@@ -1,7 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from '../types';
 import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, COMMON_AMENITIES, COMMON_INCLUDES } from '../constants';
+
+// Supabase configuration (Directly used here for Admin operations)
+const supabaseUrl = 'https://vwckkdlyxsrohqnlsevg.supabase.co';
+// Usamos la Service Role Key para el Panel de Admin para asegurar permisos de escritura/bypass RLS
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Y2trZGx5eHNyb2hxbmxzZXZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTkwMzQxOSwiZXhwIjoyMDc3NDc5NDE5fQ.gQKl79Hc7LF-98FQpUuPzzNKrLwuhl5I2T74ZbrpWbE';
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 type AppData = {
   plans: Plan[];
@@ -228,7 +235,7 @@ const Dashboard: React.FC = () => (
                     Desde aquí puedes gestionar todo el contenido de tu sitio web. Usa el menú para navegar entre las diferentes secciones, crear nuevos planes y gestionar tus categorías.
                 </p>
             </div>
-        </NeumorphicCard>
+        NeumorphicCard>
     </div>
 );
 
@@ -690,6 +697,7 @@ const ContentManager: React.FC<AdminSubComponentProps> = ({ editedData, setEdite
 };
 
 const SettingsManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedData }) => {
+    const [uploading, setUploading] = useState(false);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -704,11 +712,66 @@ const SettingsManager: React.FC<AdminSubComponentProps> = ({ editedData, setEdit
         });
     };
 
+    const handleMigrateToSupabase = async () => {
+        if (!window.confirm("¿Estás seguro de que deseas subir TODOS los planes actuales a la base de datos de Supabase? Esto podría duplicar planes si ya existen con IDs diferentes.")) return;
+        
+        setUploading(true);
+        try {
+            const plansToUpload = editedData.plans.map(p => ({
+                id: p.id,
+                title: p.title,
+                category: p.category,
+                price: p.price,
+                price_value: p.priceValue,
+                duration_days: p.durationDays,
+                description: p.description,
+                images: p.images,
+                includes: p.includes,
+                is_visible: p.isVisible,
+                departure_date: p.departureDate || null,
+                return_date: p.returnDate || null,
+                country: p.country,
+                city: p.city,
+                regime: p.regime,
+                traveler_types: p.travelerTypes,
+                amenities: p.amenities,
+                whatsapp_catalog_url: p.whatsappCatalogUrl || null
+            }));
+
+            // Using Upsert to update if ID exists, or insert if not.
+            const { error } = await supabase.from('plans').upsert(plansToUpload);
+
+            if (error) {
+                console.error('Supabase Error:', error);
+                alert(`Error al migrar: ${error.message}`);
+            } else {
+                alert('¡Migración exitosa! Todos los planes se han guardado en Supabase.');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Ocurrió un error inesperado durante la migración.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
     return (
         <div className="animate-fade-in">
             <h1 className="text-4xl font-bold mb-6">Ajustes Generales</h1>
             <NeumorphicCard type="flat" className="p-4">
                 <div className="space-y-4">
+                    <NeumorphicCard className="p-4 bg-blue-100">
+                        <h2 className="text-xl font-bold mb-2 text-blue-800">Base de Datos</h2>
+                        <p className="text-sm text-blue-700 mb-4">Usa este botón para guardar todos los planes que ves en el administrador directamente en la base de datos de Supabase.</p>
+                        <NeumorphicButton 
+                            onClick={handleMigrateToSupabase} 
+                            disabled={uploading}
+                            className="w-full py-3 bg-blue-600 text-white hover:bg-blue-700"
+                        >
+                            {uploading ? 'Subiendo datos...' : 'Migrar Planes a Base de Datos'}
+                        </NeumorphicButton>
+                    </NeumorphicCard>
+
                     <NeumorphicCard className="p-4">
                         <h2 className="text-xl font-bold mb-2">Imágenes</h2>
                         <label className="block mt-2 font-semibold">URL del Logo</label>
