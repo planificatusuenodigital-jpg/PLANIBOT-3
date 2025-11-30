@@ -60,7 +60,7 @@ const initialFilters = {
 };
 
 const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, logoUrl }) => {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filters, setFilters] = useState(initialFilters);
   const [sortBy, setSortBy] = useState('default');
   const [isFilterOpen, setIsFilterOpen] = useState(false);

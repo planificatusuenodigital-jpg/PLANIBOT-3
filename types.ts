@@ -59,7 +59,6 @@ export interface ChatMessage {
     image?: string; // New field for sending images
     showDatePicker?: boolean; // New field to trigger date picker UI
     videoId?: string; // New field to trigger video change
-    options?: string[]; // Buttons for quick replies
 }
 
 export interface BotResponse {
@@ -70,7 +69,6 @@ export interface BotResponse {
     image?: string; // New field for sending images from bot
     showDatePicker?: boolean; // New field to trigger date picker UI
     videoId?: string; // New field to pass video ID
-    options?: string[]; // Buttons for quick replies
 }
 
 export interface AboutUsContent {
