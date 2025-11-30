@@ -102,8 +102,15 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     price: "Consultar Precio",
     priceValue: 450000,
     durationDays: 3,
-    description: "Propiedad de estilo colonial con amplios jardines en Santa Marta, cerca de El Rodadero. Ofrece una piscina al aire libre, jacuzzi, baño de vapor, restaurante, bar con karaoke y espectáculos nocturnos.",
-    images: ["https://picsum.photos/seed/sansiraka-1/800/600", "https://picsum.photos/seed/sansiraka-2/800/600", "https://picsum.photos/seed/sansiraka-3/800/600"],
+    description: "Hotel Sansiraka es una propiedad de estilo colonial con amplios jardines ubicada en la ciudad de Santa Marta, Colombia. El hotel está en la vía principal que lleva al centro turístico El Rodadero, el cual se ubica a 2 kilómetros de distancia. A 500 metros del hotel encontrará el Parque Acuático El Rodadero, a 8 kilómetros el centro de la ciudad y 32 kilómetros el Aeropuerto Internacional Simón Bolívar (SMR).\n\nSansiraka Hotel cuenta con 59 habitaciones decoradas con estilo caribeño. Todas están equipadas con aire acondicionado, teléfono y baño privado con regadera. Algunas categorías incluyen terraza amueblada, patio con hamaca, área de descanso y televisión.\n\nEntre sus instalaciones, Sansiraka Hotel tiene alberca al aire libre con mesa y sillas, jacuzzi y baño de vapor. Este hotel en Santa Marta también tiene un restaurante de comida regional e internacional, un bar con karaoke, una estación de agua y café en el lobby, hamacas y espectáculos nocturnos. Además, la propiedad cuenta con centro de negocios, internet inalámbrico, un salón de eventos con capacidad para 300 invitados y estacionamiento.",
+    images: [
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwKFV5JZ1woB0EqhYxDS5yB6Y9AcndBsBlB55Dbi9XZfZTrCNbyQR6WSnlfZbCbzgCbPTK4z7fkAkVf5iy2xZjkrDNcHfyLHlJ79XRRniClszQK8Jbiy-JZDRggZic7BESvwZzghw=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx_WELKHeIVXFaKPtGmPEfm5Wdn-Bmd6o_PB7Bm0yMra_inUhoB2DZ2zBY744mE2SnRCZM863B4ByKRB6cLc_i2zpUjCNpZS4ogqTY49WqR1O8_nX7nQBBlqxGziw9VlX0wVd6-=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxAisyBjhaGF7hiibuQnccWHEIBzMoTBT4EA0H8-Rmc8wEWvKNBp5lZOahRMko361C_wt4AZusPbWUfU96Ppre6ueal0gP5if2HnD_c-BypZqyzv-vHiLqQzlY-4ps7h-S_5LLe=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOmCHDxh7sRuqZdvEr0e7iKg5kfbPzjY6m39DnU=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipOATJo-O5AoYO7rrv7tk1aS3gKW_kCF1Kt2iNtG=s1360-w1360-h1020-rw",
+        "https://lh3.googleusercontent.com/p/AF1QipO70W9g-24p9VL7hN-hFWKQPoQV1qfcU1_K-Rq0=s1360-w1360-h1020-rw"
+    ],
     includes: ["Alojamiento con aire acondicionado", "Acceso a zonas húmedas", "Internet inalámbrico", "Centro de negocios"],
     isVisible: true,
     departureDate: "2024-12-10",
@@ -113,6 +120,7 @@ export const DEFAULT_TRAVEL_PLANS: Plan[] = [
     regime: "Solo Alojamiento",
     travelerTypes: ["Parejas", "Familias", "Grupos"],
     amenities: ["Piscina", "Jacuzzi", "Turco / Baño de vapor", "Bar / Lounge", "Restaurante", "Shows Nocturnos / Animación", "Centro de Negocios", "Wifi Gratis", "Estacionamiento", "Aire Acondicionado", "Balcón / Terraza"],
+    whatsappCatalogUrl: "https://wa.me/p/8204033959634780/573113653379"
   },
   {
     id: 3,
