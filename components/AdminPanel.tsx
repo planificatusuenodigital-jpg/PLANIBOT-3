@@ -235,7 +235,7 @@ const Dashboard: React.FC = () => (
                     Desde aquí puedes gestionar todo el contenido de tu sitio web. Usa el menú para navegar entre las diferentes secciones, crear nuevos planes y gestionar tus categorías.
                 </p>
             </div>
-        NeumorphicCard>
+        </NeumorphicCard>
     </div>
 );
 

@@ -1,14 +1,14 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatMessage, Plan, FAQItem } from '../types';
-import { sendMessageToBot, startChat, resetBotContext } from '../services/geminiService';
+import { sendMessageToBot, startChat, resetBotContext, getInitialGreeting } from '../services/chatbotService'; // Changed service
 import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from '../constants';
 
 const PlaniBotAvatar: React.FC<{ className?: string, planibotAvatarUrl: string }> = ({ className, planibotAvatarUrl }) => (
     <div className={`relative ${className}`}>
         <img
             src={planibotAvatarUrl}
-            alt="PlaniBot Avatar"
+            alt="Asistente Virtual"
             className="w-full h-full rounded-full object-cover border-2 border-green-400 shadow-sm"
         />
         <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
@@ -38,11 +38,10 @@ const WhatsappSummaryButton: React.FC<{ link: string }> = ({ link }) => (
         className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 transform active:scale-95 animate-fade-in-up border border-green-400"
     >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.586-1.45L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.267.651 4.383 1.905 6.166l-1.138 4.155 4.274-1.11z" /></svg>
-        Enviar Solicitud a WhatsApp
+        Confirmar en WhatsApp
     </a>
 );
 
-// New Component: Date Picker inside Chat
 const ChatDatePicker: React.FC<{ onDateSelect: (date: string) => void }> = ({ onDateSelect }) => {
     const [selectedDate, setSelectedDate] = useState('');
 
@@ -72,6 +71,21 @@ const ChatDatePicker: React.FC<{ onDateSelect: (date: string) => void }> = ({ on
     );
 };
 
+// Component for Quick Reply Buttons
+const QuickOptions: React.FC<{ options: string[]; onSelect: (option: string) => void }> = ({ options, onSelect }) => (
+    <div className="flex flex-wrap gap-2 mt-3 animate-fade-in-up">
+        {options.map((option, index) => (
+            <button
+                key={index}
+                onClick={() => onSelect(option)}
+                className="bg-white/20 hover:bg-pink-500 text-white text-xs md:text-sm py-2 px-4 rounded-full border border-white/30 transition-all shadow-sm hover:shadow-md"
+            >
+                {option}
+            </button>
+        ))}
+    </div>
+);
+
 interface PlaniBotProps {
     planibotAvatarUrl: string;
     contactInfo: typeof DEFAULT_CONTACT_INFO;
@@ -86,65 +100,13 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
-  const [isListening, setIsListening] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState("i9E_Blai8vk"); // Default video
   
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const typingIntervalRef = useRef<number | null>(null);
-  const recognitionRef = useRef<any>(null);
-  const silenceTimerRef = useRef<number | null>(null);
 
   const scrollToBottom = useCallback(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
-  
-  const stopTypingEffect = () => {
-    if (typingIntervalRef.current) {
-        clearInterval(typingIntervalRef.current);
-        typingIntervalRef.current = null;
-    }
-  };
-
-  const cleanTextForSpeech = (text: string) => {
-    let cleaned = text.replace(/<a\b[^>]*>(.*?)<\/a>/g, "$1");
-    cleaned = cleaned.replace(/(https?:\/\/[^\s]+)/g, "este enlace");
-    cleaned = cleaned.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '');
-    cleaned = cleaned.replace(/[*_~`#]/g, '');
-    return cleaned;
-  };
-
-  const speakText = (text: string) => {
-    if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
-    
-    window.speechSynthesis.cancel();
-    const textToSay = cleanTextForSpeech(text);
-    const utterance = new SpeechSynthesisUtterance(textToSay);
-    
-    utterance.lang = 'es-ES';
-    utterance.rate = 1.1; 
-    utterance.pitch = 1.1;
-
-    const voices = window.speechSynthesis.getVoices();
-    const spanishVoices = voices.filter(voice => voice.lang.startsWith('es'));
-    
-    const femaleVoice = spanishVoices.find(voice => 
-        voice.name.toLowerCase().includes('female') || 
-        voice.name.toLowerCase().includes('femenina') ||
-        voice.name.toLowerCase().includes('google español') || 
-        voice.name.toLowerCase().includes('monica') ||
-        voice.name.toLowerCase().includes('paulina') ||
-        voice.name.toLowerCase().includes('samantha')
-    );
-
-    if (femaleVoice) {
-        utterance.voice = femaleVoice;
-    } else if (spanishVoices.length > 0) {
-        utterance.voice = spanishVoices[0];
-    }
-
-    window.speechSynthesis.speak(utterance);
-  };
 
   const handleSendMessage = async (e: React.FormEvent | null, forcedInput?: string) => {
     if (e) e.preventDefault();
@@ -152,15 +114,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
     
     if (!textToSend.trim() || isLoading) return;
     
-    stopTypingEffect();
-    window.speechSynthesis.cancel();
-
-    if (isListening) {
-        recognitionRef.current?.stop();
-        setIsListening(false);
-        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-    }
-
     const userMessage: ChatMessage = { role: 'user', text: textToSend };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
@@ -170,133 +123,53 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
         const response = await sendMessageToBot(textToSend);
         
         setIsLoading(false);
-        const modelResponseText = response.text;
-        const recommendedPlans = response.recommendedPlans;
-        const whatsappLink = response.whatsappLink;
-        const image = response.image;
-        const showDatePicker = response.showDatePicker;
-        const videoId = response.videoId;
+        const { text, recommendedPlans, whatsappLink, image, showDatePicker, videoId, options } = response;
 
         if (videoId) {
             setCurrentVideoId(videoId);
         }
 
-        if (modelResponseText) {
+        if (text) {
             setMessages(prev => [...prev, { 
                 role: 'model', 
-                text: '', 
+                text: text, 
                 recommendedPlans: recommendedPlans,
                 whatsappSummaryLink: whatsappLink,
                 image: image,
                 showDatePicker: showDatePicker,
-                videoId: videoId
+                videoId: videoId,
+                options: options
             }]);
-            
-            speakText(modelResponseText);
-
-            let i = 0;
-            const chunkSize = 2; 
-            const intervalSpeed = 15; 
-
-            typingIntervalRef.current = window.setInterval(() => {
-                const chunk = modelResponseText.substring(i, i + chunkSize);
-                
-                if (chunk) {
-                    setMessages(prev => {
-                        const newMessages = [...prev];
-                        if (newMessages.length > 0) {
-                            newMessages[newMessages.length - 1].text += chunk;
-                        }
-                        return newMessages;
-                    });
-                    scrollToBottom();
-                    i += chunkSize;
-                }
-
-                if (i >= modelResponseText.length) {
-                    stopTypingEffect();
-                }
-            }, intervalSpeed);
         }
 
     } catch (error) {
         console.error("Error Bot:", error);
         setIsLoading(false);
-        setMessages(prev => [...prev, { role: 'model', text: 'Ups, tuve un pequeño mareo virtual. 😵 ¿Me lo repites?' }]);
+        setMessages(prev => [...prev, { role: 'model', text: 'Ups, algo salió mal. Por favor intenta de nuevo.' }]);
     }
+  };
+
+  const handleOptionClick = (option: string) => {
+      handleSendMessage(null, option);
   };
 
   const handleResetChat = () => {
-      stopTypingEffect();
-      window.speechSynthesis.cancel();
-      localStorage.removeItem('planiBotHistory');
       resetBotContext(); 
-      setCurrentVideoId("i9E_Blai8vk"); // Reset video to default
-      
-      const welcomeMsg = '¡Hola! 👋 Soy PlaniBot. Para poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**';
-      setMessages([{ role: 'model', text: welcomeMsg }]);
-      speakText(welcomeMsg);
+      setCurrentVideoId("i9E_Blai8vk");
+      const initialResponse = getInitialGreeting();
+      setMessages([{ 
+          role: 'model', 
+          text: initialResponse.text, 
+          options: initialResponse.options 
+      }]);
   };
 
-  // Speech-to-Text Setup
-  useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = true; 
-        recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = 'es-ES';
-
-        recognitionRef.current.onresult = (event: any) => {
-            const transcript = Array.from(event.results)
-                .map((result: any) => result[0])
-                .map((result) => result.transcript)
-                .join('');
-            
-            setInput(transcript);
-
-            if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-            
-            if (transcript.trim().length > 0) {
-                silenceTimerRef.current = window.setTimeout(() => {
-                    handleSendMessage(null, transcript);
-                }, 4000); 
-            }
-        };
-
-        recognitionRef.current.onerror = (event: any) => {
-            console.error('Speech recognition error', event.error);
-            setIsListening(false);
-        };
-        
-        recognitionRef.current.onend = () => {
-             if (isListening) setIsListening(false);
-        }
-    }
-  }, [isListening]); 
-
-  const toggleListening = () => {
-      if (isListening) {
-          recognitionRef.current?.stop();
-          setIsListening(false);
-          if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-      } else {
-          try {
-            setInput(''); 
-            recognitionRef.current?.start();
-            setIsListening(true);
-          } catch (e) {
-              console.error(e);
-          }
-      }
-  };
-
-  // Inicialización y Persistencia
+  // Inicialización
   useEffect(() => {
     if (isOpen) {
         startChat({ plans: travelPlans, faqs, contact: contactInfo, social: socialLinks });
         
-        const savedHistory = localStorage.getItem('planiBotHistory');
+        const savedHistory = localStorage.getItem('planiBotHistory_v2'); // New key for new bot version
         if (savedHistory) {
             try {
                 const parsedHistory = JSON.parse(savedHistory);
@@ -309,17 +182,15 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
             }
         }
 
-        const welcomeMsg = '¡Hola! 👋 Soy PlaniBot, tu asistente de viajes inteligente. Para poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**';
-        setMessages([{ role: 'model', text: welcomeMsg }]);
-        speakText(welcomeMsg);
-    } else {
-        window.speechSynthesis.cancel();
+        // Si no hay historial, iniciar saludo
+        const initial = getInitialGreeting();
+        setMessages([{ role: 'model', text: initial.text, options: initial.options }]);
     }
   }, [isOpen, travelPlans, faqs, contactInfo, socialLinks]);
 
   useEffect(() => {
       if (messages.length > 0) {
-          localStorage.setItem('planiBotHistory', JSON.stringify(messages));
+          localStorage.setItem('planiBotHistory_v2', JSON.stringify(messages));
       }
   }, [messages]);
 
@@ -327,14 +198,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
     scrollToBottom();
   }, [messages, scrollToBottom]);
   
-  useEffect(() => {
-    return () => {
-        stopTypingEffect();
-        window.speechSynthesis.cancel();
-        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-    };
-  }, []);
-
   const getCurrentTime = () => {
       const now = new Date();
       return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
@@ -345,7 +208,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-5 right-5 z-40 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-tr from-green-400 to-green-600 text-white rounded-full shadow-[0_0_20px_rgba(34,197,94,0.6)] flex items-center justify-center transform hover:scale-110 transition-all duration-300 border border-white/30 backdrop-blur-md"
-        aria-label="Abrir PlaniBot"
+        aria-label="Abrir Asistente"
       >
         {isOpen ? (
              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -362,20 +225,13 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
             <div className="flex items-center gap-3">
                 <PlaniBotAvatar className="w-10 h-10" planibotAvatarUrl={planibotAvatarUrl} />
                 <div>
-                    <h3 className="font-bold text-white text-base leading-tight">PlaniBot 🤖</h3>
+                    <h3 className="font-bold text-white text-base leading-tight">Asistente Virtual</h3>
                     <p className="text-xs text-green-300 font-medium">En línea</p>
                 </div>
             </div>
             <div className="flex items-center gap-1">
-                 <button onClick={handleResetChat} className="p-2 rounded-full hover:bg-white/10 text-white/80 transition-colors" title="Nueva Conversación">
+                 <button onClick={handleResetChat} className="p-2 rounded-full hover:bg-white/10 text-white/80 transition-colors" title="Reiniciar Conversación">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" /></svg>
-                 </button>
-                 <button onClick={() => setIsVoiceEnabled(!isVoiceEnabled)} className="p-2 rounded-full hover:bg-white/10 text-white/80 transition-colors" title={isVoiceEnabled ? "Silenciar Voz" : "Activar Voz"}>
-                     {isVoiceEnabled ? 
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0117 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" /></svg>
-                      : 
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
-                     }
                  </button>
                  <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-white/10 text-white/80 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
@@ -393,7 +249,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                    frameBorder="0" 
                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                    allowFullScreen
-                   className="pointer-events-none" // Disable interaction for background feel
+                   className="pointer-events-none" 
                ></iframe>
                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
            </div>
@@ -446,6 +302,11 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                           ))}
                       </div>
                   )}
+
+                  {/* Render Quick Options */}
+                  {msg.options && index === messages.length - 1 && (
+                      <QuickOptions options={msg.options} onSelect={handleOptionClick} />
+                  )}
                 </div>
               ))}
               
@@ -467,24 +328,11 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
           {/* Input Area */}
           <div className="flex-shrink-0 p-3 bg-white/10 backdrop-blur-lg border-t border-white/10">
             <form onSubmit={(e) => handleSendMessage(e)} className="flex items-center gap-2">
-                 <button 
-                    type="button" 
-                    onClick={toggleListening}
-                    className={`w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center transition-all duration-300 ${isListening ? 'bg-red-500 animate-pulse text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
-                    title={isListening ? "Escuchando... (se enviará al callar)" : "Dictar mensaje"}
-                 >
-                    {isListening ? (
-                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" /></svg>
-                    ) : (
-                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" /></svg>
-                    )}
-                 </button>
-
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder={isListening ? "Escuchando..." : "Escribe aquí..."}
+                    placeholder="Escribe aquí..."
                     className="flex-1 bg-black/20 border border-white/10 text-white placeholder-white/40 rounded-full focus:ring-2 focus:ring-green-400 focus:outline-none py-2.5 px-4 text-sm transition-all"
                     disabled={isLoading}
                     autoFocus
@@ -545,6 +393,13 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                 opacity: 1;
                 transform: translate3d(0, 0, 0);
             }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
       `}</style>
     </>
