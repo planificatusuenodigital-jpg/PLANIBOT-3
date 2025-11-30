@@ -44,18 +44,20 @@ const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }
     };
 
     return (
-        <div className="absolute top-2 right-2 flex gap-2 z-10">
-            <TextToSpeechButton 
-                title={plan.title} 
-                description={plan.description} 
-                includes={plan.includes} 
-                mini={true} 
-            />
-            <button onClick={() => setQrModalPlan(plan)} className="w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Generar Código QR">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 5h3v3H5V5zm0 7h3v3H5v-3zM12 5h3v3h-3V5zm0 7h3v3h-3v-3z"/><path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm1 1h10v10H4V4z" clipRule="evenodd"/></svg>
+        <div className="absolute top-2 right-2 flex gap-1 sm:gap-2 z-10">
+            <div className="scale-75 sm:scale-100 origin-top-right">
+                 <TextToSpeechButton 
+                    title={plan.title} 
+                    description={plan.description} 
+                    includes={plan.includes} 
+                    mini={true} 
+                />
+            </div>
+            <button onClick={() => setQrModalPlan(plan)} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Generar Código QR">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 5h3v3H5V5zm0 7h3v3H5v-3zM12 5h3v3h-3V5zm0 7h3v3h-3v-3z"/><path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm1 1h10v10H4V4z" clipRule="evenodd"/></svg>
             </button>
-            <button onClick={handleShare} className="w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Compartir Plan">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
+            <button onClick={handleShare} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Compartir Plan">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
             </button>
         </div>
     );
@@ -69,6 +71,117 @@ const initialFilters = {
     travelerTypes: [] as TravelerType[],
     amenities: [] as string[],
     priceRange: { min: '', max: '' },
+};
+
+// --- Extracted Components to prevent re-renders ---
+
+const FilterGroup: React.FC<{title: string, children: React.ReactNode}> = ({ title, children }) => (
+    <div className="py-3 border-b border-white/20">
+      <h3 className="font-bold text-white mb-3 text-lg drop-shadow-md">{title}</h3>
+      <div className="space-y-2">{children}</div>
+    </div>
+);
+
+const Checkbox: React.FC<{label: string, value: string, checked: boolean, onChange: (value: string) => void}> = ({ label, value, checked, onChange }) => (
+    <label className="flex items-center gap-2 text-sm text-white/90 cursor-pointer hover:text-white transition-colors group">
+      <input type="checkbox" checked={checked} onChange={() => onChange(value)} className="w-4 h-4 rounded bg-white/10 border-white/40 text-pink-500 focus:ring-pink-400 group-hover:border-white transition-colors" />
+      <span className="group-hover:translate-x-1 transition-transform duration-200">{label}</span>
+    </label>
+);
+
+const FiltersSidebar: React.FC<{
+    filters: typeof initialFilters;
+    onFilterChange: (name: string, value: any) => void;
+    onClear: () => void;
+    allCountries: string[];
+    allCities: string[];
+    allRegimes: string[];
+    allTravelerTypes: string[];
+    onClose?: () => void;
+    className?: string; // Allow custom classes for wrapper
+}> = ({ filters, onFilterChange, onClear, allCountries, allCities, allRegimes, allTravelerTypes, onClose, className }) => {
+    
+    const handleCheckboxChange = (filterKey: 'travelerTypes' | 'amenities', value: string) => {
+        const currentValues = filters[filterKey] as string[];
+        const newValues = currentValues.includes(value) 
+            ? currentValues.filter(v => v !== value) 
+            : [...currentValues, value];
+        onFilterChange(filterKey, newValues);
+    };
+
+    const selectStyle = "w-full bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-pink-400 focus:outline-none focus:bg-white/20 transition-all appearance-none shadow-inner";
+
+    return (
+        <div className={`p-5 h-full flex flex-col ${className || 'bg-black/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg'}`}>
+            <div className='flex flex-col gap-3 mb-2 border-b border-white/10 pb-3 flex-shrink-0'>
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-2xl font-black text-white tracking-wide drop-shadow-md">Filtros</h2>
+                        {onClose && (
+                            <span className="bg-pink-500/80 backdrop-blur-md text-[10px] px-2 py-0.5 rounded-full text-white font-bold border border-pink-400/50 shadow-lg">
+                                {Object.values(filters).flat().filter(v => v !== '' && v !== 'Todos' && v !== 0).length > 0 ? 'Activos' : ''}
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex gap-3 items-center">
+                        <button onClick={onClear} className="text-xs text-pink-300 hover:text-white font-semibold underline decoration-pink-300/50 hover:decoration-white transition-all">
+                            Borrar
+                        </button>
+                        {onClose && (
+                            <button onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-full transition-colors border border-transparent hover:border-white/20">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                </div>
+                {onClose && (
+                    <button onClick={onClose} className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg active:scale-95 border border-white/20 flex items-center justify-center gap-2">
+                        Ver Resultados
+                    </button>
+                )}
+            </div>
+            
+            <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-1 pb-4">
+                <FilterGroup title="Buscar">
+                    <input type="text" placeholder="Busca tu aventura..." value={filters.searchTerm} onChange={e => onFilterChange('searchTerm', e.target.value)} className={selectStyle}/>
+                </FilterGroup>
+                <FilterGroup title="Ubicación">
+                    <select value={filters.country} onChange={e => onFilterChange('country', e.target.value)} className={selectStyle}>
+                        {allCountries.map(c => <option key={c} value={c} className="bg-purple-900 text-white">{c}</option>)}
+                    </select>
+                    <div className="mt-3"></div>
+                    <select value={filters.city} onChange={e => onFilterChange('city', e.target.value)} className={selectStyle} disabled={filters.country === 'Todos'}>
+                        {allCities.map(c => <option key={c} value={c} className="bg-purple-900 text-white">{c}</option>)}
+                    </select>
+                </FilterGroup>
+                <FilterGroup title="Rango de Precios (COP)">
+                    <div className='flex items-center gap-2'>
+                        <input type="number" placeholder="Min (M)" value={filters.priceRange.min} onChange={e => onFilterChange('priceRange', {...filters.priceRange, min: e.target.value})} className={`${selectStyle} text-sm`} />
+                        <span className='text-white/50 font-bold'>-</span>
+                        <input type="number" placeholder="Max (M)" value={filters.priceRange.max} onChange={e => onFilterChange('priceRange', {...filters.priceRange, max: e.target.value})} className={`${selectStyle} text-sm`} />
+                    </div>
+                </FilterGroup>
+                 <FilterGroup title="Tipo de Plan (Régimen)">
+                     <select value={filters.regime} onChange={e => onFilterChange('regime', e.target.value)} className={selectStyle}>
+                         {allRegimes.map(r => <option key={r} value={r} className="bg-purple-900 text-white">{r}</option>)}
+                     </select>
+                 </FilterGroup>
+                <FilterGroup title="Ideal para...">
+                    {allTravelerTypes.map(type => {
+                        const label = type === 'Parejas' ? 'Parejas (Lunamieleros)' : type;
+                        return <Checkbox key={type} label={label} value={type} checked={filters.travelerTypes.includes(type as TravelerType)} onChange={(v) => handleCheckboxChange('travelerTypes', v)}/>
+                    })}
+                </FilterGroup>
+                {Object.entries(ALL_AMENITIES).map(([group, amenities]) => (
+                    <FilterGroup key={group} title={group}>
+                        {amenities.map(amenity => <Checkbox key={amenity} label={amenity} value={amenity} checked={filters.amenities.includes(amenity)} onChange={(v) => handleCheckboxChange('amenities', v)} />)}
+                    </FilterGroup>
+                ))}
+            </div>
+        </div>
+    );
 };
 
 const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, logoUrl }) => {
@@ -88,14 +201,6 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
     setFilters(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleCheckboxChange = (filterKey: 'travelerTypes' | 'amenities', value: string) => {
-      const currentValues = filters[filterKey] as string[];
-      const newValues = currentValues.includes(value) 
-          ? currentValues.filter(v => v !== value) 
-          : [...currentValues, value];
-      handleFilterChange(filterKey, newValues);
-  }
-
   const allCountries = useMemo(() => ['Todos', ...Array.from(new Set(plans.map(p => p.country)))], [plans]);
   const allCities = useMemo(() => {
     const relevantPlans = filters.country === 'Todos' ? plans : plans.filter(p => p.country === filters.country);
@@ -142,66 +247,7 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
     return filteredPlans;
   }, [filters, sortBy, plans]);
 
-  const FilterGroup: React.FC<{title: string, children: React.ReactNode}> = ({ title, children }) => (
-    <div className="py-3 border-b border-white/20">
-      <h3 className="font-bold text-white mb-3 text-lg">{title}</h3>
-      <div className="space-y-2">{children}</div>
-    </div>
-  );
-
-  const Checkbox: React.FC<{label: string, value: string, checked: boolean, onChange: (value: string) => void}> = ({ label, value, checked, onChange }) => (
-    <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer hover:text-white transition-colors">
-      <input type="checkbox" checked={checked} onChange={() => onChange(value)} className="w-4 h-4 rounded bg-white/20 border-white/30 text-pink-500 focus:ring-pink-400" />
-      {label}
-    </label>
-  );
-
   const selectStyle = "w-full bg-white/20 border-none text-white placeholder-white/60 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:outline-none appearance-none";
-
-  const renderFilters = () => (
-    <GlassCard className="p-4 h-full flex flex-col">
-        <div className='flex justify-between items-center mb-2'>
-            <h2 className="text-2xl font-bold text-white">Filtros</h2>
-            <button onClick={() => setFilters(initialFilters)} className="text-xs text-pink-200 hover:text-white">Limpiar</button>
-        </div>
-        <div className="flex-grow overflow-y-auto pr-2">
-            <FilterGroup title="Buscar">
-                <input type="text" placeholder="Busca tu aventura..." value={filters.searchTerm} onChange={e => handleFilterChange('searchTerm', e.target.value)} className={selectStyle}/>
-            </FilterGroup>
-            <FilterGroup title="Ubicación">
-                <select value={filters.country} onChange={e => handleFilterChange('country', e.target.value)} className={selectStyle}>
-                    {allCountries.map(c => <option key={c} value={c} className="bg-purple-800">{c}</option>)}
-                </select>
-                <select value={filters.city} onChange={e => handleFilterChange('city', e.target.value)} className={selectStyle} disabled={filters.country === 'Todos'}>
-                    {allCities.map(c => <option key={c} value={c} className="bg-purple-800">{c}</option>)}
-                </select>
-            </FilterGroup>
-            <FilterGroup title="Rango de Precios (COP)">
-                <div className='flex items-center gap-2'>
-                    <input type="number" placeholder="Min (Millones)" value={filters.priceRange.min} onChange={e => handleFilterChange('priceRange', {...filters.priceRange, min: e.target.value})} className={`${selectStyle} text-sm`} />
-                    <span className='text-white/50'>-</span>
-                    <input type="number" placeholder="Max (Millones)" value={filters.priceRange.max} onChange={e => handleFilterChange('priceRange', {...filters.priceRange, max: e.target.value})} className={`${selectStyle} text-sm`} />
-                </div>
-            </FilterGroup>
-             <FilterGroup title="Tipo de Plan (Régimen)">
-                 <select value={filters.regime} onChange={e => handleFilterChange('regime', e.target.value)} className={selectStyle}>
-                     {allRegimes.map(r => <option key={r} value={r} className="bg-purple-800">{r}</option>)}
-                 </select>
-             </FilterGroup>
-            <FilterGroup title="Ideal para...">
-                {allTravelerTypes.map(type => {
-                    const label = type === 'Parejas' ? 'Parejas (Lunamieleros)' : type;
-                    return <Checkbox key={type} label={label} value={type} checked={filters.travelerTypes.includes(type)} onChange={(v) => handleCheckboxChange('travelerTypes', v)}/>
-                })}
-            </FilterGroup>
-            {Object.entries(ALL_AMENITIES).map(([group, amenities]) => (
-                <FilterGroup key={group} title={group}>
-                    {amenities.map(amenity => <Checkbox key={amenity} label={amenity} value={amenity} checked={filters.amenities.includes(amenity)} onChange={(v) => handleCheckboxChange('amenities', v)} />)}
-                </FilterGroup>
-            ))}
-        </div>
-    </GlassCard>
-  );
 
   return (
     <div className="animate-fade-in">
@@ -213,32 +259,65 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
       </div>
 
       <div className="flex gap-8">
-        {/* Mobile Filter Button */}
-        <div className="md:hidden fixed bottom-5 left-5 z-40">
-            <button onClick={() => setIsFilterOpen(true)} className="bg-pink-500 text-white rounded-full p-4 shadow-lg flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" /></svg>
-                Filtros
-            </button>
-        </div>
-        
-        {/* Filter Sidebar - Mobile (Drawer) */}
-        <div className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${isFilterOpen ? 'bg-black/60' : 'bg-transparent pointer-events-none'}`} onClick={() => setIsFilterOpen(false)}>
-            <aside className={`absolute top-0 left-0 h-full w-4/5 max-w-sm p-4 bg-purple-900/80 backdrop-blur-lg transition-transform duration-300 transform ${isFilterOpen ? 'translate-x-0' : '-translate-x-full'}`} onClick={e => e.stopPropagation()}>
-                {renderFilters()}
+        {/* Filter Sidebar - Mobile (Drawer with Satin Glassmorphism) */}
+        <div className={`fixed inset-0 z-[60] md:hidden transition-all duration-500 ${isFilterOpen ? 'bg-black/40 backdrop-blur-sm' : 'bg-transparent pointer-events-none opacity-0'}`} onClick={() => setIsFilterOpen(false)}>
+            <aside 
+                className={`absolute top-0 right-0 h-[100dvh] w-full transition-transform duration-500 transform shadow-2xl ${isFilterOpen ? 'translate-x-0' : 'translate-x-full'}`} 
+                onClick={e => e.stopPropagation()}
+            >
+                {/* 
+                    ESTILO PREMIUM: GLASMÓRFICO SATINADO ESMERILADO CON BORDES BRILLANTES 
+                    - bg-gradient-to-b: Degradado satinado.
+                    - backdrop-blur-[40px]: Desenfoque profundo (esmerilado).
+                    - backdrop-saturate-150: Colores vivos traslúcidos.
+                    - border-white/30: Borde brillante.
+                    - shadow-[inset...]: Brillo interno en los bordes.
+                */}
+                <FiltersSidebar 
+                    filters={filters} 
+                    onFilterChange={handleFilterChange} 
+                    onClear={() => setFilters(initialFilters)}
+                    allCountries={allCountries}
+                    allCities={allCities}
+                    allRegimes={allRegimes}
+                    allTravelerTypes={allTravelerTypes}
+                    onClose={() => setIsFilterOpen(false)}
+                    className="h-full rounded-none border-l border-white/30 bg-gradient-to-b from-purple-900/70 to-purple-950/80 backdrop-blur-[40px] backdrop-saturate-150 shadow-[inset_1px_0_0_rgba(255,255,255,0.3),inset_0_0_40px_rgba(255,255,255,0.1)]"
+                />
             </aside>
         </div>
 
         {/* Filter Sidebar - Desktop */}
         <aside className="hidden md:block w-1/4 lg:w-1/5">
-            {renderFilters()}
+            <FiltersSidebar 
+                filters={filters} 
+                onFilterChange={handleFilterChange} 
+                onClear={() => setFilters(initialFilters)}
+                allCountries={allCountries}
+                allCities={allCities}
+                allRegimes={allRegimes}
+                allTravelerTypes={allTravelerTypes}
+            />
         </aside>
 
         <main className="flex-1">
-            <GlassCard className="p-4 mb-6">
-                <div className="flex flex-col sm:flex-row justify-between items-center">
-                    <p className="text-white/80 text-sm mb-2 sm:mb-0">{filteredAndSortedPlans.length} planes encontrados</p>
-                    <div className="flex items-center gap-4">
-                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${selectStyle} sm:w-auto appearance-none text-sm`}>
+            <GlassCard className="p-4 mb-6 sticky top-20 z-30 bg-black/20 backdrop-blur-xl border border-white/10">
+                <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+                    <div className="flex justify-between items-center w-full sm:w-auto">
+                        <p className="text-white/80 text-sm font-medium">{filteredAndSortedPlans.length} planes encontrados</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                        {/* Mobile Trigger Button inside Toolbar */}
+                        <button 
+                            onClick={() => setIsFilterOpen(true)} 
+                            className="md:hidden flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" /></svg>
+                            <span className="font-bold text-sm">Filtros</span>
+                        </button>
+
+                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${selectStyle} flex-[2] sm:w-auto appearance-none text-sm`}>
                             <option value="default" className="bg-purple-800">Ordenar por</option>
                             <option value="price_asc" className="bg-purple-800">Precio: Menor a Mayor</option>
                             <option value="price_desc" className="bg-purple-800">Precio: Mayor a Menor</option>
@@ -246,7 +325,7 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                         </select>
                         <div className="hidden sm:flex items-center gap-2">
                              <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg></button>
-                            <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg></button>
+                            <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg></button>
                         </div>
                     </div>
                 </div>
@@ -254,26 +333,26 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
 
             {filteredAndSortedPlans.length > 0 ? (
               viewMode === 'grid' ? (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
                     {filteredAndSortedPlans.map(plan => (
-                        <GlassCard key={plan.id} className="flex flex-col hover:scale-105 transition-transform duration-300 relative">
+                        <GlassCard key={plan.id} className="flex flex-col hover:scale-105 transition-transform duration-300 relative overflow-hidden group">
                             <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
                             <div onClick={() => setDetailModalPlan(plan)} className="cursor-pointer">
                                 {plan.images && plan.images.length > 0 ? (
-                                    <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-64 rounded-t-xl" logoUrl={logoUrl} />
+                                    <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-40 sm:h-64 rounded-t-xl" logoUrl={logoUrl} />
                                 ) : (
-                                    <div className="h-64 rounded-t-xl bg-black/10 flex items-center justify-center text-white/50">
+                                    <div className="h-40 sm:h-64 rounded-t-xl bg-black/10 flex items-center justify-center text-white/50">
                                         Imagen no disponible
                                     </div>
                                 )}
                             </div>
-                            <div className="p-4 flex flex-col flex-grow">
-                                <span className="text-xs font-semibold text-pink-300">{plan.city}, {plan.country}</span>
-                                <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
-                                <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
-                                <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                                    <button onClick={() => setDetailModalPlan(plan)} className="w-full bg-white/20 text-white py-2 rounded-lg hover:bg-white/30 transition-colors">Ver Detalles</button>
-                                    <button onClick={() => setQuoteRequestPlan(plan)} className="w-full bg-pink-500 text-white font-bold py-2 rounded-lg hover:bg-pink-600 transition-colors">Cotizar</button>
+                            <div className="p-3 sm:p-4 flex flex-col flex-grow">
+                                <span className="text-[10px] sm:text-xs font-semibold text-pink-300 truncate block">{plan.city}, {plan.country}</span>
+                                <h3 className="text-sm sm:text-xl font-bold text-white mt-1 leading-tight line-clamp-2">{plan.title}</h3>
+                                <p className="text-pink-200 font-semibold text-xs sm:text-base mt-1">{plan.price}</p>
+                                <div className="mt-2 sm:mt-4 flex flex-col sm:flex-row gap-2">
+                                    <button onClick={() => setDetailModalPlan(plan)} className="w-full bg-white/20 text-white py-1.5 sm:py-2 rounded-lg hover:bg-white/30 transition-colors text-xs sm:text-base">Ver Detalles</button>
+                                    <button onClick={() => setQuoteRequestPlan(plan)} className="w-full bg-pink-500 text-white font-bold py-1.5 sm:py-2 rounded-lg hover:bg-pink-600 transition-colors text-xs sm:text-base">Cotizar</button>
                                 </div>
                             </div>
                         </GlassCard>

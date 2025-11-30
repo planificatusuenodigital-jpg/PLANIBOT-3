@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Section, Plan } from '../types';
 
 interface HeaderProps {
@@ -63,6 +63,51 @@ const SearchModal: React.FC<{
     plans: Plan[];
 }> = ({ onClose, setGlobalSearch, setActiveSection, plans }) => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef<any>(null);
+
+    // Configuración del Reconocimiento de Voz
+    useEffect(() => {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = false; // Detenerse después de una frase para búsqueda
+            recognitionRef.current.interimResults = false;
+            recognitionRef.current.lang = 'es-ES';
+
+            recognitionRef.current.onresult = (event: any) => {
+                const transcript = event.results[0][0].transcript;
+                // Eliminar punto final si el navegador lo agrega
+                const cleanTranscript = transcript.endsWith('.') ? transcript.slice(0, -1) : transcript;
+                setSearchTerm(cleanTranscript);
+                setIsListening(false);
+            };
+
+            recognitionRef.current.onerror = (event: any) => {
+                console.error('Speech recognition error', event.error);
+                setIsListening(false);
+            };
+
+            recognitionRef.current.onend = () => {
+                setIsListening(false);
+            };
+        }
+    }, []);
+
+    const toggleListening = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+            setIsListening(false);
+        } else {
+            setSearchTerm('');
+            try {
+                recognitionRef.current?.start();
+                setIsListening(true);
+            } catch (error) {
+                console.error("Error starting speech recognition:", error);
+            }
+        }
+    };
 
     const handleSearch = (term: string) => {
         if (!term.trim()) return;
@@ -127,13 +172,25 @@ const SearchModal: React.FC<{
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="¿A dónde sueñas ir? (ej: Cartjena, San Andres...)"
+                        placeholder={isListening ? "Escuchando..." : "¿A dónde sueñas ir? (ej: Cartagena, San Andres...)"}
                         autoFocus
-                        className="w-full bg-white/10 backdrop-blur-xl border border-white/30 text-white text-xl placeholder-white/50 rounded-2xl px-6 py-5 focus:ring-4 focus:ring-pink-500/30 focus:outline-none focus:border-pink-400 transition-all shadow-2xl"
+                        className="w-full bg-white/10 backdrop-blur-xl border border-white/30 text-white text-xl placeholder-white/50 rounded-2xl px-6 py-5 pr-28 focus:ring-4 focus:ring-pink-500/30 focus:outline-none focus:border-pink-400 transition-all shadow-2xl"
                     />
-                    <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                    </button>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={toggleListening}
+                            className={`p-2 rounded-full transition-all ${isListening ? 'bg-red-500 text-white animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.7)]' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
+                            title={isListening ? "Detener escucha" : "Buscar por voz"}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                            </svg>
+                        </button>
+                        <button type="submit" className="p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        </button>
+                    </div>
                 </form>
                  {suggestions.length > 0 && (
                     <div className="mt-4 bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden animate-fade-in shadow-2xl">
@@ -161,7 +218,7 @@ const SearchModal: React.FC<{
                         </ul>
                     </div>
                 )}
-                {searchTerm && suggestions.length === 0 && (
+                {searchTerm && suggestions.length === 0 && !isListening && (
                      <div className="mt-4 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center animate-fade-in">
                         <p className="text-white/60">No encontramos resultados exactos, pero intenta buscar por ciudad o país.</p>
                      </div>
