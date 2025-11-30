@@ -531,17 +531,22 @@ const App: React.FC = () => {
     const splashTimer = setTimeout(() => setShowSplash(false), 2500);
 
     if (appData) {
+      // Dynamic SEO Title Update based on Loaded Data
+      document.title = "Planifica Tu Sueño | Agencia de Viajes en Anserma, Caldas";
+      
       const urlParams = new URLSearchParams(window.location.search);
       const planId = urlParams.get('plan');
       if (planId) {
         const plan = appData.plans.find(p => p.id === parseInt(planId, 10));
         if (plan) {
             setDetailModalPlan(plan);
+            // Even more specific SEO if a plan is shared via URL
+            document.title = `${plan.title} - Planifica Tu Sueño | Anserma`;
             window.history.replaceState({}, document.title, window.location.pathname);
         }
       }
 
-      // Update SEO tags
+      // Update SEO tags dynamically
       const ogImageTag = document.getElementById('og-image');
       const twitterImageTag = document.getElementById('twitter-image');
       if (ogImageTag) ogImageTag.setAttribute('content', appData.seoImageUrl);

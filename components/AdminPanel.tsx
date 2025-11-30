@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { parseTravelPlanFromText } from '../services/geminiService';
 import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from '../types';
 import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, COMMON_AMENITIES, COMMON_INCLUDES } from '../constants';
 
@@ -406,6 +407,9 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
         whatsappCatalogUrl: plan?.whatsappCatalogUrl || ''
     });
     const [activeTab, setActiveTab] = useState('basic');
+    const [showAIInput, setShowAIInput] = useState(false);
+    const [aiInputText, setAiInputText] = useState('');
+    const [isAiLoading, setIsAiLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
     const handleImagesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({ ...p, images: e.target.value.split('\n').filter(url => url.trim() !== '') }));
@@ -415,6 +419,34 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
         e.preventDefault();
         onSave(formData);
         onClose();
+    };
+    
+    const handleAIProcess = async () => {
+        if (!aiInputText.trim()) return;
+        setIsAiLoading(true);
+        try {
+            const extractedData = await parseTravelPlanFromText(aiInputText);
+            setFormData(prev => ({
+                ...prev,
+                ...extractedData,
+                // Ensure array fields are not null/undefined
+                images: extractedData.images || prev.images,
+                includes: extractedData.includes || prev.includes,
+                travelerTypes: (extractedData.travelerTypes as TravelerType[]) || prev.travelerTypes,
+                amenities: extractedData.amenities || prev.amenities,
+                // Ensure required defaults
+                category: extractedData.category || prev.category,
+                regime: (extractedData.regime as Regime) || prev.regime
+            }));
+            setShowAIInput(false);
+            setAiInputText('');
+            alert('¡Datos extraídos y completados por la IA!');
+        } catch (error) {
+            console.error("AI Error", error);
+            alert("Hubo un problema al procesar el texto con la IA.");
+        } finally {
+            setIsAiLoading(false);
+        }
     };
     
     const allRegimes: Regime[] = ['Todo Incluido', 'Pensión Completa', 'Con Desayuno Incluido', 'Solo Alojamiento', 'Paquete Promocional'];
@@ -437,10 +469,40 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
             <div className="bg-[#e0e0e0] w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
                 <div className="p-6 bg-[#e0e0e0] border-b border-gray-300 flex justify-between items-center">
                     <h2 className="text-2xl font-bold text-gray-800">{plan ? 'Editar Plan' : 'Nuevo Plan de Viaje'}</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-red-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <NeumorphicButton 
+                            onClick={() => setShowAIInput(!showAIInput)} 
+                            className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none shadow-lg"
+                        >
+                            ✨ Autocompletar con IA
+                        </NeumorphicButton>
+                        <button onClick={onClose} className="text-gray-500 hover:text-red-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
                 </div>
+                
+                {showAIInput && (
+                    <div className="p-4 bg-purple-50 border-b border-purple-200 animate-fade-in">
+                        <p className="text-sm text-purple-800 mb-2 font-semibold">Pega aquí la información del plan (texto, enlaces de fotos, precios) y deja que la IA llene el formulario:</p>
+                        <textarea 
+                            value={aiInputText}
+                            onChange={(e) => setAiInputText(e.target.value)}
+                            className="w-full h-32 p-3 rounded-lg border border-purple-200 focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
+                            placeholder="Ej: Hotel Decameron en San Andrés. Precio $2.500.000. Incluye tiquetes y alimentación. Fotos: https://... https://..."
+                        />
+                        <div className="flex justify-end gap-2 mt-2">
+                            <button onClick={() => setShowAIInput(false)} className="px-4 py-1.5 text-sm text-gray-600 hover:text-gray-800">Cancelar</button>
+                            <button 
+                                onClick={handleAIProcess} 
+                                disabled={isAiLoading || !aiInputText}
+                                className="px-4 py-1.5 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2"
+                            >
+                                {isAiLoading ? 'Procesando...' : 'Generar Datos'}
+                            </button>
+                        </div>
+                    </div>
+                )}
                 
                 <div className="flex bg-gray-200 px-6 pt-2 space-x-1">
                     <TabButton tabId="basic" label="Información Básica" />

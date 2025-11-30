@@ -1,6 +1,7 @@
 
-import { Plan, FAQItem, BotResponse } from '../types';
+import { Plan, FAQItem, BotResponse, Regime, TravelerType } from '../types';
 import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, REVIEW_MESSAGE, REVIEW_IMAGE_URL } from "../constants";
+import { GoogleGenAI, Type } from "@google/genai";
 
 // --- CONFIGURACIÓN DE VIDEOS ---
 // IDs de YouTube para destinos populares
@@ -173,7 +174,7 @@ export const resetBotContext = () => {
     context = { step: 'GREETING', data: {} };
 };
 
-// --- MOTOR DE LÓGICA ---
+// --- MOTOR DE LÓGICA (CHATBOT) ---
 
 const processFlow = (input: string): BotResponse => {
     const cleanInput = normalize(input);
@@ -323,4 +324,56 @@ export const sendMessageToBot = async (message: string): Promise<BotResponse> =>
             resolve(response);
         }, 700 + Math.random() * 800); 
     });
+};
+
+// --- FUNCIONALIDAD IA PARA EL ADMIN PANEL (EXTRACCIÓN DE DATOS) ---
+
+export const parseTravelPlanFromText = async (rawText: string): Promise<Partial<Plan>> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: `You are an expert travel agent assistant. Extract structured travel plan data from the following raw text. 
+            If specific details are missing, use plausible defaults or leave empty strings, but do NOT make up distinct features.
+            
+            Raw Text:
+            "${rawText}"
+            
+            Return the result in JSON format matching the schema.`,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        title: { type: Type.STRING, description: "Name of the hotel or plan" },
+                        category: { type: Type.STRING, description: "Best fit category: 'Sol y Playa', 'Rural', 'Internacional', 'Caribeño', 'Aventura', 'Cultural', 'Romántico'" },
+                        price: { type: Type.STRING, description: "Formatted price string e.g. '$1.200.000 COP' or 'Consultar Precio'" },
+                        priceValue: { type: Type.NUMBER, description: "Numeric price value" },
+                        durationDays: { type: Type.INTEGER, description: "Number of days" },
+                        description: { type: Type.STRING, description: "Full description, summarized if too long" },
+                        images: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of image URLs found in text" },
+                        includes: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of items included" },
+                        country: { type: Type.STRING },
+                        city: { type: Type.STRING },
+                        regime: { type: Type.STRING, description: "One of: 'Todo Incluido', 'Pensión Completa', 'Con Desayuno Incluido', 'Solo Alojamiento', 'Paquete Promocional'" },
+                        travelerTypes: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Target audience e.g. 'Familias', 'Parejas'" },
+                        amenities: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Facilities like 'Piscina', 'Wifi Gratis', etc." },
+                        whatsappCatalogUrl: { type: Type.STRING, description: "WhatsApp catalog link if present" },
+                        departureDate: { type: Type.STRING, description: "YYYY-MM-DD if present" },
+                        returnDate: { type: Type.STRING, description: "YYYY-MM-DD if present" },
+                    }
+                }
+            }
+        });
+
+        const jsonText = response.text;
+        if (!jsonText) throw new Error("No response from AI");
+        
+        return JSON.parse(jsonText);
+
+    } catch (error) {
+        console.error("Error parsing plan with AI:", error);
+        return {};
+    }
 };
