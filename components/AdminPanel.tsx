@@ -1,9 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
 import { parseTravelPlanFromText } from '../services/geminiService';
 import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from '../types';
-import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, DEFAULT_CATEGORIES } from '../constants';
+import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from '../constants';
 
 type AppData = {
   plans: Plan[];
@@ -94,7 +93,16 @@ const PlanEditor: React.FC<{
     onCancel: () => void;
     categories: string[];
 }> = ({ plan, onSave, onCancel, categories }) => {
-    const [formData, setFormData] = useState<Plan>(plan);
+    // Ensure array fields are initialized to avoid undefined errors
+    const [formData, setFormData] = useState<Plan>({
+        ...plan,
+        images: plan.images || [],
+        includes: plan.includes || [],
+        travelerTypes: plan.travelerTypes || [],
+        amenities: plan.amenities || []
+    });
+    
+    const TRAVELER_TYPES = ['Familias', 'Parejas', 'Grupos', 'Negocios', 'Descanso / Relax', 'Cultural', 'Aventura'];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -107,18 +115,29 @@ const PlanEditor: React.FC<{
 
     // Helper for array fields (images, includes, amenities)
     const handleArrayChange = (index: number, value: string, field: 'images' | 'includes' | 'amenities') => {
-        const newArray = [...formData[field]];
+        const newArray = [...(formData[field] || [])];
         newArray[index] = value;
         setFormData(prev => ({ ...prev, [field]: newArray }));
     };
 
     const addArrayItem = (field: 'images' | 'includes' | 'amenities') => {
-        setFormData(prev => ({ ...prev, [field]: [...prev[field], ''] }));
+        setFormData(prev => ({ ...prev, [field]: [...(prev[field] || []), ''] }));
     };
 
     const removeArrayItem = (index: number, field: 'images' | 'includes' | 'amenities') => {
-        const newArray = formData[field].filter((_, i) => i !== index);
+        const newArray = (formData[field] || []).filter((_, i) => i !== index);
         setFormData(prev => ({ ...prev, [field]: newArray }));
+    };
+
+    const toggleTravelerType = (type: string) => {
+        setFormData(prev => {
+            const current = (prev.travelerTypes || []) as string[];
+            if (current.includes(type)) {
+                return { ...prev, travelerTypes: current.filter(t => t !== type) };
+            } else {
+                return { ...prev, travelerTypes: [...current, type] };
+            }
+        });
     };
 
     return (
@@ -137,17 +156,17 @@ const PlanEditor: React.FC<{
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-2">
                             <label className="block text-sm font-bold text-gray-700 mb-1">Título del Plan</label>
-                            <input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none" />
+                            <input type="text" name="title" value={formData.title || ''} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none" />
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Categoría</label>
-                            <select name="category" value={formData.category} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
+                            <select name="category" value={formData.category || ''} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
                                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Régimen</label>
-                            <select name="regime" value={formData.regime} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
+                            <select name="regime" value={formData.regime || ''} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
                                 <option value="Todo Incluido">Todo Incluido</option>
                                 <option value="Pensión Completa">Pensión Completa</option>
                                 <option value="Con Desayuno Incluido">Con Desayuno Incluido</option>
@@ -161,19 +180,19 @@ const PlanEditor: React.FC<{
                     <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Ciudad</label>
-                            <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                            <input type="text" name="city" value={formData.city || ''} onChange={handleChange} className="w-full p-2 border rounded-lg" />
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">País</label>
-                            <input type="text" name="country" value={formData.country} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                            <input type="text" name="country" value={formData.country || ''} onChange={handleChange} className="w-full p-2 border rounded-lg" />
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Salida</label>
-                            <input type="date" name="departureDate" value={formData.departureDate} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                            <input type="date" name="departureDate" value={formData.departureDate || ''} onChange={handleChange} className="w-full p-2 border rounded-lg" />
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Regreso</label>
-                            <input type="date" name="returnDate" value={formData.returnDate} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                            <input type="date" name="returnDate" value={formData.returnDate || ''} onChange={handleChange} className="w-full p-2 border rounded-lg" />
                         </div>
                     </div>
 
@@ -182,20 +201,55 @@ const PlanEditor: React.FC<{
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Texto Precio (Visible)</label>
-                                <input type="text" name="price" value={formData.price} onChange={handleChange} placeholder="ej: $500.000 COP" className="w-full p-2 border rounded-lg" />
+                                <input type="text" name="price" value={formData.price || ''} onChange={handleChange} placeholder="ej: $500.000 COP" className="w-full p-2 border rounded-lg" />
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Valor Numérico (Para ordenar)</label>
-                                <input type="number" name="priceValue" value={formData.priceValue} onChange={handleNumberChange} className="w-full p-2 border rounded-lg" />
+                                <input type="number" name="priceValue" value={formData.priceValue || 0} onChange={handleNumberChange} className="w-full p-2 border rounded-lg" />
                             </div>
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Descripción Completa</label>
-                            <textarea name="description" value={formData.description} onChange={handleChange} rows={5} className="w-full p-2 border rounded-lg" />
+                            <textarea name="description" value={formData.description || ''} onChange={handleChange} rows={5} className="w-full p-2 border rounded-lg" />
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Link Catálogo WhatsApp (Opcional)</label>
                             <input type="text" name="whatsappCatalogUrl" value={formData.whatsappCatalogUrl || ''} onChange={handleChange} className="w-full p-2 border rounded-lg text-sm" placeholder="https://wa.me/p/..." />
+                        </div>
+                    </div>
+
+                    {/* Amenities & Traveler Types */}
+                    <div className="space-y-4 border-t pt-4">
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Ideal para:</label>
+                            <div className="flex flex-wrap gap-2">
+                                {TRAVELER_TYPES.map(type => (
+                                    <label key={type} className={`flex items-center space-x-2 px-3 py-1.5 rounded-full cursor-pointer border transition-colors select-none ${formData.travelerTypes?.includes(type as any) ? 'bg-pink-50 border-pink-300' : 'bg-gray-50 border-gray-200 hover:border-gray-300'}`}>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={formData.travelerTypes?.includes(type as any) || false} 
+                                            onChange={() => toggleTravelerType(type)}
+                                            className="rounded text-pink-500 focus:ring-pink-500 w-4 h-4"
+                                        />
+                                        <span className="text-sm text-gray-700">{type}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-gray-700">Comodidades (Amenities)</label>
+                                <button type="button" onClick={() => addArrayItem('amenities')} className="text-xs text-pink-500 font-bold hover:underline">+ Agregar</button>
+                            </div>
+                            <div className="space-y-2 max-h-40 overflow-y-auto p-1">
+                                {(formData.amenities || []).map((item, idx) => (
+                                    <div key={idx} className="flex gap-2">
+                                        <input type="text" value={item} onChange={(e) => handleArrayChange(idx, e.target.value, 'amenities')} className="flex-grow p-2 border rounded-lg text-sm" placeholder="Ej: Piscina, Wifi..." />
+                                        <button type="button" onClick={() => removeArrayItem(idx, 'amenities')} className="text-red-500 hover:text-red-700 px-2">✕</button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -206,7 +260,7 @@ const PlanEditor: React.FC<{
                             <button type="button" onClick={() => addArrayItem('images')} className="text-xs text-pink-500 font-bold hover:underline">+ Agregar Imagen</button>
                         </div>
                         <div className="space-y-2">
-                            {formData.images.map((img, idx) => (
+                            {(formData.images || []).map((img, idx) => (
                                 <div key={idx} className="flex gap-2">
                                     <input type="text" value={img} onChange={(e) => handleArrayChange(idx, e.target.value, 'images')} className="flex-grow p-2 border rounded-lg text-sm" placeholder="https://..." />
                                     <button type="button" onClick={() => removeArrayItem(idx, 'images')} className="text-red-500 hover:text-red-700 px-2">✕</button>
@@ -222,7 +276,7 @@ const PlanEditor: React.FC<{
                             <button type="button" onClick={() => addArrayItem('includes')} className="text-xs text-pink-500 font-bold hover:underline">+ Agregar Item</button>
                         </div>
                         <div className="space-y-2">
-                            {formData.includes.map((inc, idx) => (
+                            {(formData.includes || []).map((inc, idx) => (
                                 <div key={idx} className="flex gap-2">
                                     <input type="text" value={inc} onChange={(e) => handleArrayChange(idx, e.target.value, 'includes')} className="flex-grow p-2 border rounded-lg text-sm" />
                                     <button type="button" onClick={() => removeArrayItem(idx, 'includes')} className="text-red-500 hover:text-red-700 px-2">✕</button>
@@ -379,7 +433,7 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
                 {editedData.plans.map(plan => (
                     <NeumorphicCard key={plan.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center relative group hover:shadow-lg transition-shadow">
                         <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                            {plan.images[0] && <img src={plan.images[0]} alt={plan.title} className="w-full h-full object-cover" />}
+                            {plan.images && plan.images[0] && <img src={plan.images[0]} alt={plan.title} className="w-full h-full object-cover" />}
                         </div>
                         <div className="flex-grow">
                             <h4 className="font-bold text-gray-800">{plan.title}</h4>
@@ -711,7 +765,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ appData, onSave, onLogout }) =>
             </div>
             
             <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-140px)]">
-                <NavButton section="dashboard" label="Dashboard" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>} />
+                <NavButton section="dashboard" label="Dashboard" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>} />
                 <NavButton section="plans" label="Planes" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>} />
                 <NavButton section="categories" label="Categorías" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>} />
                 <NavButton section="testimonials" label="Testimonios" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>} />
