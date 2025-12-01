@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { parseTravelPlanFromText } from '../services/geminiService';
 import { Plan, Testimonial, AboutUsContent, LegalContent, FAQItem, Regime, TravelerType } from '../types';
-import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS } from '../constants';
+import { DEFAULT_CONTACT_INFO, DEFAULT_SOCIAL_LINKS, DEFAULT_CATEGORIES } from '../constants';
 
 type AppData = {
   plans: Plan[];
@@ -39,9 +40,9 @@ const NeumorphicCard: React.FC<{ children: React.ReactNode; className?: string; 
     );
 };
 
-const NeumorphicButton: React.FC<{ children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; disabled?: boolean; }> = ({ children, className = '', onClick, disabled = false }) => {
+const NeumorphicButton: React.FC<{ children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; disabled?: boolean; title?: string }> = ({ children, className = '', onClick, disabled = false, title }) => {
     return (
-        <button type="button" onClick={onClick} disabled={disabled} className={`font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:shadow-inner ${className}`}>
+        <button type="button" onClick={onClick} disabled={disabled} title={title} className={`font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:shadow-inner ${className}`}>
             {children}
         </button>
     );
@@ -86,9 +87,159 @@ const Dashboard: React.FC<{ avatarUrl: string; plansCount: number }> = ({ avatar
     </div>
 );
 
+// --- PLAN EDITOR COMPONENT ---
+const PlanEditor: React.FC<{ 
+    plan: Plan; 
+    onSave: (plan: Plan) => void; 
+    onCancel: () => void;
+    categories: string[];
+}> = ({ plan, onSave, onCancel, categories }) => {
+    const [formData, setFormData] = useState<Plan>(plan);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData(prev => ({ ...prev, [e.target.name]: Number(e.target.value) }));
+    };
+
+    // Helper for array fields (images, includes, amenities)
+    const handleArrayChange = (index: number, value: string, field: 'images' | 'includes' | 'amenities') => {
+        const newArray = [...formData[field]];
+        newArray[index] = value;
+        setFormData(prev => ({ ...prev, [field]: newArray }));
+    };
+
+    const addArrayItem = (field: 'images' | 'includes' | 'amenities') => {
+        setFormData(prev => ({ ...prev, [field]: [...prev[field], ''] }));
+    };
+
+    const removeArrayItem = (index: number, field: 'images' | 'includes' | 'amenities') => {
+        const newArray = formData[field].filter((_, i) => i !== index);
+        setFormData(prev => ({ ...prev, [field]: newArray }));
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-end">
+            <div className="w-full max-w-2xl bg-white h-full shadow-2xl overflow-y-auto animate-fade-in-right p-6">
+                <div className="flex justify-between items-center mb-6 sticky top-0 bg-white z-10 pb-4 border-b">
+                    <h2 className="text-2xl font-bold text-gray-800">{plan.id ? 'Editar Plan' : 'Nuevo Plan'}</h2>
+                    <div className="flex gap-2">
+                        <NeumorphicButton onClick={onCancel} className="px-4 py-2 text-gray-500 hover:bg-gray-100">Cancelar</NeumorphicButton>
+                        <NeumorphicButton onClick={() => onSave(formData)} className="px-4 py-2 bg-pink-500 text-white hover:bg-pink-600">Guardar</NeumorphicButton>
+                    </div>
+                </div>
+
+                <form className="space-y-6">
+                    {/* Basic Info */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2">
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Título del Plan</label>
+                            <input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Categoría</label>
+                            <select name="category" value={formData.category} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
+                                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Régimen</label>
+                            <select name="regime" value={formData.regime} onChange={handleChange} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
+                                <option value="Todo Incluido">Todo Incluido</option>
+                                <option value="Pensión Completa">Pensión Completa</option>
+                                <option value="Con Desayuno Incluido">Con Desayuno Incluido</option>
+                                <option value="Solo Alojamiento">Solo Alojamiento</option>
+                                <option value="Paquete Promocional">Paquete Promocional</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Location & Dates */}
+                    <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl">
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Ciudad</label>
+                            <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">País</label>
+                            <input type="text" name="country" value={formData.country} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Salida</label>
+                            <input type="date" name="departureDate" value={formData.departureDate} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Regreso</label>
+                            <input type="date" name="returnDate" value={formData.returnDate} onChange={handleChange} className="w-full p-2 border rounded-lg" />
+                        </div>
+                    </div>
+
+                    {/* Price & Description */}
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Texto Precio (Visible)</label>
+                                <input type="text" name="price" value={formData.price} onChange={handleChange} placeholder="ej: $500.000 COP" className="w-full p-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Valor Numérico (Para ordenar)</label>
+                                <input type="number" name="priceValue" value={formData.priceValue} onChange={handleNumberChange} className="w-full p-2 border rounded-lg" />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Descripción Completa</label>
+                            <textarea name="description" value={formData.description} onChange={handleChange} rows={5} className="w-full p-2 border rounded-lg" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Link Catálogo WhatsApp (Opcional)</label>
+                            <input type="text" name="whatsappCatalogUrl" value={formData.whatsappCatalogUrl || ''} onChange={handleChange} className="w-full p-2 border rounded-lg text-sm" placeholder="https://wa.me/p/..." />
+                        </div>
+                    </div>
+
+                    {/* Images */}
+                    <div>
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="block text-sm font-bold text-gray-700">Imágenes (URLs)</label>
+                            <button type="button" onClick={() => addArrayItem('images')} className="text-xs text-pink-500 font-bold hover:underline">+ Agregar Imagen</button>
+                        </div>
+                        <div className="space-y-2">
+                            {formData.images.map((img, idx) => (
+                                <div key={idx} className="flex gap-2">
+                                    <input type="text" value={img} onChange={(e) => handleArrayChange(idx, e.target.value, 'images')} className="flex-grow p-2 border rounded-lg text-sm" placeholder="https://..." />
+                                    <button type="button" onClick={() => removeArrayItem(idx, 'images')} className="text-red-500 hover:text-red-700 px-2">✕</button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Includes */}
+                    <div>
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="block text-sm font-bold text-gray-700">El plan incluye:</label>
+                            <button type="button" onClick={() => addArrayItem('includes')} className="text-xs text-pink-500 font-bold hover:underline">+ Agregar Item</button>
+                        </div>
+                        <div className="space-y-2">
+                            {formData.includes.map((inc, idx) => (
+                                <div key={idx} className="flex gap-2">
+                                    <input type="text" value={inc} onChange={(e) => handleArrayChange(idx, e.target.value, 'includes')} className="flex-grow p-2 border rounded-lg text-sm" />
+                                    <button type="button" onClick={() => removeArrayItem(idx, 'includes')} className="text-red-500 hover:text-red-700 px-2">✕</button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
 const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedData }) => {
     const [aiText, setAiText] = useState('');
     const [loading, setLoading] = useState(false);
+    const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
 
     const handleAiParse = async () => {
         if (!aiText.trim()) return;
@@ -98,7 +249,7 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
             const newPlan: Plan = {
                 id: Date.now(),
                 title: partialPlan.title || 'Nuevo Plan Generado',
-                category: partialPlan.category || 'General',
+                category: partialPlan.category || 'Sol y Playa',
                 price: partialPlan.price || 'Consultar Precio',
                 priceValue: partialPlan.priceValue || 0,
                 durationDays: partialPlan.durationDays || 1,
@@ -112,7 +263,7 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
                 country: partialPlan.country || 'Colombia',
                 city: partialPlan.city || '',
                 regime: (partialPlan.regime as Regime) || 'Solo Alojamiento',
-                travelerTypes: (partialPlan.travelerTypes as TravelerType[]) || [],
+                travelerTypes: (partialPlan.travelerTypes as TravelerType[]) || ['Familias'],
                 amenities: partialPlan.amenities || [],
                 whatsappCatalogUrl: partialPlan.whatsappCatalogUrl
             };
@@ -150,27 +301,76 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
         }));
     };
 
+    const handleCreateManual = () => {
+        const newPlan: Plan = {
+            id: Date.now(),
+            title: '',
+            category: 'Sol y Playa',
+            price: '',
+            priceValue: 0,
+            durationDays: 1,
+            description: '',
+            images: [],
+            includes: [],
+            isVisible: true,
+            isFeatured: false,
+            departureDate: '',
+            returnDate: '',
+            country: '',
+            city: '',
+            regime: 'Solo Alojamiento',
+            travelerTypes: [],
+            amenities: []
+        };
+        setEditingPlan(newPlan);
+    };
+
+    const handleSaveEditedPlan = (updatedPlan: Plan) => {
+        setEditedData(prev => {
+            const planExists = prev.plans.some(p => p.id === updatedPlan.id);
+            if (planExists) {
+                return { ...prev, plans: prev.plans.map(p => p.id === updatedPlan.id ? updatedPlan : p) };
+            } else {
+                return { ...prev, plans: [updatedPlan, ...prev.plans] };
+            }
+        });
+        setEditingPlan(null);
+    };
+
     return (
-        <div className="space-y-8 animate-fade-in">
-             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl border border-pink-100 shadow-sm">
-                <h3 className="text-lg font-bold text-purple-900 mb-2 flex items-center gap-2">
-                    ✨ Generador de Planes con IA
-                </h3>
-                <p className="text-sm text-purple-700 mb-4">Pega la descripción de un hotel o plan turístico y la IA extraerá los detalles automáticamente.</p>
-                <textarea
-                    value={aiText}
-                    onChange={(e) => setAiText(e.target.value)}
-                    placeholder="Ej: Hotel Decameron en San Andrés, 5 días 4 noches, todo incluido, precio $2.500.000..."
-                    className="w-full p-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 outline-none text-sm bg-white"
-                    rows={3}
-                />
-                <div className="mt-3 flex justify-end">
+        <div className="space-y-8 animate-fade-in relative">
+             <div className="grid md:grid-cols-2 gap-6">
+                 {/* AI Generator */}
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl border border-pink-100 shadow-sm">
+                    <h3 className="text-lg font-bold text-purple-900 mb-2 flex items-center gap-2">
+                        ✨ Generador IA
+                    </h3>
+                    <textarea
+                        value={aiText}
+                        onChange={(e) => setAiText(e.target.value)}
+                        placeholder="Pega aquí la descripción del hotel/plan..."
+                        className="w-full p-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 outline-none text-sm bg-white h-24 resize-none"
+                    />
+                    <div className="mt-3 flex justify-end">
+                        <NeumorphicButton 
+                            onClick={handleAiParse} 
+                            disabled={loading || !aiText.trim()}
+                            className="px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 shadow-md text-sm"
+                        >
+                            {loading ? '...' : 'Generar'}
+                        </NeumorphicButton>
+                    </div>
+                </div>
+
+                {/* Manual Actions */}
+                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-center items-center text-center">
+                    <h3 className="text-lg font-bold text-gray-800 mb-2">Creación Manual</h3>
+                    <p className="text-gray-500 text-sm mb-4">Crea un plan desde cero con control total.</p>
                     <NeumorphicButton 
-                        onClick={handleAiParse} 
-                        disabled={loading || !aiText.trim()}
-                        className="px-6 py-2 bg-purple-600 text-white hover:bg-purple-700 shadow-md"
+                        onClick={handleCreateManual}
+                        className="px-6 py-3 bg-white border-2 border-dashed border-gray-300 text-gray-600 hover:border-pink-500 hover:text-pink-500 w-full"
                     >
-                        {loading ? 'Analizando...' : 'Generar Plan'}
+                        + Nuevo Plan Manual
                     </NeumorphicButton>
                 </div>
             </div>
@@ -190,6 +390,13 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
                             </div>
                         </div>
                         <div className="flex items-center gap-2 self-end sm:self-center">
+                            <button 
+                                onClick={() => setEditingPlan(plan)}
+                                className="p-2 rounded-full text-blue-500 bg-blue-50 hover:bg-blue-100 transition-colors"
+                                title="Editar Detalles"
+                            >
+                                ✎
+                            </button>
                             <button 
                                 onClick={() => toggleFeatured(plan.id)}
                                 className={`p-2 rounded-full transition-colors ${plan.isFeatured ? 'text-yellow-500 bg-yellow-50' : 'text-gray-300 hover:text-yellow-400'}`}
@@ -215,6 +422,16 @@ const PlansManager: React.FC<AdminSubComponentProps> = ({ editedData, setEditedD
                     </NeumorphicCard>
                 ))}
             </div>
+
+            {/* Modal Editor */}
+            {editingPlan && (
+                <PlanEditor 
+                    plan={editingPlan} 
+                    onSave={handleSaveEditedPlan} 
+                    onCancel={() => setEditingPlan(null)}
+                    categories={editedData.categories}
+                />
+            )}
         </div>
     );
 };
@@ -499,7 +716,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ appData, onSave, onLogout }) =>
                 <NavButton section="categories" label="Categorías" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>} />
                 <NavButton section="testimonials" label="Testimonios" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>} />
                 <NavButton section="content" label="Contenido" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>} />
-                <NavButton section="settings" label="Configuración" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>} />
+                <NavButton section="settings" label="Configuración" icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-1.066 2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>} />
             </nav>
             
             <div className="absolute bottom-0 w-full p-4 border-t border-gray-100 bg-gray-50">
