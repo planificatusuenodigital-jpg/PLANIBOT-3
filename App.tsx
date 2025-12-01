@@ -480,117 +480,149 @@ const App: React.FC = () => {
   const [isAdminRoute, setIsAdminRoute] = useState(false);
   const [loadingSession, setLoadingSession] = useState(true);
   
-  // Data persistence logic with Supabase Fetching
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            // Fetch Plans
-            const { data: plansData, error: plansError } = await supabase
-                .from('plans')
-                .select('*')
-                .order('id', { ascending: true });
+  // Refactored fetch logic into a reusable function for Realtime updates
+  const fetchAppData = useCallback(async () => {
+    try {
+        // Fetch Plans
+        const { data: plansData, error: plansError } = await supabase
+            .from('plans')
+            .select('*')
+            .order('id', { ascending: true });
 
-            // Fetch Categories
-            const { data: categoriesData, error: categoriesError } = await supabase
-                .from('categories')
-                .select('name');
+        // Fetch Categories
+        const { data: categoriesData, error: categoriesError } = await supabase
+            .from('categories')
+            .select('name');
 
-            // Fetch Testimonials
-            const { data: testimonialsData, error: testimonialsError } = await supabase
-                .from('testimonials')
-                .select('*');
+        // Fetch Testimonials
+        const { data: testimonialsData, error: testimonialsError } = await supabase
+            .from('testimonials')
+            .select('*');
 
-            // Fetch Site Content
-            const { data: contentData, error: contentError } = await supabase
-                .from('site_content')
-                .select('key, value');
+        // Fetch Site Content
+        const { data: contentData, error: contentError } = await supabase
+            .from('site_content')
+            .select('key, value');
 
-            if (plansError) console.error("Error fetching plans:", plansError);
-            if (categoriesError) console.error("Error fetching categories:", categoriesError);
-            if (testimonialsError) console.error("Error fetching testimonials:", testimonialsError);
-            if (contentError) console.error("Error fetching site content:", contentError);
+        if (plansError) console.error("Error fetching plans:", plansError);
+        if (categoriesError) console.error("Error fetching categories:", categoriesError);
+        if (testimonialsError) console.error("Error fetching testimonials:", testimonialsError);
+        if (contentError) console.error("Error fetching site content:", contentError);
 
-            // Transform Plans Data
-            const plans: Plan[] = (plansData || []).map((p: any) => ({
-                id: p.id,
-                title: p.title,
-                category: p.category,
-                price: p.price || p.price_text || 'Consultar', // Fallback to price_text if exists in DB logic
-                priceValue: p.price_value || 0,
-                durationDays: p.duration_days || 1,
-                description: p.description || '',
-                images: p.images || [],
-                includes: p.includes || [],
-                isVisible: p.is_visible,
-                departureDate: p.departure_date || '',
-                returnDate: p.return_date || '',
-                country: p.country || '',
-                city: p.city || '',
-                regime: (p.plan_type as Regime) || (p.regime as Regime) || 'Solo Alojamiento',
-                travelerTypes: (p.traveler_types as TravelerType[]) || [],
-                amenities: p.amenities || [],
-                whatsappCatalogUrl: p.whatsapp_catalog_url
-            }));
+        // Transform Plans Data
+        const plans: Plan[] = (plansData || []).map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            category: p.category,
+            price: p.price || p.price_text || 'Consultar', 
+            priceValue: p.price_value || 0,
+            durationDays: p.duration_days || 1,
+            description: p.description || '',
+            images: p.images || [],
+            includes: p.includes || [],
+            isVisible: p.is_visible,
+            isFeatured: p.is_featured || false, // Mapping new field
+            departureDate: p.departure_date || '',
+            returnDate: p.return_date || '',
+            country: p.country || '',
+            city: p.city || '',
+            regime: (p.plan_type as Regime) || (p.regime as Regime) || 'Solo Alojamiento',
+            travelerTypes: (p.traveler_types as TravelerType[]) || [],
+            amenities: p.amenities || [],
+            whatsappCatalogUrl: p.whatsapp_catalog_url
+        }));
 
-            // If no plans in DB, fall back to default
-            const finalPlans = plans.length > 0 ? plans : DEFAULT_TRAVEL_PLANS;
+        const finalPlans = plans.length > 0 ? plans : DEFAULT_TRAVEL_PLANS;
 
-            // Transform Categories
-            const categories = (categoriesData || []).map((c: any) => c.name);
-            const finalCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+        // Transform Categories
+        const categories = (categoriesData || []).map((c: any) => c.name);
+        const finalCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
 
-            // Transform Testimonials
-            const testimonials: Testimonial[] = (testimonialsData || []).map((t: any) => ({
-                id: t.id,
-                author: t.author,
-                text: t.text,
-                rating: t.rating
-            }));
-            const finalTestimonials = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
+        // Transform Testimonials
+        const testimonials: Testimonial[] = (testimonialsData || []).map((t: any) => ({
+            id: t.id,
+            author: t.author,
+            text: t.text,
+            rating: t.rating
+        }));
+        const finalTestimonials = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
 
-            // Transform Site Content
-            const contentMap = (contentData || []).reduce((acc: any, curr: any) => {
-                acc[curr.key] = curr.value;
-                return acc;
-            }, {});
+        // Transform Site Content
+        const contentMap = (contentData || []).reduce((acc: any, curr: any) => {
+            acc[curr.key] = curr.value;
+            return acc;
+        }, {});
 
-            setAppData({
-                plans: finalPlans,
-                categories: finalCategories,
-                testimonials: finalTestimonials,
-                aboutUs: contentMap['about_us'] || DEFAULT_ABOUT_US_CONTENT,
-                legal: contentMap['legal'] || DEFAULT_LEGAL_CONTENT,
-                contact: contentMap['contact'] || DEFAULT_CONTACT_INFO,
-                social: contentMap['social'] || DEFAULT_SOCIAL_LINKS,
-                faqs: contentMap['faqs'] || DEFAULT_FAQS, // Assuming FAQs might be in content or separate table, prioritizing content json for now based on 'site_content' logic
-                destinations: DEFAULT_DESTINATIONS, // Destinations are static in this version unless DB has them fully mapped. Kept static for safety as per prompt focus.
-                logoUrl: contentMap['branding']?.logoUrl || DEFAULT_LOGO_URL,
-                planibotAvatarUrl: contentMap['branding']?.planibotAvatarUrl || DEFAULT_PLANIBOT_AVATAR_URL,
-                seoImageUrl: contentMap['branding']?.seoImageUrl || DEFAULT_SEO_IMAGE_URL
-            });
+        setAppData({
+            plans: finalPlans,
+            categories: finalCategories,
+            testimonials: finalTestimonials,
+            aboutUs: contentMap['about_us'] || DEFAULT_ABOUT_US_CONTENT,
+            legal: contentMap['legal'] || DEFAULT_LEGAL_CONTENT,
+            contact: contentMap['contact'] || DEFAULT_CONTACT_INFO,
+            social: contentMap['social'] || DEFAULT_SOCIAL_LINKS,
+            faqs: contentMap['faqs'] || DEFAULT_FAQS, 
+            destinations: DEFAULT_DESTINATIONS, 
+            logoUrl: contentMap['branding']?.logoUrl || DEFAULT_LOGO_URL,
+            planibotAvatarUrl: contentMap['branding']?.planibotAvatarUrl || DEFAULT_PLANIBOT_AVATAR_URL,
+            seoImageUrl: contentMap['branding']?.seoImageUrl || DEFAULT_SEO_IMAGE_URL
+        });
 
-        } catch (error) {
-            console.error("Critical error fetching data:", error);
-            // Fallback
-             setAppData({
-                plans: DEFAULT_TRAVEL_PLANS,
-                destinations: DEFAULT_DESTINATIONS,
-                testimonials: DEFAULT_TESTIMONIALS,
-                aboutUs: DEFAULT_ABOUT_US_CONTENT,
-                legal: DEFAULT_LEGAL_CONTENT,
-                faqs: DEFAULT_FAQS,
-                contact: DEFAULT_CONTACT_INFO,
-                social: DEFAULT_SOCIAL_LINKS,
-                logoUrl: DEFAULT_LOGO_URL,
-                planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
-                seoImageUrl: DEFAULT_SEO_IMAGE_URL,
-                categories: DEFAULT_CATEGORIES
-             });
-        }
-    };
-
-    fetchData();
+    } catch (error) {
+        console.error("Critical error fetching data:", error);
+        // Fallback to default
+         setAppData({
+            plans: DEFAULT_TRAVEL_PLANS,
+            destinations: DEFAULT_DESTINATIONS,
+            testimonials: DEFAULT_TESTIMONIALS,
+            aboutUs: DEFAULT_ABOUT_US_CONTENT,
+            legal: DEFAULT_LEGAL_CONTENT,
+            faqs: DEFAULT_FAQS,
+            contact: DEFAULT_CONTACT_INFO,
+            social: DEFAULT_SOCIAL_LINKS,
+            logoUrl: DEFAULT_LOGO_URL,
+            planibotAvatarUrl: DEFAULT_PLANIBOT_AVATAR_URL,
+            seoImageUrl: DEFAULT_SEO_IMAGE_URL,
+            categories: DEFAULT_CATEGORIES
+         });
+    }
   }, []);
+
+  // Initial Fetch & Realtime Subscription
+  useEffect(() => {
+    fetchAppData();
+
+    // Set up Realtime subscription for PLANS
+    const plansSubscription = supabase
+        .channel('plans-changes')
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'plans' },
+            (payload) => {
+                console.log('Realtime change detected in plans:', payload);
+                fetchAppData(); // Refresh all data on any plan change
+            }
+        )
+        .subscribe();
+
+    // Set up Realtime subscription for SITE_CONTENT
+    const contentSubscription = supabase
+        .channel('content-changes')
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'site_content' },
+            (payload) => {
+                console.log('Realtime change detected in content:', payload);
+                fetchAppData(); 
+            }
+        )
+        .subscribe();
+
+    return () => {
+        supabase.removeChannel(plansSubscription);
+        supabase.removeChannel(contentSubscription);
+    };
+  }, [fetchAppData]);
 
   const handleSaveToSupabase = async (newData: AppData) => {
       try {
@@ -606,6 +638,7 @@ const App: React.FC = () => {
                  images: plan.images,
                  includes: plan.includes,
                  is_visible: plan.isVisible,
+                 is_featured: plan.isFeatured, // Saving new field
                  departure_date: plan.departureDate || null,
                  return_date: plan.returnDate || null,
                  country: plan.country,

@@ -100,25 +100,29 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveSection, setQrModalPlan, s
                         />
                     </div>
                     
-                    {/* Dark Overlay for Text Readability */}
-                    <div className="absolute inset-0 bg-black/40 bg-gradient-to-t from-black/80 via-transparent to-black/30"></div>
-
                     {/* Content Overlay */}
-                    <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 sm:p-12">
-                        <div className="backdrop-blur-md bg-white/10 border border-white/20 p-6 sm:p-10 rounded-2xl shadow-2xl transform transition-all duration-700 translate-y-0 opacity-100 max-w-2xl">
-                            <span className="text-pink-300 font-bold tracking-[0.2em] uppercase text-xs sm:text-sm mb-2 block animate-pulse">Destino Destacado</span>
-                            <h2 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-2 drop-shadow-xl font-logo tracking-wide">
+                    <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 sm:p-8">
+                        {/* 
+                           MODIFICACIONES VISUALES:
+                           1. max-w-md: Más pequeño que max-w-lg.
+                           2. bg-black/5: Mucho más transparente.
+                           3. backdrop-blur-[3px]: Menos desenfoque para ver más imagen.
+                           4. drop-shadow en textos: Para leer bien sobre imagen clara.
+                        */}
+                        <div className="backdrop-blur-[3px] bg-black/5 border border-white/10 p-6 sm:p-8 rounded-2xl shadow-sm transform transition-all duration-700 translate-y-0 opacity-100 max-w-md w-full mx-4">
+                            <span className="text-pink-200 font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs mb-2 block animate-pulse drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">Destino Destacado</span>
+                            <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-2 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-logo tracking-wide">
                                 {dest.name}
                             </h2>
-                            <p className="text-xl sm:text-2xl text-white/90 font-medium mb-6 italic border-b-2 border-pink-500/50 inline-block pb-1">
+                            <p className="text-lg sm:text-xl text-white font-medium mb-5 italic border-b border-pink-500/30 inline-block pb-1 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
                                 {getCTAMessage(dest.name)}
                             </p>
                             <button
                                 onClick={() => setActiveSection(Section.Contacto)}
-                                className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full shadow-[0_0_20px_rgba(236,72,153,0.5)] hover:scale-105 hover:shadow-[0_0_30px_rgba(236,72,153,0.8)] transition-all duration-300 flex items-center gap-2 mx-auto"
+                                className="px-6 py-2.5 bg-gradient-to-r from-pink-500/90 to-purple-600/90 text-white font-bold rounded-full shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto text-sm sm:text-base backdrop-blur-md"
                             >
                                 <span>Cotizar Ahora</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                             </button>
                         </div>
                     </div>
@@ -137,8 +141,8 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveSection, setQrModalPlan, s
                 <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        index === currentSlide ? 'bg-pink-500 w-8' : 'bg-white/50 hover:bg-white'
+                    className={`w-3 h-3 rounded-full transition-all duration-300 shadow-md ${
+                        index === currentSlide ? 'bg-pink-500 w-8 border border-white' : 'bg-white/50 hover:bg-white border border-transparent'
                     }`}
                     aria-label={`Ir al slide ${index + 1}`}
                 />

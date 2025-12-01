@@ -89,7 +89,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [isListening, setIsListening] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState("3SLzkimnJ0U"); // Default video to user provided short
-  const [showRating, setShowRating] = useState(true);
+  const [isVideoVisible, setIsVideoVisible] = useState(true); // Control visibility of video
   
   const chatEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<number | null>(null);
@@ -180,6 +180,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
 
         if (videoId) {
             setCurrentVideoId(videoId);
+            setIsVideoVisible(true); // Show video again if context changes
         }
 
         if (modelResponseText) {
@@ -233,6 +234,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       localStorage.removeItem('planiBotHistory');
       resetBotContext(); 
       setCurrentVideoId("3SLzkimnJ0U"); // Reset video to default
+      setIsVideoVisible(true); // Show video on reset
       
       const welcomeMsg = '¡Hola! 👋 Soy PlaniBot. Para poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**';
       setMessages([{ role: 'model', text: welcomeMsg }]);
@@ -341,6 +343,11 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
   };
 
+  // Determine if current video is a "Short" (Vertical) based on default ID
+  // This is a heuristic. We assume the default video "3SLzkimnJ0U" is a vertical short.
+  // Other destination videos we assume are standard landscape.
+  const isShortVideo = currentVideoId === "3SLzkimnJ0U";
+
   return (
     <>
       <button
@@ -384,33 +391,38 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
             </div>
           </div>
           
-          {/* Dynamic Video Player Area */}
-           <div className="w-full h-48 bg-black/50 relative flex-shrink-0">
-               <iframe 
-                   width="100%" 
-                   height="100%" 
-                   src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=0&controls=1&loop=1&playlist=${currentVideoId}`} 
-                   title="PLANIFICA TU SUEÑO" 
-                   frameBorder="0" 
-                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                   referrerPolicy="strict-origin-when-cross-origin"
-                   allowFullScreen
-               ></iframe>
-               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-               
-               {/* 5-Star Rating Overlay */}
-                {showRating && (
-                    <div className="absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-md border border-yellow-500/50 rounded-full px-3 py-1 flex items-center gap-2 animate-fade-in shadow-lg">
+          {/* Dynamic Video Player Area - Floating & Closable */}
+           {isVideoVisible && (
+               <div className={`w-full bg-black/50 relative flex-shrink-0 transition-all duration-500 ease-in-out ${isShortVideo ? 'h-96' : 'h-48'}`}>
+                   {/* Close Video Button */}
+                   <button 
+                        onClick={() => setIsVideoVisible(false)}
+                        className="absolute top-2 right-2 z-30 bg-black/60 hover:bg-red-500/80 text-white rounded-full p-1 transition-colors backdrop-blur-sm"
+                        title="Ocultar video"
+                   >
+                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                   </button>
+
+                   <iframe 
+                       width="100%" 
+                       height="100%" 
+                       src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=0&controls=1&loop=0&rel=0`} 
+                       title="PLANIFICA TU SUEÑO" 
+                       frameBorder="0" 
+                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                       referrerPolicy="strict-origin-when-cross-origin"
+                       allowFullScreen
+                   ></iframe>
+                   
+                   {/* 5-Star Rating Overlay - Also Closable */}
+                    <div className="absolute top-2 left-2 z-20 bg-black/60 backdrop-blur-md border border-yellow-500/50 rounded-full px-3 py-1 flex items-center gap-2 animate-fade-in shadow-lg">
                         <a href="https://g.page/r/CZJETIPfoLYKEBE/review" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[10px] text-white hover:text-yellow-300 transition-colors">
                             <span className="text-yellow-400">★★★★★</span>
                             <span className="font-bold">Califícanos</span>
                         </a>
-                        <button onClick={() => setShowRating(false)} className="ml-1 text-white/50 hover:text-white transition-colors" title="Ocultar">
-                            ×
-                        </button>
                     </div>
-                )}
-           </div>
+               </div>
+           )}
 
           {/* Chat Body */}
           <div className="flex-1 p-4 overflow-y-auto whatsapp-bg relative">

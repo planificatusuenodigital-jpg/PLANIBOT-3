@@ -24,6 +24,7 @@ export interface Plan {
   images: string[];
   includes: string[];
   isVisible: boolean;
+  isFeatured?: boolean; // New field for Featured Plans
   departureDate: string; // e.g., "2024-10-15"
   returnDate: string; // e.g., "2024-10-20"
   

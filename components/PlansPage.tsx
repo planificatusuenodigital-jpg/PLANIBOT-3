@@ -111,15 +111,25 @@ const FiltersSidebar: React.FC<{
 
     const selectStyle = "w-full bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-pink-400 focus:outline-none focus:bg-white/20 transition-all appearance-none shadow-inner";
 
+    const hasActiveFilters = 
+        filters.searchTerm !== '' ||
+        filters.country !== 'Todos' ||
+        filters.city !== 'Todos' ||
+        filters.regime !== 'Todos' ||
+        filters.travelerTypes.length > 0 ||
+        filters.amenities.length > 0 ||
+        filters.priceRange.min !== '' ||
+        filters.priceRange.max !== '';
+
     return (
         <div className={`p-5 h-full flex flex-col ${className || 'bg-black/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg'}`}>
             <div className='flex flex-col gap-3 mb-2 border-b border-white/10 pb-3 flex-shrink-0'>
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <h2 className="text-2xl font-black text-white tracking-wide drop-shadow-md">Filtros</h2>
-                        {onClose && (
+                        {onClose && hasActiveFilters && (
                             <span className="bg-pink-500/80 backdrop-blur-md text-[10px] px-2 py-0.5 rounded-full text-white font-bold border border-pink-400/50 shadow-lg">
-                                {Object.values(filters).flat().filter(v => v !== '' && v !== 'Todos' && v !== 0).length > 0 ? 'Activos' : ''}
+                                Activos
                             </span>
                         )}
                     </div>
