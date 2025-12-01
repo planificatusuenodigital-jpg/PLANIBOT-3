@@ -615,7 +615,7 @@ const App: React.FC = () => {
             { event: '*', schema: 'public', table: 'plans' },
             (payload) => {
                 console.log('Realtime change detected in plans:', payload);
-                fetchAppData(); // Refresh all data on any plan change
+                fetchAppData(); 
             }
         )
         .subscribe();
@@ -633,9 +633,37 @@ const App: React.FC = () => {
         )
         .subscribe();
 
+    // Set up Realtime subscription for TESTIMONIALS
+    const testimonialsSubscription = supabase
+        .channel('testimonials-changes')
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'testimonials' },
+            (payload) => {
+                console.log('Realtime change detected in testimonials:', payload);
+                fetchAppData(); 
+            }
+        )
+        .subscribe();
+
+    // Set up Realtime subscription for CATEGORIES
+    const categoriesSubscription = supabase
+        .channel('categories-changes')
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'categories' },
+            (payload) => {
+                console.log('Realtime change detected in categories:', payload);
+                fetchAppData(); 
+            }
+        )
+        .subscribe();
+
     return () => {
         supabase.removeChannel(plansSubscription);
         supabase.removeChannel(contentSubscription);
+        supabase.removeChannel(testimonialsSubscription);
+        supabase.removeChannel(categoriesSubscription);
     };
   }, [fetchAppData]);
 
@@ -672,16 +700,39 @@ const App: React.FC = () => {
                  await supabase.from('plans').update(dbPlan).eq('id', plan.id);
              }
           }
-          // Handle deletions logic would be needed here if plans were removed from the array
-          // For simplicity in this iteration, we assume 'Upsert' logic or specific Delete actions in Admin Panel
+          // Note: Full sync (deletion handling) requires more complex logic. 
+          // Current logic handles Updates and Inserts.
 
-          // 2. Sync Categories (Full Replace strategy for simplicity or individual upserts)
-          // Current UI handles add/remove. We should ensure DB reflects `newData.categories`.
-          // Best approach for lists: Check existence.
-          // For this demo, let's assume the Admin Panel calls handleSaveToSupabase only for generic saves or specific actions.
-          // *Actually*, AdminPanel handles its own state. We can use this function to save site_content specifically.
+          // 2. Sync Testimonials
+          for (const testimonial of newData.testimonials) {
+              const dbTestimonial = {
+                  author: testimonial.author,
+                  text: testimonial.text,
+                  rating: testimonial.rating
+              };
+              
+              if (testimonial.id > 1000000000) {
+                  await supabase.from('testimonials').insert([dbTestimonial]);
+              } else {
+                  await supabase.from('testimonials').update(dbTestimonial).eq('id', testimonial.id);
+              }
+          }
 
-          // 3. Sync Site Content
+          // 3. Sync Categories
+          // Simple sync: get all current DB categories, determine diff.
+          // For simplicity/robustness in this context without complex diffing:
+          // We will attempt to insert new categories. Deletions are safer done manually via DB or specific delete actions.
+          // But to ensure the frontend works:
+          for (const catName of newData.categories) {
+              // Upsert by name if possible, or just insert ignoring duplicates if unique constraint exists
+              // We'll check existence first to be safe
+              const { data: existing } = await supabase.from('categories').select('id').eq('name', catName).single();
+              if (!existing) {
+                  await supabase.from('categories').insert([{ name: catName }]);
+              }
+          }
+
+          // 4. Sync Site Content
           const contentToUpsert = [
               { key: 'about_us', value: newData.aboutUs },
               { key: 'legal', value: newData.legal },
@@ -756,7 +807,8 @@ const App: React.FC = () => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error('Error logging out:', error.message);
-    window.location.href = window.location.origin + window.location.pathname;
+    // Redirect to home page (removes query params like ?admin=true) and reloads to clear state
+    window.location.href = window.location.origin;
   };
 
   if (loadingSession) {
