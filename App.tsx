@@ -729,7 +729,7 @@ const App: React.FC = () => {
   const renderSection = () => {
     switch (activeSection) {
       case Section.Inicio:
-        return <HomePage setActiveSection={setActiveSection} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} testimonials={appData.testimonials} logoUrl={appData.logoUrl} />;
+        return <HomePage setActiveSection={setActiveSection} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} testimonials={appData.testimonials} logoUrl={appData.logoUrl} destinations={appData.destinations} />;
       case Section.Planes:
         return <PlansPage globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} logoUrl={appData.logoUrl} />;
       case Section.Destinos:
@@ -743,7 +743,7 @@ const App: React.FC = () => {
       case Section.FAQ:
         return <FAQPage faqs={appData.faqs} />;
       default:
-        return <HomePage setActiveSection={setActiveSection} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} testimonials={appData.testimonials} logoUrl={appData.logoUrl} />;
+        return <HomePage setActiveSection={setActiveSection} setQrModalPlan={setQrModalPlan} setDetailModalPlan={setDetailModalPlan} setQuoteRequestPlan={setQuoteRequestPlan} plans={appData.plans} testimonials={appData.testimonials} logoUrl={appData.logoUrl} destinations={appData.destinations} />;
     }
   };
 

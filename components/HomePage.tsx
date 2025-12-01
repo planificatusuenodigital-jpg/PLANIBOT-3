@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Section, Plan, Testimonial } from '../types';
+import React, { useState, useEffect } from 'react';
+import { Section, Plan, Testimonial, Destination } from '../types';
 import GlassCard from './GlassCard';
 import WatermarkedImage from './WatermarkedImage';
 import TextToSpeechButton from './TextToSpeechButton';
@@ -13,6 +13,7 @@ interface HomePageProps {
     plans: Plan[];
     testimonials: Testimonial[];
     logoUrl: string;
+    destinations: Destination[];
 }
 
 const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }> = ({ plan, setQrModalPlan }) => {
@@ -54,26 +55,95 @@ const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }
     );
 };
 
-const HomePage: React.FC<HomePageProps> = ({ setActiveSection, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, testimonials, logoUrl }) => {
+const HomePage: React.FC<HomePageProps> = ({ setActiveSection, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, testimonials, logoUrl, destinations }) => {
     
   const featuredPlans = plans.filter(p => p.isVisible).slice(0, 3);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    if (!destinations || destinations.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % destinations.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [destinations]);
+
+  // Mensajes de CTA (Call to Action) personalizados para el carrusel
+  const getCTAMessage = (destinationName: string) => {
+      const lowerName = destinationName.toLowerCase();
+      if (lowerName.includes('san andrés')) return "El paraíso te espera";
+      if (lowerName.includes('cartagena')) return "Historia y encanto";
+      if (lowerName.includes('santa marta')) return "Naturaleza y mar";
+      if (lowerName.includes('eje cafetero')) return "Aroma de montaña";
+      if (lowerName.includes('cancún')) return "Fiesta y cultura";
+      if (lowerName.includes('punta cana')) return "Relax total";
+      return "Vive tu sueño hoy";
+  };
   
   return (
     <div className="space-y-16 animate-fade-in">
-      {/* Hero Section */}
-      <section className="text-center text-white pt-16 pb-8">
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tight drop-shadow-lg">
-          Planifica Tus <span className="text-pink-300">Sueños</span>
-        </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg text-white/80 drop-shadow-md">
-          Convertimos tus deseos de viajar en realidades inolvidables. Explora nuestros destinos y déjanos guiarte en tu próxima gran aventura.
-        </p>
-        <button
-          onClick={() => setActiveSection(Section.Contacto)}
-          className="mt-8 px-8 py-3 bg-white text-purple-700 font-bold rounded-full shadow-lg hover:bg-pink-100 transform hover:scale-105 transition-all duration-300"
-        >
-          Cotiza Tu Viaje Ahora
-        </button>
+      
+      {/* Hero Carousel Section */}
+      <section className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] rounded-3xl overflow-hidden shadow-2xl mx-auto border border-white/10 group">
+        {destinations.length > 0 ? (
+            destinations.map((dest, index) => (
+                <div 
+                    key={dest.id}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+                >
+                    {/* Background Image with Zoom Effect */}
+                    <div className={`absolute inset-0 w-full h-full transform transition-transform duration-[8000ms] ease-out ${index === currentSlide ? 'scale-110' : 'scale-100'}`}>
+                        <img 
+                            src={dest.image} 
+                            alt={dest.name} 
+                            className="w-full h-full object-cover" 
+                        />
+                    </div>
+                    
+                    {/* Dark Overlay for Text Readability */}
+                    <div className="absolute inset-0 bg-black/40 bg-gradient-to-t from-black/80 via-transparent to-black/30"></div>
+
+                    {/* Content Overlay */}
+                    <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 sm:p-12">
+                        <div className="backdrop-blur-md bg-white/10 border border-white/20 p-6 sm:p-10 rounded-2xl shadow-2xl transform transition-all duration-700 translate-y-0 opacity-100 max-w-2xl">
+                            <span className="text-pink-300 font-bold tracking-[0.2em] uppercase text-xs sm:text-sm mb-2 block animate-pulse">Destino Destacado</span>
+                            <h2 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-2 drop-shadow-xl font-logo tracking-wide">
+                                {dest.name}
+                            </h2>
+                            <p className="text-xl sm:text-2xl text-white/90 font-medium mb-6 italic border-b-2 border-pink-500/50 inline-block pb-1">
+                                {getCTAMessage(dest.name)}
+                            </p>
+                            <button
+                                onClick={() => setActiveSection(Section.Contacto)}
+                                className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full shadow-[0_0_20px_rgba(236,72,153,0.5)] hover:scale-105 hover:shadow-[0_0_30px_rgba(236,72,153,0.8)] transition-all duration-300 flex items-center gap-2 mx-auto"
+                            >
+                                <span>Cotizar Ahora</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            ))
+        ) : (
+            // Fallback if no destinations
+            <div className="absolute inset-0 flex items-center justify-center bg-purple-900 text-white">
+                <h1 className="text-4xl font-bold">Planifica Tus Sueños</h1>
+            </div>
+        )}
+
+        {/* Carousel Navigation Dots */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3 z-20">
+            {destinations.map((_, index) => (
+                <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentSlide ? 'bg-pink-500 w-8' : 'bg-white/50 hover:bg-white'
+                    }`}
+                    aria-label={`Ir al slide ${index + 1}`}
+                />
+            ))}
+        </div>
       </section>
 
       {/* Featured Plans Section */}

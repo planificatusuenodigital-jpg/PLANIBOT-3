@@ -5,7 +5,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 
 // --- CONFIGURACIÓN DE VIDEOS ---
 // IDs de YouTube para destinos populares
-const DEFAULT_VIDEO_ID = "i9E_Blai8vk"; // Video genérico de Colombia/Viajes
+const DEFAULT_VIDEO_ID = "3SLzkimnJ0U"; // Video Short Principal
 const DESTINATION_VIDEOS: Record<string, string> = {
     "san andres": "Kj6W5Z5vQz0",
     "cartagena": "8X7Gg4Q5X0A",

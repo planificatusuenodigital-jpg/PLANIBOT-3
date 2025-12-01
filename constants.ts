@@ -22,6 +22,7 @@ export const DEFAULT_SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/planifica.tusueno/",
   instagram: "https://www.instagram.com/planificatusueno/",
   tiktok: "https://www.tiktok.com/@planificatusueno",
+  youtube: "https://www.youtube.com/@PlaniBot"
 };
 
 export const DEFAULT_CATEGORIES = [

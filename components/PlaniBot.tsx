@@ -88,7 +88,8 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
   const [isLoading, setIsLoading] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [isListening, setIsListening] = useState(false);
-  const [currentVideoId, setCurrentVideoId] = useState("i9E_Blai8vk"); // Default video
+  const [currentVideoId, setCurrentVideoId] = useState("3SLzkimnJ0U"); // Default video to user provided short
+  const [showRating, setShowRating] = useState(true);
   
   const chatEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<number | null>(null);
@@ -231,7 +232,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       window.speechSynthesis.cancel();
       localStorage.removeItem('planiBotHistory');
       resetBotContext(); 
-      setCurrentVideoId("i9E_Blai8vk"); // Reset video to default
+      setCurrentVideoId("3SLzkimnJ0U"); // Reset video to default
       
       const welcomeMsg = '¡Hola! 👋 Soy PlaniBot. Para poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**';
       setMessages([{ role: 'model', text: welcomeMsg }]);
@@ -388,14 +389,27 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                <iframe 
                    width="100%" 
                    height="100%" 
-                   src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${currentVideoId}`} 
-                   title="Destino Video" 
+                   src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=0&controls=1&loop=1&playlist=${currentVideoId}`} 
+                   title="PLANIFICA TU SUEÑO" 
                    frameBorder="0" 
-                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                   referrerPolicy="strict-origin-when-cross-origin"
                    allowFullScreen
-                   className="pointer-events-none" // Disable interaction for background feel
                ></iframe>
                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+               
+               {/* 5-Star Rating Overlay */}
+                {showRating && (
+                    <div className="absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-md border border-yellow-500/50 rounded-full px-3 py-1 flex items-center gap-2 animate-fade-in shadow-lg">
+                        <a href="https://g.page/r/CZJETIPfoLYKEBE/review" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[10px] text-white hover:text-yellow-300 transition-colors">
+                            <span className="text-yellow-400">★★★★★</span>
+                            <span className="font-bold">Califícanos</span>
+                        </a>
+                        <button onClick={() => setShowRating(false)} className="ml-1 text-white/50 hover:text-white transition-colors" title="Ocultar">
+                            ×
+                        </button>
+                    </div>
+                )}
            </div>
 
           {/* Chat Body */}

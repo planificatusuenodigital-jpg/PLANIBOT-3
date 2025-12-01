@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import GlassCard from './GlassCard';
 import WatermarkedImage from './WatermarkedImage';
 import TextToSpeechButton from './TextToSpeechButton';
@@ -53,10 +53,10 @@ const PlanActions: React.FC<{ plan: Plan, setQrModalPlan: (plan: Plan) => void }
                     mini={true} 
                 />
             </div>
-            <button onClick={() => setQrModalPlan(plan)} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Generar Código QR">
+            <button onClick={(e) => {e.stopPropagation(); setQrModalPlan(plan)}} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Generar Código QR">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 5h3v3H5V5zm0 7h3v3H5v-3zM12 5h3v3h-3V5zm0 7h3v3h-3v-3z"/><path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm1 1h10v10H4V4z" clipRule="evenodd"/></svg>
             </button>
-            <button onClick={handleShare} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Compartir Plan">
+            <button onClick={(e) => {e.stopPropagation(); handleShare()}} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black/30 backdrop-blur-sm text-white/80 hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center" title="Compartir Plan">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
             </button>
         </div>
@@ -185,10 +185,13 @@ const FiltersSidebar: React.FC<{
 };
 
 const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, setQrModalPlan, setDetailModalPlan, setQuoteRequestPlan, plans, logoUrl }) => {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  // Mobile defaults to 'list' (1 column), but 'grid' will mean 2 columns on mobile now
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [filters, setFilters] = useState(initialFilters);
   const [sortBy, setSortBy] = useState('default');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isToolbarVisible, setIsToolbarVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     if (globalSearch) {
@@ -196,6 +199,28 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
       setGlobalSearch(''); // Reset global search after applying it
     }
   }, [globalSearch, setGlobalSearch]);
+
+  // Scroll detection to hide/show toolbar
+  useEffect(() => {
+    const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        
+        if (currentScrollY < 10) {
+            setIsToolbarVisible(true);
+        } else if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+            // Scrolling down & past threshold
+            setIsToolbarVisible(false);
+        } else if (currentScrollY < lastScrollY.current) {
+            // Scrolling up
+            setIsToolbarVisible(true);
+        }
+        
+        lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleFilterChange = (name: string, value: any) => {
     setFilters(prev => ({ ...prev, [name]: value }));
@@ -265,14 +290,6 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
                 className={`absolute top-0 right-0 h-[100dvh] w-full transition-transform duration-500 transform shadow-2xl ${isFilterOpen ? 'translate-x-0' : 'translate-x-full'}`} 
                 onClick={e => e.stopPropagation()}
             >
-                {/* 
-                    ESTILO PREMIUM: GLASMÓRFICO SATINADO ESMERILADO CON BORDES BRILLANTES 
-                    - bg-gradient-to-b: Degradado satinado.
-                    - backdrop-blur-[40px]: Desenfoque profundo (esmerilado).
-                    - backdrop-saturate-150: Colores vivos traslúcidos.
-                    - border-white/30: Borde brillante.
-                    - shadow-[inset...]: Brillo interno en los bordes.
-                */}
                 <FiltersSidebar 
                     filters={filters} 
                     onFilterChange={handleFilterChange} 
@@ -301,91 +318,111 @@ const PlansPage: React.FC<PlansPageProps> = ({ globalSearch, setGlobalSearch, se
         </aside>
 
         <main className="flex-1">
-            <GlassCard className="p-4 mb-6 sticky top-20 z-30 bg-black/20 backdrop-blur-xl border border-white/10">
-                <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-                    <div className="flex justify-between items-center w-full sm:w-auto">
-                        <p className="text-white/80 text-sm font-medium">{filteredAndSortedPlans.length} planes encontrados</p>
-                    </div>
-                    
-                    <div className="flex items-center gap-3 w-full sm:w-auto">
-                        {/* Mobile Trigger Button inside Toolbar */}
-                        <button 
-                            onClick={() => setIsFilterOpen(true)} 
-                            className="md:hidden flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" /></svg>
-                            <span className="font-bold text-sm">Filtros</span>
-                        </button>
+            <div className={`sticky top-4 md:top-20 z-30 transition-transform duration-300 ${isToolbarVisible ? 'translate-y-0' : '-translate-y-40'}`}>
+                <GlassCard className="p-4 mb-6 bg-black/20 backdrop-blur-xl border border-white/10">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+                        <div className="flex justify-between items-center w-full sm:w-auto">
+                            <p className="text-white/80 text-sm font-medium">{filteredAndSortedPlans.length} planes encontrados</p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                            {/* Mobile Trigger Button inside Toolbar */}
+                            <button 
+                                onClick={() => setIsFilterOpen(true)} 
+                                className="md:hidden flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" /></svg>
+                                <span className="font-bold text-sm">Filtros</span>
+                            </button>
 
-                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${selectStyle} flex-[2] sm:w-auto appearance-none text-sm`}>
-                            <option value="default" className="bg-purple-800">Ordenar por</option>
-                            <option value="price_asc" className="bg-purple-800">Precio: Menor a Mayor</option>
-                            <option value="price_desc" className="bg-purple-800">Precio: Mayor a Menor</option>
-                            <option value="name_az" className="bg-purple-800">Nombre: A-Z</option>
-                        </select>
-                        <div className="hidden sm:flex items-center gap-2">
-                             <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg></button>
-                            <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-pink-500/50' : 'bg-white/20'} text-white`}><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg></button>
+                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${selectStyle} flex-[2] sm:w-auto appearance-none text-sm`}>
+                                <option value="default" className="bg-purple-800">Ordenar por</option>
+                                <option value="price_asc" className="bg-purple-800">Precio: Menor a Mayor</option>
+                                <option value="price_desc" className="bg-purple-800">Precio: Mayor a Menor</option>
+                                <option value="name_az" className="bg-purple-800">Nombre: A-Z</option>
+                            </select>
+                            
+                            {/* View Toggle Buttons - Visible on Mobile now */}
+                            <div className="flex items-center gap-1">
+                                <button 
+                                    onClick={() => setViewMode('grid')} 
+                                    className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-pink-500/50 text-white' : 'bg-white/10 text-white/70'}`}
+                                    title="Ver en Cuadrícula (2 columnas)"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                                </button>
+                                <button 
+                                    onClick={() => setViewMode('list')} 
+                                    className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-pink-500/50 text-white' : 'bg-white/10 text-white/70'}`}
+                                    title="Ver en Lista (1 columna)"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </GlassCard>
+                </GlassCard>
+            </div>
 
             {filteredAndSortedPlans.length > 0 ? (
-              viewMode === 'grid' ? (
-                <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
+              // Logic Update: 'grid' means 2 cols on mobile/tablet, 3 on desktop. 'list' means 1 col always.
+              // We removed the conditional block rendering entirely different structures to unify and simplify logic for mobile.
+              <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
                     {filteredAndSortedPlans.map(plan => (
-                        <GlassCard key={plan.id} className="flex flex-col hover:scale-105 transition-transform duration-300 relative overflow-hidden group">
+                        <GlassCard 
+                            key={plan.id} 
+                            className={`flex ${viewMode === 'list' ? 'flex-col md:flex-row items-center' : 'flex-col'} hover:scale-105 transition-transform duration-300 relative overflow-hidden group`}
+                        >
                             <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
-                            <div onClick={() => setDetailModalPlan(plan)} className="cursor-pointer">
+                            
+                            <div onClick={() => setDetailModalPlan(plan)} className={`cursor-pointer ${viewMode === 'list' ? 'w-full md:w-1/3' : 'w-full'}`}>
                                 {plan.images && plan.images.length > 0 ? (
-                                    <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-40 sm:h-64 rounded-t-xl" logoUrl={logoUrl} />
+                                    <WatermarkedImage 
+                                        src={plan.images[0]} 
+                                        alt={plan.title} 
+                                        containerClassName={`${viewMode === 'list' ? 'h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none' : 'h-32 sm:h-64 rounded-t-xl'}`} 
+                                        logoUrl={logoUrl} 
+                                    />
                                 ) : (
-                                    <div className="h-40 sm:h-64 rounded-t-xl bg-black/10 flex items-center justify-center text-white/50">
+                                    <div className={`${viewMode === 'list' ? 'h-56 md:h-full' : 'h-32 sm:h-64'} bg-black/10 flex items-center justify-center text-white/50`}>
                                         Imagen no disponible
                                     </div>
                                 )}
                             </div>
-                            <div className="p-3 sm:p-4 flex flex-col flex-grow">
+
+                            <div className={`p-3 flex flex-col flex-grow ${viewMode === 'list' ? 'w-full md:w-2/3 md:p-6' : ''}`}>
                                 <span className="text-[10px] sm:text-xs font-semibold text-pink-300 truncate block">{plan.city}, {plan.country}</span>
-                                <h3 className="text-sm sm:text-xl font-bold text-white mt-1 leading-tight line-clamp-2">{plan.title}</h3>
-                                <p className="text-pink-200 font-semibold text-xs sm:text-base mt-1">{plan.price}</p>
-                                <div className="mt-2 sm:mt-4 flex flex-col sm:flex-row gap-2">
-                                    <button onClick={() => setDetailModalPlan(plan)} className="w-full bg-white/20 text-white py-1.5 sm:py-2 rounded-lg hover:bg-white/30 transition-colors text-xs sm:text-base">Ver Detalles</button>
-                                    <button onClick={() => setQuoteRequestPlan(plan)} className="w-full bg-pink-500 text-white font-bold py-1.5 sm:py-2 rounded-lg hover:bg-pink-600 transition-colors text-xs sm:text-base">Cotizar</button>
-                                </div>
-                            </div>
-                        </GlassCard>
-                    ))}
-                </div>
-              ) : (
-                <div className="flex flex-col gap-6">
-                    {filteredAndSortedPlans.map(plan => (
-                        <GlassCard key={plan.id} className="relative overflow-hidden transition-all duration-300 md:flex items-center">
-                            <PlanActions plan={plan} setQrModalPlan={setQrModalPlan} />
-                            <div className="md:w-1/3 cursor-pointer" onClick={() => setDetailModalPlan(plan)}>
-                                {plan.images && plan.images.length > 0 ? (
-                                    <WatermarkedImage src={plan.images[0]} alt={plan.title} containerClassName="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none" logoUrl={logoUrl} />
-                                ) : (
-                                    <div className="h-56 md:h-full rounded-t-xl md:rounded-l-xl md:rounded-t-none bg-black/10 flex items-center justify-center text-white/50">
-                                        Imagen no disponible
-                                    </div>
+                                
+                                <h3 className={`font-bold text-white mt-1 leading-tight line-clamp-2 ${viewMode === 'grid' ? 'text-xs sm:text-xl' : 'text-xl'}`}>
+                                    {plan.title}
+                                </h3>
+                                
+                                <p className={`text-pink-200 font-semibold mt-1 ${viewMode === 'grid' ? 'text-xs sm:text-base' : 'text-lg'}`}>
+                                    {plan.price}
+                                </p>
+                                
+                                {viewMode === 'list' && (
+                                    <p className="mt-2 text-white/80 text-sm line-clamp-2 hidden sm:block">{plan.description}</p>
                                 )}
-                            </div>
-                            <div className="p-4 md:p-6 md:w-2/3">
-                                <span className="text-xs font-semibold text-pink-300">{plan.city}, {plan.country}</span>
-                                <h3 className="text-xl font-bold text-white mt-1">{plan.title}</h3>
-                                <p className="text-pink-200 font-semibold mt-1">{plan.price}</p>
-                                <p className="mt-2 text-white/80 text-sm line-clamp-2">{plan.description}</p>
-                                <div className="mt-4 sm:ml-auto flex gap-2">
-                                    <button onClick={() => setDetailModalPlan(plan)} className="bg-white/20 text-white py-2 px-4 rounded-lg hover:bg-white/30 transition-colors">Ver Detalles</button>
-                                    <button onClick={() => setQuoteRequestPlan(plan)} className="bg-pink-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors">Cotizar</button>
+
+                                <div className={`mt-2 sm:mt-4 flex gap-2 ${viewMode === 'list' ? 'sm:ml-auto' : 'flex-col sm:flex-row'}`}>
+                                    <button 
+                                        onClick={() => setDetailModalPlan(plan)} 
+                                        className={`bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors ${viewMode === 'grid' ? 'py-1.5 text-[10px] sm:text-sm sm:py-2' : 'py-2 px-4'}`}
+                                    >
+                                        Ver Detalles
+                                    </button>
+                                    <button 
+                                        onClick={() => setQuoteRequestPlan(plan)} 
+                                        className={`bg-pink-500 text-white font-bold rounded-lg hover:bg-pink-600 transition-colors ${viewMode === 'grid' ? 'py-1.5 text-[10px] sm:text-sm sm:py-2' : 'py-2 px-4'}`}
+                                    >
+                                        Cotizar
+                                    </button>
                                 </div>
                             </div>
                         </GlassCard>
                     ))}
-                </div>
-              )
+              </div>
             ) : (
               <div className="text-center py-16">
                 <GlassCard className="p-8 inline-block">

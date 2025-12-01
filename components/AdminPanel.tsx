@@ -410,10 +410,37 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
     const [showAIInput, setShowAIInput] = useState(false);
     const [aiInputText, setAiInputText] = useState('');
     const [isAiLoading, setIsAiLoading] = useState(false);
+    
+    // New state for manual image input
+    const [tempImageInput, setTempImageInput] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
-    const handleImagesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(p => ({ ...p, images: e.target.value.split('\n').filter(url => url.trim() !== '') }));
     const handleTravelerTypesChange = (selected: string[]) => setFormData(p => ({...p, travelerTypes: selected as TravelerType[]}));
+
+    const handleAddImages = () => {
+        if (!tempImageInput.trim()) return;
+        
+        // Split by newlines, commas, or spaces (handling basic bulk paste)
+        const newUrls = tempImageInput
+            .split(/[\n,\s]+/)
+            .map(url => url.trim())
+            .filter(url => url.startsWith('http')); // Basic validation
+
+        if (newUrls.length > 0) {
+            setFormData(prev => ({
+                ...prev,
+                images: [...prev.images, ...newUrls]
+            }));
+            setTempImageInput('');
+        }
+    };
+
+    const handleRemoveImage = (indexToRemove: number) => {
+        setFormData(prev => ({
+            ...prev,
+            images: prev.images.filter((_, index) => index !== indexToRemove)
+        }));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -475,7 +502,7 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
                             onClick={() => setShowAIInput(!showAIInput)} 
                             className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none shadow-lg animate-pulse"
                         >
-                            ✨ Insertar prompt para cargar producto
+                            ✨ IA Autocompletar
                         </NeumorphicButton>
                         <button onClick={onClose} className="text-gray-500 hover:text-red-500 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -505,10 +532,10 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
                     </div>
                 )}
                 
-                <div className="flex bg-gray-200 px-6 pt-2 space-x-1">
-                    <TabButton tabId="basic" label="Información Básica" />
-                    <TabButton tabId="details" label="Detalles y Ubicación" />
-                    <TabButton tabId="features" label="Comodidades e Incluye" />
+                <div className="flex bg-gray-200 px-6 pt-2 space-x-1 overflow-x-auto">
+                    <TabButton tabId="basic" label="Básico" />
+                    <TabButton tabId="details" label="Detalles" />
+                    <TabButton tabId="features" label="Incluye" />
                     <TabButton tabId="media" label="Imágenes" />
                 </div>
                 
@@ -619,24 +646,83 @@ const PlanFormModal: React.FC<{ plan: Plan | null, categories: string[], onSave:
                         )}
 
                         {activeTab === 'media' && (
-                            <div className="space-y-4 animate-fade-in">
-                                <div className="bg-yellow-100 p-3 rounded-lg text-yellow-800 text-sm mb-2">
-                                    💡 Pega aquí las URLs de las imágenes. Una URL por línea.
-                                </div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">URLs de Imagen</label>
-                                <textarea 
-                                    value={formData.images.join('\n')} 
-                                    onChange={handleImagesChange} 
-                                    className="neu-textarea w-full h-64 p-3 rounded-lg font-mono text-sm" 
-                                    placeholder="https://ejemplo.com/imagen1.jpg&#10;https://ejemplo.com/imagen2.jpg"
-                                />
-                                <div className="mt-4">
-                                    <p className="text-sm font-bold text-gray-700 mb-2">Vista Previa:</p>
-                                    <div className="flex gap-2 overflow-x-auto pb-2">
-                                        {formData.images.map((img, idx) => (
-                                            <img key={idx} src={img} alt="preview" className="w-24 h-24 object-cover rounded-lg border border-gray-300" onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150?text=Error')} />
-                                        ))}
+                            <div className="space-y-6 animate-fade-in">
+                                <div className="bg-white/50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                                        Agregar Imágenes
+                                        <span className="text-xs font-normal text-gray-500 ml-2">(Pega uno o varios enlaces separados por espacios o saltos de línea)</span>
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            value={tempImageInput}
+                                            onChange={(e) => setTempImageInput(e.target.value)}
+                                            onPaste={(e) => {
+                                                // Allow default paste, then we can trigger add manually or via button
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    handleAddImages();
+                                                }
+                                            }}
+                                            placeholder="https://ejemplo.com/foto1.jpg https://ejemplo.com/foto2.jpg"
+                                            className="neu-input flex-1 p-3 rounded-lg text-sm"
+                                        />
+                                        <NeumorphicButton 
+                                            onClick={handleAddImages}
+                                            className="px-6 py-2 bg-pink-500 text-white hover:bg-pink-600"
+                                            disabled={!tempImageInput}
+                                        >
+                                            Añadir
+                                        </NeumorphicButton>
                                     </div>
+                                </div>
+
+                                <div>
+                                    <div className="flex justify-between items-center mb-3">
+                                        <label className="block text-sm font-bold text-gray-700">Galería ({formData.images.length})</label>
+                                        {formData.images.length > 0 && (
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setFormData(p => ({...p, images: []}))}
+                                                className="text-xs text-red-500 hover:text-red-700 font-semibold"
+                                            >
+                                                Borrar Todo
+                                            </button>
+                                        )}
+                                    </div>
+                                    
+                                    {formData.images.length === 0 ? (
+                                        <div className="text-center py-8 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300">
+                                            <p className="text-gray-400 text-sm">No hay imágenes cargadas.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            {formData.images.map((img, idx) => (
+                                                <div key={idx} className="relative group aspect-square rounded-xl overflow-hidden bg-white shadow-sm border border-gray-200">
+                                                    <img 
+                                                        src={img} 
+                                                        alt={`Plan image ${idx + 1}`} 
+                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                                                        onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150?text=Error')} 
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => handleRemoveImage(idx)}
+                                                            className="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 shadow-lg transform hover:scale-110 transition-all"
+                                                            title="Eliminar imagen"
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    </div>
+                                                    <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[10px] px-1.5 rounded">
+                                                        #{idx + 1}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
