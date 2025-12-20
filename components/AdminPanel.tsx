@@ -133,9 +133,11 @@ const PlanEditor: React.FC<{
         setFormData(prev => {
             const current = (prev.travelerTypes || []) as string[];
             if (current.includes(type)) {
-                return { ...prev, travelerTypes: current.filter(t => t !== type) };
+                // Added cast to TravelerType[] to fix TS error when returning string[]
+                return { ...prev, travelerTypes: current.filter(t => t !== type) as TravelerType[] };
             } else {
-                return { ...prev, travelerTypes: [...current, type] };
+                // Added cast to TravelerType[] to fix TS error when returning string[]
+                return { ...prev, travelerTypes: [...current, type] as TravelerType[] };
             }
         });
     };

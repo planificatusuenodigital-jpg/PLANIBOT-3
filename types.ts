@@ -70,6 +70,11 @@ export interface BotResponse {
     image?: string; // New field for sending images from bot
     showDatePicker?: boolean; // New field to trigger date picker UI
     videoId?: string; // New field to pass video ID
+    isTransition?: boolean; // Indica si es un paso intermedio (video de espera)
+    finalData?: {
+        text: string;
+        whatsappLink: string;
+    };
 }
 
 export interface AboutUsContent {
