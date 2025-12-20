@@ -12,20 +12,20 @@ const DESTINATION_VIDEOS: Record<string, string> = {
     "santa marta": "Vq1_1hZq6Xg",
     "eje cafetero": "Zt2fC0oVq_w",
     "amazonas": "e7bC30sI1Yg",
-    "cancun": "S-gYtE3GvQ8", // Ejemplo Cancun
-    "punta cana": "rM2C3w6hJk8", // Ejemplo Punta Cana
-    "panama": "5_w1f7y3x8k" // Ejemplo Panama
+    "cancun": "S-gYtE3GvQ8", 
+    "punta cana": "rM2C3w6hJk8", 
+    "panama": "5_w1f7y3x8k" 
 };
 
 // --- TIPOS DE ESTADO Y CONTEXTO ---
 
 type ConversationStep = 
-    | 'GREETING'       // Saludo inicial, pide nombre
-    | 'ASK_DESTINATION' // Ya tiene nombre, pide destino
-    | 'ASK_DATES'      // Ya tiene destino, pide fechas
-    | 'ASK_PEOPLE'     // Ya tiene fechas, pide pax
-    | 'ASK_BUDGET'     // (Opcional) Pide presupuesto o cierra
-    | 'COMPLETED';     // Flujo terminado
+    | 'GREETING'       
+    | 'ASK_DESTINATION' 
+    | 'ASK_DATES'      
+    | 'ASK_PEOPLE'     
+    | 'ASK_BUDGET'     
+    | 'COMPLETED';     
 
 interface ConversationContext {
     step: ConversationStep;
@@ -49,13 +49,13 @@ interface AppDataForBot {
 let botData: AppDataForBot | null = null;
 let isInitialized = false;
 
-// Contexto de la conversación actual (En una app real, esto iría por sesión de usuario)
+// Contexto de la conversación actual
 let context: ConversationContext = {
     step: 'GREETING',
     data: {}
 };
 
-// --- BASE DE CONOCIMIENTO (CEREBRO DEL EXPERTO) ---
+// --- BASE DE CONOCIMIENTO ---
 
 const KNOWLEDGE_BASE: Record<string, { description: string; bestSeason: string; food: string; tips: string }> = {
     "san andres": {
@@ -107,50 +107,35 @@ const KNOWLEDGE_BASE: Record<string, { description: string; bestSeason: string; 
 const normalize = (text: string) => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
 const extractName = (input: string): string => {
-    // 1. Limpieza básica: quitar caracteres especiales raros, dejar letras, espacios y tildes
     const cleanText = input.replace(/[^\w\sÁÉÍÓÚáéíóúñÑ]/g, " ").trim();
-    
-    // 2. Patrones Fuertes (Regex): Detecta intenciones explícitas de decir el nombre
-    // Soporta: "Soy Juan", "Me llamo Maria", "Mi nombre es Pedro", "Yo soy Carlos"
     const strongPattern = /(?:me llamo|mi nombre es|yo soy|soy)(?:\s+el|\s+la)?\s+([a-zA-ZáéíóúÁÉÍÓÚñÑ]+)/i;
     const match = cleanText.match(strongPattern);
 
     if (match && match[1]) {
         const potentialName = match[1];
-        // Lista negra para evitar falsos positivos en frases como "Soy un cliente"
         const blackList = ['un', 'una', 'el', 'la', 'tu', 'viajero', 'cliente', 'usuario', 'planifica', 'sueno', 'bot', 'inteligencia', 'interesado'];
         if (!blackList.includes(potentialName.toLowerCase())) {
             return potentialName.charAt(0).toUpperCase() + potentialName.slice(1).toLowerCase();
         }
     }
 
-    // 3. Análisis de palabras sueltas (Heurística para "Hola Juan" o "Juan")
     const words = cleanText.split(/\s+/);
-    
-    // Diccionario de "Stop Words" (palabras a ignorar)
     const stopWords = new Set([
         'hola', 'buenos', 'buenas', 'dias', 'tardes', 'noches', 'hey', 'hi', 'hello', 'saludos', 'que', 'tal', 'como', 'estas', 'esta', 'estoy',
         'me', 'llamo', 'mi', 'nombre', 'es', 'soy', 'yo', 'el', 'la', 'un', 'una', 'por', 'favor', 'gracias', 'quisiera', 'quiero', 'cotizar',
         'busco', 'informacion', 'info', 'necesito', 'viaje', 'viajar', 'a', 'de', 'para', 'con', 'y', 'o'
     ]);
 
-    // Filtramos las palabras que NO son stop words
     const candidates = words.filter(w => !stopWords.has(w.toLowerCase()));
-
-    // Si queda alguna palabra candidata, tomamos la primera (asumiendo que es el nombre)
     if (candidates.length > 0) {
         const name = candidates[0];
-        // Validación mínima: longitud > 2 y que no sea un número
         if (name.length > 2 && isNaN(Number(name))) {
             return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
         }
     }
-
-    // 4. Fallback: Si no pudimos aislar un nombre, devolvemos el genérico
     return "Viajero";
 };
 
-// Helper para obtener video ID
 const getVideoForDestination = (text: string): string => {
     const cleanText = normalize(text);
     for (const [key, id] of Object.entries(DESTINATION_VIDEOS)) {
@@ -166,7 +151,6 @@ const getVideoForDestination = (text: string): string => {
 export const startChat = (appData: AppDataForBot) => {
     botData = appData;
     isInitialized = true;
-    // Reiniciar contexto al iniciar
     context = { step: 'GREETING', data: {} };
 };
 
@@ -174,52 +158,42 @@ export const resetBotContext = () => {
     context = { step: 'GREETING', data: {} };
 };
 
-// --- MOTOR DE LÓGICA (CHATBOT) ---
+// --- MOTOR DE LÓGICA ---
 
 const processFlow = (input: string): BotResponse => {
     const cleanInput = normalize(input);
     
-    // 0. INTERRUPCIONES GLOBALES (Ayuda, Reinicio, Saludos genéricos si ya se saludó)
     if (/(reiniciar|borrar|inicio|empezar de nuevo)/.test(cleanInput)) {
         resetBotContext();
         return { 
-            text: "¡Listo! Empecemos de cero. 👋\n\nPara poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**",
-            videoId: DEFAULT_VIDEO_ID 
+            text: "¡Listo! Empecemos de cero. 👋\n\nPara poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**"
         };
     }
 
-    // 1. MAQUINA DE ESTADOS
     switch (context.step) {
         case 'GREETING':
-            // Esperamos el nombre
             const name = extractName(input);
             context.data.name = name;
             context.step = 'ASK_DESTINATION';
             
-            // Personalización dinámica del saludo
             const greeting = name === "Viajero" 
                 ? "¡Un gusto saludarte! 👋" 
                 : `¡Un gusto saludarte, **${name}**! 👋`;
 
             return {
-                text: `${greeting}\n\nPara ayudarte a encontrar el viaje perfecto, cuéntame: \n\n🌎 **¿A qué destino sueñas viajar?**\n_(Ej: San Andrés, Cancún, Eje Cafetero, o busco recomendaciones)_`,
-                videoId: DEFAULT_VIDEO_ID
+                text: `${greeting}\n\nPara ayudarte a encontrar el viaje perfecto, cuéntame: \n\n🌎 **¿A qué destino sueñas viajar?**\n_(Ej: San Andrés, Cancún, Eje Cafetero, o busco recomendaciones)_`
             };
 
         case 'ASK_DESTINATION':
-             // Detectar si pide recomendaciones
              if (/(recomienda|sugiere|no se|cualquier|opciones|destinos)/.test(cleanInput)) {
                  return {
-                     text: "¡Claro! 🌴 Si buscas playa, **San Andrés** y **Santa Marta** son joyas del Caribe. Para cultura y relax, **Cartagena** enamora. Y si prefieres naturaleza, el **Eje Cafetero** es mágico.\n\n¿Cuál de estos te llama más la atención?",
-                     videoId: DESTINATION_VIDEOS['san andres'] // Default suggestion video
+                     text: "¡Claro! 🌴 Si buscas playa, **San Andrés** y **Santa Marta** son joyas del Caribe. Para cultura y relax, **Cartagena** enamora. Y si prefieres naturaleza, el **Eje Cafetero** es mágico.\n\n¿Cuál de estos te llama más la atención?"
                  };
              }
 
             context.data.destination = input;
-            const destVideoId = getVideoForDestination(input);
             context.step = 'ASK_DATES';
             
-            // Detectar si mencionó un lugar conocido para dar un dato curioso
             let funFact = "";
             const knownKey = Object.keys(KNOWLEDGE_BASE).find(k => cleanInput.includes(k));
             if (knownKey) {
@@ -228,15 +202,13 @@ const processFlow = (input: string): BotResponse => {
 
             return {
                 text: `¡${context.data.destination} suena espectacular! ${funFact}\n\n📅 **¿Para qué fecha tienes planeado tu viaje?**\nPuedes escribirla o seleccionarla aquí abajo:`,
-                showDatePicker: true, // Activamos el selector de fecha
-                videoId: destVideoId
+                showDatePicker: true
             };
 
         case 'ASK_DATES':
             context.data.dates = input;
             context.step = 'ASK_PEOPLE';
 
-            // BUSCAR PLANES DISPONIBLES (basado en destino y fecha aproximada o solo destino)
             let relevantPlans: Plan[] = [];
             if (botData?.plans && context.data.destination) {
                 const destKeywords = context.data.destination.toLowerCase().split(' ');
@@ -250,7 +222,7 @@ const processFlow = (input: string): BotResponse => {
                         )
                     );
                     return matchDest && p.isVisible;
-                }).slice(0, 5); // Max 5 planes
+                }).slice(0, 5);
             }
 
             let plansMessage = "";
@@ -265,23 +237,24 @@ const processFlow = (input: string): BotResponse => {
 
         case 'ASK_PEOPLE':
             context.data.people = input;
-            context.step = 'COMPLETED'; // Saltamos presupuesto para no ser invasivos, o lo dejamos opcional en el form
+            context.step = 'COMPLETED'; 
             
-            // GENERAR ENLACE DE WHATSAPP
             const phone = botData?.contact.phone.replace(/\D/g, '') || "573113653379";
-            // Si el nombre es genérico "Viajero", no lo ponemos en el mensaje de WhatsApp para que el asesor pregunte
             const nameForWA = context.data.name === "Viajero" ? "" : `, soy *${context.data.name}*`;
             
             const message = `👋 Hola Planifica Tu Sueño${nameForWA}.\n\nEstoy interesado en viajar a: *${context.data.destination}*.\n🗓️ Fecha deseada: *${context.data.dates}*\n👥 Viajeros: ${context.data.people}\n\nQuedo atento a la disponibilidad y cotización. ¡Gracias!`;
             const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
+            // SOLAMENTE AQUÍ SE ENVÍA EL VIDEO AL FINALIZAR
+            const finalVideoId = getVideoForDestination(context.data.destination || '');
+
             return {
                 text: `¡Perfecto${context.data.name === "Viajero" ? "" : `, **${context.data.name}**`}! Ya tengo todos los datos para armar tu plan ideal. 🤩\n\nComo los precios de vuelos y hoteles cambian rápido, un asesor humano necesita verificar disponibilidad exacta para la fecha seleccionada.\n\n👇 **Presiona el botón de abajo para enviar tu solicitud a nuestro WhatsApp oficial:**`,
-                whatsappLink: waLink
+                whatsappLink: waLink,
+                videoId: finalVideoId
             };
 
         case 'COMPLETED':
-             // Si sigue escribiendo después de completar
              return {
                  text: "¡Ya tengo tus datos! 😊 Si deseas cambiar algo, dime 'reiniciar'. De lo contrario, dale clic al botón de arriba para chatear con un asesor humano en WhatsApp."
              };
@@ -295,8 +268,6 @@ const processLocalResponse = (input: string): BotResponse => {
     if (!botData) return { text: "Error: Cerebro no inicializado." };
     const cleanInput = normalize(input);
 
-    // --- MANEJO DE PREGUNTAS FRECUENTES (INTERRUPCIONES AL FLUJO) ---
-
     if (/(ubicacion|direccion|donde estan|oficina)/.test(cleanInput)) {
         return { text: `Estamos ubicados en: **${botData.contact.address}**.` };
     }
@@ -305,7 +276,6 @@ const processLocalResponse = (input: string): BotResponse => {
         return { text: `Nuestro número es: **${botData.contact.phone}**.` };
     }
 
-    // INTENCIÓN: REDES SOCIALES Y CALIFICACIONES
     if (/(redes|instagram|facebook|tiktok|fotos|confiable|opiniones|estrellas|calificacion|reputacion)/.test(cleanInput)) {
          return { 
              text: REVIEW_MESSAGE,
@@ -313,7 +283,6 @@ const processLocalResponse = (input: string): BotResponse => {
          };
     }
 
-    // Si no es una pregunta fáctica, procesamos el flujo de ventas
     return processFlow(input);
 };
 
@@ -326,23 +295,20 @@ export const sendMessageToBot = async (message: string): Promise<BotResponse> =>
     });
 };
 
-// --- FUNCIONALIDAD IA PARA EL ADMIN PANEL (EXTRACCIÓN DE DATOS) ---
-
 export const parseTravelPlanFromText = async (rawText: string): Promise<Partial<Plan>> => {
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: `You are an expert travel agent data entry assistant. 
             Your task is to parse unstructured text about a hotel or travel plan and convert it into a valid JSON object.
             
             EXTREMELY IMPORTANT:
-            1. Extract ALL image URLs. Look for links starting with 'http' or 'https' that look like images (e.g., googleusercontent, picsum, jpg, png). Place them in the 'images' array.
-            2. Extract any WhatsApp Catalog URL (e.g. wa.me/p/...) and put it in 'whatsappCatalogUrl'.
-            3. Infer 'amenities' from the description. If text mentions 'aire acondicionado', add 'Aire Acondicionado' to amenities. If it mentions 'piscina', 'alberca', or 'pool', add 'Piscina'. Use standard amenities: 'Piscina', 'Jacuzzi', 'Wifi Gratis', 'Aire Acondicionado', 'Restaurante', 'Bar / Lounge', 'Estacionamiento', 'Gimnasio', 'Spa', 'Turco / Baño de vapor', 'Club de niños', 'Acceso a la Playa', 'Vista al Mar', 'Minibar / Refrigerador', 'Agua Caliente', 'Mesa de Tours'.
-            4. Infer 'includes' list (e.g. breakfast, tours).
-            5. Determine the best 'category' from: 'Sol y Playa', 'Rural', 'Internacional', 'Caribeño', 'Aventura', 'Cultural', 'Romántico'.
+            1. Extract ALL image URLs. Look for links starting with 'http' or 'https' that look like images.
+            2. Extract any WhatsApp Catalog URL.
+            3. Infer 'amenities' from the description.
+            4. Infer 'includes' list.
+            5. Determine the best 'category'.
             6. Clean up the 'description' to be professional.
             
             Raw Text to Parse:
@@ -354,22 +320,22 @@ export const parseTravelPlanFromText = async (rawText: string): Promise<Partial<
                 responseSchema: {
                     type: Type.OBJECT,
                     properties: {
-                        title: { type: Type.STRING, description: "Name of the hotel or plan" },
+                        title: { type: Type.STRING },
                         category: { type: Type.STRING },
-                        price: { type: Type.STRING, description: "Formatted price string e.g. '$1.200.000 COP' or 'Consultar Precio'" },
-                        priceValue: { type: Type.NUMBER, description: "Numeric price value" },
-                        durationDays: { type: Type.INTEGER, description: "Number of days" },
-                        description: { type: Type.STRING, description: "Full description" },
-                        images: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of ALL extracted image URLs" },
-                        includes: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of items included" },
+                        price: { type: Type.STRING },
+                        priceValue: { type: Type.NUMBER },
+                        durationDays: { type: Type.INTEGER },
+                        description: { type: Type.STRING },
+                        images: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        includes: { type: Type.ARRAY, items: { type: Type.STRING } },
                         country: { type: Type.STRING },
                         city: { type: Type.STRING },
-                        regime: { type: Type.STRING, description: "One of: 'Todo Incluido', 'Pensión Completa', 'Con Desayuno Incluido', 'Solo Alojamiento', 'Paquete Promocional'" },
-                        travelerTypes: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Target audience e.g. 'Familias', 'Parejas'" },
-                        amenities: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of facilities/amenities found" },
-                        whatsappCatalogUrl: { type: Type.STRING, description: "The WhatsApp catalog link found in text" },
-                        departureDate: { type: Type.STRING, description: "YYYY-MM-DD if present" },
-                        returnDate: { type: Type.STRING, description: "YYYY-MM-DD if present" },
+                        regime: { type: Type.STRING },
+                        travelerTypes: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        amenities: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        whatsappCatalogUrl: { type: Type.STRING },
+                        departureDate: { type: Type.STRING },
+                        returnDate: { type: Type.STRING },
                     }
                 }
             }
@@ -377,9 +343,7 @@ export const parseTravelPlanFromText = async (rawText: string): Promise<Partial<
 
         const jsonText = response.text;
         if (!jsonText) throw new Error("No response from AI");
-        
         return JSON.parse(jsonText);
-
     } catch (error) {
         console.error("Error parsing plan with AI:", error);
         return {};

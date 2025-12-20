@@ -42,7 +42,6 @@ const WhatsappSummaryButton: React.FC<{ link: string }> = ({ link }) => (
     </a>
 );
 
-// New Component: Date Picker inside Chat
 const ChatDatePicker: React.FC<{ onDateSelect: (date: string) => void }> = ({ onDateSelect }) => {
     const [selectedDate, setSelectedDate] = useState('');
 
@@ -88,8 +87,8 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
   const [isLoading, setIsLoading] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [isListening, setIsListening] = useState(false);
-  const [currentVideoId, setCurrentVideoId] = useState("3SLzkimnJ0U"); // Default video to user provided short
-  const [isVideoVisible, setIsVideoVisible] = useState(true); // Control visibility of video
+  const [currentVideoId, setCurrentVideoId] = useState("3SLzkimnJ0U"); 
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
   
   const chatEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<number | null>(null);
@@ -128,7 +127,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
 
     const voices = window.speechSynthesis.getVoices();
     const spanishVoices = voices.filter(voice => voice.lang.startsWith('es'));
-    
     const femaleVoice = spanishVoices.find(voice => 
         voice.name.toLowerCase().includes('female') || 
         voice.name.toLowerCase().includes('femenina') ||
@@ -180,7 +178,7 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
 
         if (videoId) {
             setCurrentVideoId(videoId);
-            setIsVideoVisible(true); // Show video again if context changes
+            setIsVideoVisible(true);
         }
 
         if (modelResponseText) {
@@ -233,15 +231,13 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       window.speechSynthesis.cancel();
       localStorage.removeItem('planiBotHistory');
       resetBotContext(); 
-      setCurrentVideoId("3SLzkimnJ0U"); // Reset video to default
-      setIsVideoVisible(true); // Show video on reset
+      setIsVideoVisible(false);
       
       const welcomeMsg = '¡Hola! 👋 Soy PlaniBot. Para poder asesorarte mejor, cuéntame, **¿con quién tengo el gusto?**';
       setMessages([{ role: 'model', text: welcomeMsg }]);
       speakText(welcomeMsg);
   };
 
-  // Speech-to-Text Setup
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -259,7 +255,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
             setInput(transcript);
 
             if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-            
             if (transcript.trim().length > 0) {
                 silenceTimerRef.current = window.setTimeout(() => {
                     handleSendMessage(null, transcript);
@@ -294,7 +289,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       }
   };
 
-  // Inicialización y Persistencia
   useEffect(() => {
     if (isOpen) {
         startChat({ plans: travelPlans, faqs, contact: contactInfo, social: socialLinks });
@@ -343,9 +337,6 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
       return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
   };
 
-  // Determine if current video is a "Short" (Vertical) based on default ID
-  // This is a heuristic. We assume the default video "3SLzkimnJ0U" is a vertical short.
-  // Other destination videos we assume are standard landscape.
   const isShortVideo = currentVideoId === "3SLzkimnJ0U";
 
   return (
@@ -391,103 +382,93 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
             </div>
           </div>
           
-          {/* Dynamic Video Player Area - Floating & Closable */}
-           {isVideoVisible && (
-               <div className={`w-full bg-black/50 relative flex-shrink-0 transition-all duration-500 ease-in-out ${isShortVideo ? 'h-96' : 'h-48'}`}>
-                   {/* Close Video Button */}
+          {/* Chat Area Container */}
+          <div className="flex-1 overflow-hidden relative whatsapp-bg">
+             
+             {/* FLOATING VIDEO PLAYER (Small and Picture-in-Picture style) */}
+             {isVideoVisible && (
+               <div className={`absolute top-4 right-4 z-50 transition-all duration-500 animate-fade-in shadow-2xl border border-white/20 rounded-2xl overflow-hidden bg-black/80 backdrop-blur-md ${isShortVideo ? 'w-24 h-40' : 'w-40 h-24'}`}>
                    <button 
                         onClick={() => setIsVideoVisible(false)}
-                        className="absolute top-2 right-2 z-30 bg-black/60 hover:bg-red-500/80 text-white rounded-full p-1 transition-colors backdrop-blur-sm"
+                        className="absolute top-1 right-1 z-[60] bg-black/60 hover:bg-red-500/80 text-white rounded-full p-0.5 transition-colors backdrop-blur-sm"
                         title="Ocultar video"
                    >
-                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                    </button>
 
                    <iframe 
                        width="100%" 
                        height="100%" 
-                       src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=0&controls=1&loop=0&rel=0`} 
+                       src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=0&controls=0&loop=1&rel=0&playlist=${currentVideoId}`} 
                        title="PLANIFICA TU SUEÑO" 
                        frameBorder="0" 
-                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                       referrerPolicy="strict-origin-when-cross-origin"
-                       allowFullScreen
+                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                       className="pointer-events-none"
                    ></iframe>
-                   
-                   {/* 5-Star Rating Overlay - Also Closable */}
-                    <div className="absolute top-2 left-2 z-20 bg-black/60 backdrop-blur-md border border-yellow-500/50 rounded-full px-3 py-1 flex items-center gap-2 animate-fade-in shadow-lg">
-                        <a href="https://g.page/r/CZJETIPfoLYKEBE/review" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[10px] text-white hover:text-yellow-300 transition-colors">
-                            <span className="text-yellow-400">★★★★★</span>
-                            <span className="font-bold">Califícanos</span>
-                        </a>
-                    </div>
                </div>
-           )}
+             )}
 
-          {/* Chat Body */}
-          <div className="flex-1 p-4 overflow-y-auto whatsapp-bg relative">
-             <div className="space-y-4 relative z-10">
-              {messages.map((msg, index) => (
-                <div key={index} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div 
-                    className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-md relative group
-                        ${msg.role === 'user' 
-                            ? 'bg-green-600/80 text-white rounded-br-none backdrop-blur-sm border border-green-500/30' 
-                            : 'bg-black/40 text-white rounded-bl-none backdrop-blur-md border border-white/10'
-                        }`}
-                  >
-                     <div className="markdown-body" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, '<br/>') }}></div>
-                     <span className="text-[10px] text-white/50 block text-right mt-1">{getCurrentTime()}</span>
-                  </div>
-                  
-                  {/* Whatsapp Summary Link Button */}
-                  {msg.whatsappSummaryLink && (
-                       <div className="max-w-[85%] mt-1">
-                          <WhatsappSummaryButton link={msg.whatsappSummaryLink} />
-                       </div>
-                  )}
-                  
-                  {/* Bot sent image */}
-                  {msg.image && (
-                      <div className="max-w-[85%] mt-2">
-                          <img 
-                              src={msg.image} 
-                              alt="Mensaje del Bot" 
-                              className="rounded-xl w-full h-auto shadow-lg border border-white/20 animate-fade-in-up"
-                              onError={(e) => (e.currentTarget.style.display = 'none')}
-                          />
-                      </div>
-                  )}
-
-                  {/* Render Date Picker if requested by bot */}
-                  {msg.showDatePicker && index === messages.length - 1 && (
-                      <ChatDatePicker onDateSelect={(date) => handleSendMessage(null, date)} />
-                  )}
-
-                  {/* Render Recommended Plans Miniatures */}
-                  {msg.recommendedPlans && msg.recommendedPlans.length > 0 && (
-                      <div className="mt-3 w-full flex gap-3 overflow-x-auto pb-2 pl-1 snap-x no-scrollbar">
-                          {msg.recommendedPlans.map(plan => (
-                              <PlanMiniCard key={plan.id} plan={plan} onClick={() => onOpenPlan(plan)} />
-                          ))}
-                      </div>
-                  )}
-                </div>
-              ))}
-              
-              {isLoading && (
-                  <div className="flex items-start">
-                       <div className="bg-black/40 text-white rounded-2xl rounded-bl-none backdrop-blur-md border border-white/10 p-3 shadow-md">
-                          <div className="flex gap-1.5 items-center h-5">
-                              <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce"></span>
-                              <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce delay-100"></span>
-                              <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce delay-200"></span>
+             {/* Messages stream */}
+             <div className="h-full p-4 overflow-y-auto relative z-10 custom-scrollbar">
+                <div className="space-y-4">
+                 {messages.map((msg, index) => (
+                   <div key={index} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                     <div 
+                       className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-md relative group
+                           ${msg.role === 'user' 
+                               ? 'bg-green-600/80 text-white rounded-br-none backdrop-blur-sm border border-green-500/30' 
+                               : 'bg-black/40 text-white rounded-bl-none backdrop-blur-md border border-white/10'
+                           }`}
+                     >
+                        <div className="markdown-body" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, '<br/>') }}></div>
+                        <span className="text-[10px] text-white/50 block text-right mt-1">{getCurrentTime()}</span>
+                     </div>
+                     
+                     {msg.whatsappSummaryLink && (
+                          <div className="max-w-[85%] mt-1">
+                             <WhatsappSummaryButton link={msg.whatsappSummaryLink} />
                           </div>
-                      </div>
-                  </div>
-              )}
-              <div ref={chatEndRef} />
-            </div>
+                     )}
+                     
+                     {msg.image && (
+                         <div className="max-w-[85%] mt-2">
+                             <img 
+                                 src={msg.image} 
+                                 alt="Mensaje del Bot" 
+                                 className="rounded-xl w-full h-auto shadow-lg border border-white/20 animate-fade-in-up"
+                                 onError={(e) => (e.currentTarget.style.display = 'none')}
+                             />
+                         </div>
+                     )}
+
+                     {msg.showDatePicker && index === messages.length - 1 && (
+                         <ChatDatePicker onDateSelect={(date) => handleSendMessage(null, date)} />
+                     )}
+
+                     {msg.recommendedPlans && msg.recommendedPlans.length > 0 && (
+                         <div className="mt-3 w-full flex gap-3 overflow-x-auto pb-2 pl-1 snap-x no-scrollbar">
+                             {msg.recommendedPlans.map(plan => (
+                                 <PlanMiniCard key={plan.id} plan={plan} onClick={() => onOpenPlan(plan)} />
+                             ))}
+                         </div>
+                     )}
+                   </div>
+                 ))}
+                 
+                 {isLoading && (
+                     <div className="flex items-start">
+                          <div className="bg-black/40 text-white rounded-2xl rounded-bl-none backdrop-blur-md border border-white/10 p-3 shadow-md">
+                             <div className="flex gap-1.5 items-center h-5">
+                                 <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce"></span>
+                                 <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce delay-100"></span>
+                                 <span className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce delay-200"></span>
+                             </div>
+                         </div>
+                     </div>
+                 )}
+                 <div ref={chatEndRef} />
+                </div>
+             </div>
           </div>
           
           {/* Input Area */}
