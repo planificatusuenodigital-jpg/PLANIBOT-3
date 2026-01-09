@@ -9,8 +9,8 @@ export enum Section {
   FAQ,
 }
 
-// FIX: Added 'Aventura' to the TravelerType to allow its use in travel plans.
-export type TravelerType = 'Familias' | 'Parejas' | 'Grupos' | 'Negocios' | 'Descanso / Relax' | 'Cultural' | 'Aventura';
+// FIX: Added 'Aventura' and 'Boutique' to the TravelerType to allow its use in travel plans.
+export type TravelerType = 'Familias' | 'Parejas' | 'Grupos' | 'Negocios' | 'Descanso / Relax' | 'Cultural' | 'Aventura' | 'Boutique';
 export type Regime = 'Todo Incluido' | 'Pensión Completa' | 'Con Desayuno Incluido' | 'Solo Alojamiento' | 'Paquete Promocional';
 
 export interface Plan {

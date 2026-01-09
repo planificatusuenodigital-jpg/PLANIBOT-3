@@ -174,20 +174,21 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
 
     try {
         const response = await sendMessageToBot(textToSend);
-        setIsLoading(false);
         
-        if (response.videoId) {
-            setCurrentVideoId(response.videoId);
-            setIsVideoVisible(true);
-        }
-
         if (response.isTransition && response.finalData) {
+            setIsLoading(true); // Mantenemos el estado cargando para bloquear entrada
+            if (response.videoId) {
+                setCurrentVideoId(response.videoId);
+                setIsVideoVisible(true);
+            }
+            
             // MOSTRAR MENSAJE DE ESPERA
             addModelMessageWithTyping(response.text, { videoId: response.videoId });
             
             // PROGRAMAR RESPUESTA FINAL DESPUÉS DE 22 SEGUNDOS
             setTimeout(() => {
-                setIsVideoVisible(false); // Ocultar video al terminar los 22s
+                setIsVideoVisible(false); // Ocultar video
+                setIsLoading(false);      // Desbloquear entrada
                 if (response.finalData) {
                     addModelMessageWithTyping(response.finalData.text, { 
                         whatsappSummaryLink: response.finalData.whatsappLink 
@@ -195,14 +196,21 @@ const PlaniBot: React.FC<PlaniBotProps> = ({ planibotAvatarUrl, contactInfo, soc
                 }
             }, 22000);
 
-        } else if (response.text) {
-            addModelMessageWithTyping(response.text, {
-                recommendedPlans: response.recommendedPlans,
-                whatsappSummaryLink: response.whatsappLink,
-                image: response.image,
-                showDatePicker: response.showDatePicker,
-                videoId: response.videoId
-            });
+        } else {
+            setIsLoading(false);
+            if (response.videoId) {
+                setCurrentVideoId(response.videoId);
+                setIsVideoVisible(true);
+            }
+            if (response.text) {
+                addModelMessageWithTyping(response.text, {
+                    recommendedPlans: response.recommendedPlans,
+                    whatsappSummaryLink: response.whatsappLink,
+                    image: response.image,
+                    showDatePicker: response.showDatePicker,
+                    videoId: response.videoId
+                });
+            }
         }
     } catch (error) {
         console.error("Error Bot:", error);

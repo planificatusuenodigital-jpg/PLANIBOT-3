@@ -102,7 +102,8 @@ const PlanEditor: React.FC<{
         amenities: plan.amenities || []
     });
     
-    const TRAVELER_TYPES = ['Familias', 'Parejas', 'Grupos', 'Negocios', 'Descanso / Relax', 'Cultural', 'Aventura'];
+    // FIX: Added 'Boutique' to the TRAVELER_TYPES to stay in sync with the TravelerType union.
+    const TRAVELER_TYPES = ['Familias', 'Parejas', 'Grupos', 'Negocios', 'Descanso / Relax', 'Cultural', 'Aventura', 'Boutique'];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;

@@ -219,7 +219,6 @@ const processFlow = (input: string): BotResponse => {
             
             const finalVideoId = getVideoForDestination(context.data.destination || "");
 
-            // RETORNAMOS TRANSICIÓN PARA EL VIDEO DE 22 SEGUNDOS
             return {
                 text: "Estoy revisando tu consulta mientras puedes ver este video y calificar nuestra agencia. 😊",
                 videoId: finalVideoId,
